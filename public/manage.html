@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Sections & Categories | Dress Organizer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 25px;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto 30px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      padding: 10px 25px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+    }
+
+    .btn:hover { transform: scale(1.05); }
+
+    .btn.logout {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 8px 20px rgba(239,68,68,0.3);
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.97);
+      border-radius: 20px;
+      padding: 25px;
+      max-width: 900px;
+      margin: 0 auto 25px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.15);
+      color: #333;
+    }
+
+    .panel h2 {
+      color: #4f46e5;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    input, select {
+      padding: 10px 14px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    input:focus, select:focus {
+      border-color: #667eea;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .tag {
+      background: #f3f4f6;
+      color: #1f2937;
+      border-radius: 20px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .tag span {
+      background: #ef4444;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .tag span:hover { background: #dc2626; }
+
+    .back-btn {
+      display: block;
+      text-align: center;
+      margin: 30px auto;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      width: fit-content;
+      box-shadow: 0 5px 20px rgba(16,185,129,0.4);
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover { transform: scale(1.05); }
+
+    .reset-btn {
+      display: block;
+      margin: 20px auto;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+    }
+
+    .reset-btn:hover { transform: scale(1.05); }
+
+    .loader {
+      text-align: center;
+      font-weight: bold;
+      color: #fff;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚙️ Manage Sections & Categories</h1>
+    <button class="btn logout" id="logoutBtn">Logout</button>
+  </header>
+
+  <div class="panel">
+    <h2>🧩 Add Section</h2>
+    <div class="input-row">
+      <input type="text" id="sectionInput" placeholder="Enter new section (e.g., Dresses)">
+      <button class="btn" id="addSectionBtn">Add Section</button>
+    </div>
+    <div class="tag-container" id="sectionList"></div>
+  </div>
+
+  <div class="panel">
+    <h2>📂 Add Category</h2>
+    <div class="input-row">
+      <select id="sectionSelect"><option value="">Select Section</option></select>
+      <input type="text" id="categoryInput" placeholder="Enter new category (e.g., Tops)">
+      <button class="btn" id="addCategoryBtn">Add Category</button>
+    </div>
+    <div class="tag-container" id="categoryList"></div>
+  </div>
+
+  <button class="reset-btn" onclick="resetDefaults()">♻ Reset to Default</button>
+
+  <a href="index.html" class="back-btn">← Back to Home</a>
+  <div id="loader" class="loader"></div>
+
+  <script>
+    const API_URL = "http://localhost:8080/api";
+
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    const sectionList = document.getElementById("sectionList");
+    const sectionSelect = document.getElementById("sectionSelect");
+    const categoryList = document.getElementById("categoryList");
+    const loader = document.getElementById("loader");
+
+    // --- Load all sections ---
+    async function loadSections() {
+      loader.textContent = "Loading sections...";
+      const res = await fetch(`${API_URL}/sections`);
+      const data = await res.json();
+      renderSections(data);
+      loader.textContent = "";
+    }
+
+    function renderSections(sections) {
+      sectionList.innerHTML = "";
+      sectionSelect.innerHTML = `<option value="">Select Section</option>`;
+      sections.forEach(sec => {
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        tag.innerHTML = `${sec.name} <span onclick="deleteSection('${sec.name}')">×</span>`;
+        sectionList.appendChild(tag);
+
+        const opt = document.createElement("option");
+        opt.value = sec.name;
+        opt.textContent = sec.name;
+        sectionSelect.appendChild(opt);
+      });
+    }
+
+    async function addSection() {
+      const name = document.getElementById("sectionInput").value.trim();
+      if (!name) return alert("Please enter a section name!");
+      const res = await fetch(`${API_URL}/sections`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      alert(data.message);
+      document.getElementById("sectionInput").value = "";
+      loadSections();
+    }
+
+    async function deleteSection(name) {
+      if (!confirm(`Delete section '${name}' and all related dresses?`)) return;
+      const res = await fetch(`${API_URL}/sections/${name}`, { method: "DELETE" });
+      const data = await res.json();
+      alert(data.message);
+      loadSections();
+      categoryList.innerHTML = "";
+    }
+
+    async function loadCategories() {
+      categoryList.innerHTML = "";
+      const selected = sectionSelect.value;
+      if (!selected) return;
+      const res = await fetch(`${API_URL}/sections`);
+      const data = await res.json();
+      const sec = data.find(s => s.name === selected);
+      if (!sec) return;
+      sec.categories.forEach(cat => {
+        const tag = document.createElement("div");
+        tag.className = "tag";
+        tag.innerHTML = `${cat} <span onclick="deleteCategory('${selected}','${cat}')">×</span>`;
+        categoryList.appendChild(tag);
+      });
+    }
+
+    async function addCategory() {
+      const sectionName = sectionSelect.value;
+      const category = document.getElementById("categoryInput").value.trim();
+      if (!sectionName) return alert("Select a section first!");
+      if (!category) return alert("Enter a category name!");
+      const res = await fetch(`${API_URL}/categories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sectionName, category }),
+      });
+      const data = await res.json();
+      alert(data.message);
+      document.getElementById("categoryInput").value = "";
+      loadCategories();
+    }
+
+    async function deleteCategory(section, category) {
+      if (!confirm(`Delete category '${category}' from '${section}'?`)) return;
+      const res = await fetch(`${API_URL}/categories/${section}/${category}`, { method: "DELETE" });
+      const data = await res.json();
+      alert(data.message);
+      loadCategories();
+    }
+
+    async function resetDefaults() {
+      if (!confirm("Are you sure you want to reset all sections and categories to default?")) return;
+      const res = await fetch(`${API_URL}/reset-defaults`, { method: "POST" });
+      const data = await res.json();
+      alert(data.message);
+      loadSections();
+      categoryList.innerHTML = "";
+    }
+
+    // --- Event Listeners ---
+    document.getElementById("addSectionBtn").onclick = addSection;
+    document.getElementById("addCategoryBtn").onclick = addCategory;
+    sectionSelect.onchange = loadCategories;
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    };
+
+    // --- Init ---
+    loadSections();
+  </script>
+</body>
+</html>

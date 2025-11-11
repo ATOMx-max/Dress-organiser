@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Dress | Dress Organizer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 15px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background particles */
+    .bg-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .particle { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: float 15s infinite ease-in-out; }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10%,90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1200px; margin: 0 auto 30px; padding: 0 10px;
+      position: relative; z-index: 10; animation: slideDown 0.6s ease;
+    }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-30px);} to { opacity: 1; transform: translateY(0);} }
+    header h1 { font-size: clamp(1.4rem,5vw,2rem); font-weight:700; text-shadow:0 4px 20px rgba(0,0,0,0.3); animation: glow 2s ease-in-out infinite alternate;}
+    @keyframes glow { from { text-shadow:0 4px 20px rgba(0,0,0,0.3);} to { text-shadow:0 4px 30px rgba(255,255,255,0.4);} }
+
+    .btn {
+      background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+      border:none;color:white;font-size:clamp(0.85rem,2.5vw,1rem);font-weight:600;
+      border-radius:50px;padding:10px 20px;cursor:pointer;
+      transition:all .3s cubic-bezier(0.68,-0.55,0.265,1.55);
+      box-shadow:0 5px 20px rgba(79,70,229,0.3);
+      position:relative;overflow:hidden;
+    }
+    .btn::before {
+      content:'';position:absolute;top:50%;left:50%;
+      width:0;height:0;border-radius:50%;
+      background:rgba(255,255,255,0.3);
+      transform:translate(-50%,-50%);transition:width .6s,height .6s;
+    }
+    .btn:hover::before { width:300px;height:300px; }
+    .btn:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 8px 30px rgba(79,70,229,0.5); }
+    .btn.logout { background: linear-gradient(135deg,#ef4444 0%,#dc2626 100%); }
+    .btn:disabled { opacity:0.6;cursor:not-allowed; }
+
+    .upload-container {
+      background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);
+      border-radius:25px;padding:clamp(20px,5vw,40px);max-width:650px;margin:0 auto;
+      color:#333;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+      animation:fadeInUp 0.8s ease;position:relative;z-index:10;
+    }
+    @keyframes fadeInUp { from {opacity:0;transform:translateY(40px);} to {opacity:1;transform:translateY(0);} }
+    h2 { color:#4f46e5;font-size:clamp(1.3rem,4vw,1.8rem);margin-bottom:25px;text-align:center;position:relative;padding-bottom:15px;}
+    h2::after { content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:2px;}
+
+    label { display:block;margin-top:20px;font-weight:600;color:#374151;font-size:0.95rem; }
+    input[type="text"], select {
+      width:100%;padding:14px 18px;border:2px solid #e5e7eb;border-radius:15px;
+      font-size:15px;transition:all .3s cubic-bezier(0.68,-0.55,0.265,1.55);
+      background:white;font-family:inherit;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color:#667eea;outline:none;box-shadow:0 0 0 4px rgba(102,126,234,0.15);transform:translateY(-2px);
+    }
+    select { cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 15px center;padding-right:40px; }
+
+    input[type="file"] { display:none; }
+    .file-upload-btn { width:100%;padding:16px;border:3px dashed #d1d5db;border-radius:15px;background:#f9fafb;cursor:pointer;text-align:center;margin-top:8px; }
+    .file-upload-btn:hover { border-color:#667eea;background:#f3f4f6;transform:scale(1.02);}
+    .file-upload-btn.active { border-color:#4f46e5;background:#eef2ff; }
+    .preview img { max-width:100%;border-radius:20px;max-height:300px;box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+
+    .status { text-align:center;margin-top:20px;font-weight:600;min-height:24px;font-size:1rem; }
+    .success { color:#16a34a; }
+    .error { color:#dc2626; }
+
+    .progress-container { margin-top:15px;background:#e5e7eb;border-radius:10px;overflow:hidden;height:10px; }
+    .progress-bar { height:100%;width:0%;background:linear-gradient(90deg,#4f46e5,#7c3aed,#ec4899);transition:width .3s ease; }
+
+    .link-group { display:flex;justify-content:center;gap:15px;margin-top:30px;flex-wrap:wrap;}
+    .link { color:white;background:linear-gradient(135deg,#10b981 0%,#059669 100%);
+      padding:12px 24px;border-radius:30px;text-decoration:none;font-weight:600;transition:all .3s cubic-bezier(0.68,-0.55,0.265,1.55);}
+    .link:hover { transform:translateY(-3px) scale(1.05); }
+
+    .feedback-btn {
+      position:fixed;bottom:25px;right:25px;
+      background:linear-gradient(135deg,#fbbf24 0%,#f59e0b 100%);
+      color:#111;border:none;border-radius:50px;padding:14px 28px;font-weight:600;
+      box-shadow:0 8px 30px rgba(251,191,36,0.4);cursor:pointer;z-index:999;
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.05);} }
+
+    .loading-overlay { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);backdrop-filter:blur(5px);display:none;justify-content:center;align-items:center;z-index:9999;}
+    .loading-overlay.active { display:flex; }
+    .loader { width:60px;height:60px;border:5px solid rgba(255,255,255,0.2);border-top-color:#667eea;border-radius:50%;animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { position:absolute;color:white;margin-top:120px;font-weight:600;font-size:1.1rem; }
+
+    .input-error { border-color:#ef4444 !important; }
+    .input-success { border-color:#10b981 !important; }
+  </style>
+</head>
+<body>
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div>
+      <div class="loader"></div>
+      <div class="loading-text" id="loadingText">Loading...</div>
+    </div>
+  </div>
+
+  <header>
+    <h1>👗 Upload a Dress</h1>
+    <button class="btn logout" id="logoutBtn">Logout</button>
+  </header>
+
+  <div class="upload-container">
+    <h2>📸 Add a New Dress</h2>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label for="name">Dress Name:</label>
+      <input type="text" id="name" name="name" placeholder="e.g. Red Party Gown" required />
+
+      <label for="section">Section:</label>
+      <select id="section" name="section" required>
+        <option value="">Select Section</option>
+      </select>
+
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option value="">Select Category</option>
+      </select>
+
+      <label for="image">Select Image:</label>
+      <input type="file" id="image" name="image" accept="image/*" required />
+      <label for="image" class="file-upload-btn" id="fileUploadBtn">
+        <div class="file-upload-content">
+          <div class="file-icon">📷</div>
+          <div class="file-text">Click to upload image</div>
+          <div class="file-subtext">PNG, JPG, JPEG up to 10MB</div>
+        </div>
+      </label>
+
+      <div class="preview" id="preview"></div>
+      <div class="progress-container" id="progressContainer" style="display:none;">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn" style="margin-top:25px;width:100%;">✨ Upload Dress</button>
+    </form>
+
+    <p id="status" class="status"></p>
+
+    <div class="link-group">
+      <a href="search.html" class="link">🔍 Search</a>
+      <a href="manage.html" class="link">⚙️ Manage</a>
+    </div>
+  </div>
+
+  <button class="feedback-btn" onclick="window.location.href='feedback.html'">💬 Feedback</button>
+
+  <script>
+    const API_URL = "http://localhost:8080/api";
+    const sectionSelect = document.getElementById("section");
+    const categorySelect = document.getElementById("category");
+    const statusText = document.getElementById("status");
+    const preview = document.getElementById("preview");
+    const progressBar = document.getElementById("progressBar");
+    const progressContainer = document.getElementById("progressContainer");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
+    const fileUploadBtn = document.getElementById("fileUploadBtn");
+    const fileInput = document.getElementById("image");
+    const submitBtn = document.getElementById("submitBtn");
+
+    // Animated background
+    function createParticles() {
+      const container = document.getElementById("bgParticles");
+      for (let i = 0; i < 15; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        const size = Math.random() * 60 + 20;
+        p.style.width = p.style.height = size + "px";
+        p.style.left = Math.random() * 100 + "%";
+        p.style.animationDelay = Math.random() * 15 + "s";
+        p.style.animationDuration = Math.random() * 10 + 10 + "s";
+        container.appendChild(p);
+      }
+    }
+    createParticles();
+
+    function showLoading(text="Loading..."){ loadingText.textContent=text; loadingOverlay.classList.add("active"); }
+    function hideLoading(){ loadingOverlay.classList.remove("active"); }
+
+    // Check login
+    if (!localStorage.getItem("loggedInUser")) window.location.href = "login.html";
+
+    // ✅ Load sections (fixed with credentials)
+    async function loadSections() {
+      try {
+        showLoading("Loading sections...");
+        const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
+        if (!res.ok) throw new Error("Failed to load sections");
+
+        const sections = await res.json();
+        sectionSelect.innerHTML = `<option value="">Select Section</option>`;
+        sections.forEach(sec => {
+          const opt = document.createElement("option");
+          opt.value = sec.name;
+          opt.textContent = sec.name;
+          sectionSelect.appendChild(opt);
+        });
+
+        sectionSelect.onchange = () => {
+          const selected = sections.find(s => s.name === sectionSelect.value);
+          categorySelect.innerHTML = `<option value="">Select Category</option>`;
+          if (selected) {
+            selected.categories.forEach(cat => {
+              const opt = document.createElement("option");
+              opt.value = cat;
+              opt.textContent = cat;
+              categorySelect.appendChild(opt);
+            });
+            categorySelect.disabled = false;
+          } else categorySelect.disabled = true;
+        };
+        hideLoading();
+      } catch (err) {
+        console.error("Error loading sections:", err);
+        hideLoading();
+        statusText.textContent = "❌ Failed to load sections.";
+        statusText.className = "status error";
+      }
+    }
+    loadSections();
+
+    // File preview
+    fileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) { alert("Max 10MB allowed"); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.innerHTML = `<img src="${reader.result}" alt="Preview" />`;
+        fileUploadBtn.classList.add("active");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Submit form
+    document.getElementById("uploadForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const section = sectionSelect.value;
+      const category = categorySelect.value;
+      const image = fileInput.files[0];
+      if (!name || !section || !category || !image) {
+        statusText.textContent = "⚠️ Please fill all fields.";
+        statusText.className = "status error";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("section", section);
+      formData.append("category", category);
+      formData.append("image", image);
+
+      submitBtn.disabled = true;
+      progressContainer.style.display = "block";
+      progressBar.style.width = "0%";
+
+      const xhr = new XMLHttpRequest();
+      xhr.upload.onprogress = e => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          progressBar.style.width = percent + "%";
+          statusText.textContent = `⏳ Uploading... ${percent}%`;
+        }
+      };
+      xhr.onload = () => {
+        submitBtn.disabled = false;
+        if (xhr.status === 200) {
+          statusText.textContent = "✅ Dress uploaded successfully!";
+          statusText.className = "status success";
+          progressBar.style.width = "100%";
+          setTimeout(() => { e.target.reset(); preview.innerHTML = ""; fileUploadBtn.classList.remove("active"); progressContainer.style.display = "none"; }, 2000);
+        } else {
+          const msg = JSON.parse(xhr.responseText)?.message || "Upload failed";
+          statusText.textContent = "❌ " + msg;
+          statusText.className = "status error";
+        }
+      };
+      xhr.onerror = () => {
+        submitBtn.disabled = false;
+        statusText.textContent = "❌ Network error.";
+        statusText.className = "status error";
+      };
+      xhr.open("POST", `${API_URL}/dresses`);
+      xhr.withCredentials = true; // ✅ send session cookie
+      xhr.send(formData);
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").onclick = () => {
+      showLoading("Logging out...");
+      localStorage.removeItem("loggedInUser");
+      setTimeout(() => (window.location.href = "login.html"), 500);
+    };
+  </script>
+</body>
+</html>

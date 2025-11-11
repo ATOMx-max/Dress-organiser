@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback | Dress Organizer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    body::before {
+      width: 400px;
+      height: 400px;
+      background: #fbbf24;
+      top: -100px;
+      left: -100px;
+    }
+
+    body::after {
+      width: 450px;
+      height: 450px;
+      background: #ec4899;
+      bottom: -150px;
+      right: -150px;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(50px,50px) scale(1.15); }
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 40px 35px;
+      width: 90%;
+      max-width: 450px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, #fbbf24 0%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 25px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      border-radius: 15px;
+      border: none;
+      padding: 15px;
+      font-size: 1rem;
+      resize: none;
+      background: rgba(255,255,255,0.8);
+      color: #333;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(79,70,229,0.4);
+    }
+
+    .back-link {
+      margin-top: 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .back-link:hover {
+      color: #fbbf24;
+    }
+
+    .msg {
+      margin-top: 15px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #fff;
+      min-height: 24px;
+    }
+
+    /* 🌀 Loading Spinner */
+    .loader {
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top: 3px solid #fbbf24;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="glass-card">
+    <h2>💬 Feedback</h2>
+    <p>Your thoughts help us improve Dress Organizer!</p>
+    <textarea id="feedbackText" placeholder="Write your feedback here..."></textarea>
+    <button id="submitFeedback">Submit Feedback</button>
+    <p id="msg" class="msg"></p>
+    <a href="index.html" class="back-link">← Back to Home</a>
+  </div>
+
+  <script>
+    const btn = document.getElementById("submitFeedback");
+    const msg = document.getElementById("msg");
+
+    btn.addEventListener("click", async () => {
+      const feedback = document.getElementById("feedbackText").value.trim();
+      const user = localStorage.getItem("loggedInUser");
+
+      if (!feedback) {
+        msg.textContent = "⚠️ Please write something before submitting.";
+        msg.style.color = "#fbbf24";
+        return;
+      }
+
+      // Show loading animation
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loader"></span> Sending...';
+      msg.textContent = "";
+
+      try {
+        const res = await fetch("http://localhost:8080/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user, message: feedback }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.textContent = "✅ Thank you for your feedback!";
+          msg.style.color = "#22c55e";
+          document.getElementById("feedbackText").value = "";
+        } else {
+          msg.textContent = "❌ Failed to send feedback.";
+          msg.style.color = "#ef4444";
+        }
+      } catch (err) {
+        msg.textContent = "⚠️ Server not reachable.";
+        msg.style.color = "#fbbf24";
+      }
+
+      // Restore button after short delay
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = "Submit Feedback";
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

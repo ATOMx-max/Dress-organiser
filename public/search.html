@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Dresses | Dress Organizer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      padding: 25px;
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto 30px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      text-shadow: 0 3px 20px rgba(0,0,0,0.3);
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border: none;
+      color: white;
+      padding: 10px 22px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 5px 20px rgba(79,70,229,0.4);
+      transition: 0.3s;
+    }
+
+    .btn:hover { transform: scale(1.05); }
+
+    .filter-bar {
+      background: rgba(255,255,255,0.95);
+      border-radius: 25px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    select, input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 15px;
+      border: 2px solid #e5e7eb;
+      color: #333;
+      font-size: 1rem;
+      min-width: 180px;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+    }
+
+    .suggestions {
+      position: absolute;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .suggestion-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      color: #333;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      font-weight: 500;
+    }
+
+    .suggestion-item:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .counter-bar {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 25px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .card:hover { transform: translateY(-6px); }
+
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .card img:hover { transform: scale(1.03); }
+
+    .card-content {
+      padding: 15px;
+      color: #333;
+    }
+
+    .card-content h3 { font-size: 1.1rem; margin-bottom: 5px; color: #1f2937; }
+    .card-content p { color: #6b7280; font-weight: 600; margin: 4px 0; }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      margin-top: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+    }
+
+    .loader {
+      text-align: center;
+      font-weight: bold;
+      color: white;
+      margin-top: 15px;
+    }
+
+    /* Small inline loader for delete */
+    .delete-loading {
+      width: 22px;
+      height: 22px;
+      border: 3px solid #ddd;
+      border-top: 3px solid #ef4444;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 10px auto;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 🔍 PREVIEW MODAL */
+    .preview-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .preview-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* 🖼️ FIXED PREVIEW MODAL LAYOUT */
+    .preview-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: auto;
+      max-width: 90vw;
+      max-height: 85vh;
+      padding: 10px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      animation: popIn 0.4s ease;
+      overflow: hidden;
+    }
+
+    .preview-content img {
+      max-width: 100%;
+      max-height: 80vh;
+      width: auto;
+      height: auto;
+      border-radius: 15px;
+      object-fit: contain;
+      display: block;
+      animation: zoomIn 0.5s ease;
+      cursor: zoom-in;
+      transition: transform 0.3s ease;
+    }
+
+    .preview-content img.zoomed {
+      transform: scale(1.6);
+      cursor: zoom-out;
+    }
+
+    .preview-close {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      background: rgba(255,255,255,0.9);
+      color: #111;
+      font-size: 22px;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .preview-close:hover {
+      background: #ef4444;
+      color: white;
+      transform: rotate(90deg);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(1.05); opacity: 0.8; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🔍 Search Dresses</h1>
+    <button class="btn" onclick="window.location.href='index.html'">← Back</button>
+  </header>
+
+  <div class="filter-bar">
+    <select id="sectionFilter">
+      <option value="">All Sections</option>
+    </select>
+
+    <select id="categoryFilter">
+      <option value="">All Categories</option>
+    </select>
+
+    <div style="flex:1; position:relative;">
+      <input type="text" id="searchInput" placeholder="Search by name..." autocomplete="off" />
+      <div id="suggestions" class="suggestions" style="display:none;"></div>
+    </div>
+
+    <button class="btn" id="clearBtn">Clear Filters</button>
+  </div>
+
+  <div id="counterBar" class="counter-bar">Showing all dresses.</div>
+  <div id="gallery" class="gallery"></div>
+  <div id="loader" class="loader"></div>
+
+  <!-- 🖼️ Preview Modal -->
+  <div id="previewModal" class="preview-modal">
+    <div class="preview-content">
+      <button class="preview-close" id="closePreview">✖</button>
+      <img id="previewImage" src="" alt="Preview" />
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:8080/api";
+    const gallery = document.getElementById("gallery");
+    const sectionFilter = document.getElementById("sectionFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const searchInput = document.getElementById("searchInput");
+    const counterBar = document.getElementById("counterBar");
+    const suggestionsBox = document.getElementById("suggestions");
+    const loader = document.getElementById("loader");
+    const previewModal = document.getElementById("previewModal");
+    const previewImage = document.getElementById("previewImage");
+    const closePreview = document.getElementById("closePreview");
+
+    let dresses = [];
+    let sections = [];
+
+    async function loadData() {
+      loader.textContent = "Loading data...";
+      const [dRes, sRes] = await Promise.all([
+        fetch(`${API_URL}/dresses`),
+        fetch(`${API_URL}/sections`)
+      ]);
+      dresses = await dRes.json();
+      sections = await sRes.json();
+      renderSections();
+      renderGallery();
+      loader.textContent = "";
+    }
+
+    function renderSections() {
+      sectionFilter.innerHTML = `<option value="">All Sections</option>`;
+      sections.forEach(sec => {
+        const opt = document.createElement("option");
+        opt.value = sec.name;
+        opt.textContent = sec.name;
+        sectionFilter.appendChild(opt);
+      });
+    }
+
+    sectionFilter.onchange = () => {
+      categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+      const selected = sections.find(s => s.name === sectionFilter.value);
+      if (selected) {
+        selected.categories.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat;
+          categoryFilter.appendChild(opt);
+        });
+      }
+      renderGallery();
+    };
+
+    categoryFilter.onchange = renderGallery;
+    document.getElementById("clearBtn").onclick = () => {
+      sectionFilter.value = "";
+      categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+      searchInput.value = "";
+      suggestionsBox.style.display = "none";
+      renderGallery();
+    };
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      if (!query) {
+        suggestionsBox.style.display = "none";
+        renderGallery();
+        return;
+      }
+      const matches = dresses.filter(d => d.name.toLowerCase().includes(query)).slice(0, 5);
+      suggestionsBox.innerHTML = "";
+      if (matches.length > 0) {
+        matches.forEach(m => {
+          const div = document.createElement("div");
+          div.className = "suggestion-item";
+          div.textContent = m.name;
+          div.onclick = () => {
+            searchInput.value = m.name;
+            suggestionsBox.style.display = "none";
+            renderGallery();
+          };
+          suggestionsBox.appendChild(div);
+        });
+        suggestionsBox.style.display = "block";
+      } else {
+        suggestionsBox.style.display = "none";
+      }
+      renderGallery();
+    });
+
+    async function deleteDress(id, btn) {
+      if (!confirm("🗑️ Delete this dress?")) return;
+
+      const card = btn.closest(".card");
+      const loader = document.createElement("div");
+      loader.className = "delete-loading";
+      card.querySelector(".card-content").innerHTML = "";
+      card.querySelector(".card-content").appendChild(loader);
+
+      await fetch(`${API_URL}/dresses/${id}`, { method: "DELETE" });
+      card.style.opacity = "0";
+      setTimeout(() => card.remove(), 400);
+    }
+
+    function openPreview(imgSrc) {
+      previewImage.src = imgSrc;
+      previewModal.classList.add("active");
+    }
+
+    closePreview.onclick = () => previewModal.classList.remove("active");
+    previewModal.onclick = (e) => {
+      if (e.target === previewModal) previewModal.classList.remove("active");
+    };
+
+    // 🖱️ Optional: Zoom toggle on click
+    previewImage.onclick = () => {
+      previewImage.classList.toggle("zoomed");
+    };
+
+    function renderGallery() {
+      gallery.innerHTML = "";
+      let filtered = dresses;
+      const sec = sectionFilter.value;
+      const cat = categoryFilter.value;
+      const search = searchInput.value.toLowerCase();
+
+      if (sec) filtered = filtered.filter(i => i.section === sec);
+      if (cat) filtered = filtered.filter(i => i.category === cat);
+      if (search) filtered = filtered.filter(i => i.name.toLowerCase().includes(search));
+
+      counterBar.innerHTML = `
+        Total Dresses: <b>${dresses.length}</b> |
+        ${sec ? `Section <b>${sec}</b>` : "All Sections"} |
+        ${cat ? `Category <b>${cat}</b>` : "All Categories"} |
+        Showing: <b>${filtered.length}</b>
+      `;
+
+      if (filtered.length === 0) {
+        gallery.innerHTML = `<div style="text-align:center;grid-column:1/-1;color:white;">No dresses found</div>`;
+        return;
+      }
+
+      filtered.forEach(i => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${i.imageUrl}" alt="${i.name}" onclick="openPreview('${i.imageUrl}')"/>
+          <div class="card-content">
+            <h3>${i.name}</h3>
+            <p>${i.section} → ${i.category}</p>
+            <button class="delete-btn" onclick="deleteDress('${i._id}', this)">Delete</button>
+          </div>
+        `;
+        gallery.appendChild(card);
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>

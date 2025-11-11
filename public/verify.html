@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Verification | Dress Organizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 25px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 420px;
+      width: 90%;
+      color: #333;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      color: #4f46e5;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    p {
+      color: #444;
+      margin-bottom: 25px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn:hover { transform: scale(1.05); }
+
+    .emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+      animation: pop 0.8s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .error-text { color: #dc2626; }
+    .success-text { color: #16a34a; }
+    .warning-text { color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="emoji" id="emoji">⏳</div>
+    <h2 id="title">Verifying Email...</h2>
+    <p id="message">Please wait while we confirm your email verification.</p>
+    <a href="login.html" class="btn" id="loginBtn" style="display:none;">Go to Login</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("status");
+
+    const emoji = document.getElementById("emoji");
+    const title = document.getElementById("title");
+    const message = document.getElementById("message");
+    const loginBtn = document.getElementById("loginBtn");
+
+    if (status === "success") {
+      emoji.textContent = "🎉";
+      title.textContent = "Email Verified!";
+      title.className = "success-text";
+      message.textContent = "Your account has been successfully verified. You can now log in to your Dress Organizer account.";
+      loginBtn.style.display = "inline-block";
+    } 
+    else if (status === "invalid") {
+      emoji.textContent = "❌";
+      title.textContent = "Invalid or Expired Link";
+      title.className = "error-text";
+      message.textContent = "The verification link is invalid or has already been used. Please register again or request a new verification email.";
+    } 
+    else if (status === "error") {
+      emoji.textContent = "⚠️";
+      title.textContent = "Verification Failed";
+      title.className = "warning-text";
+      message.textContent = "Something went wrong while verifying your email. Please try again later.";
+    } 
+    else {
+      emoji.textContent = "⏳";
+      title.textContent = "Verifying Email...";
+      message.textContent = "Please wait while we confirm your verification link.";
+    }
+  </script>
+</body>
+</html>
