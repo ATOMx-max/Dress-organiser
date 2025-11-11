@@ -215,7 +215,7 @@
     async function loadSections() {
       try {
         showLoading("Loading sections...");
-        const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
+        const res = await fetch(`${API_URL}/api/sections`, { credentials: "include" });
         if (!res.ok) throw new Error("Failed to load sections");
 
         const sections = await res.json();
@@ -312,7 +312,7 @@
         statusText.textContent = "❌ Network error.";
         statusText.className = "status error";
       };
-      xhr.open("POST", `${API_URL}/dresses`);
+      xhr.open("POST", `${API_URL}/api/dresses`);
       xhr.withCredentials = true; // ✅ send session cookie
       xhr.send(formData);
     });

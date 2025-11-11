@@ -199,7 +199,7 @@
   <div id="loader" class="loader"></div>
 
   <script>
-    const API_URL = window.location.origin.includes("localhost")? "http://localhost:8080/api": "https://dress-organiser.onrender.com/api";
+    const API_URL = window.location.origin.includes("localhost") ? "http://localhost:8080/api" : "https://dress-organiser.onrender.com/api";
 
     if (!localStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
@@ -213,7 +213,7 @@
     // --- Load all sections ---
     async function loadSections() {
       loader.textContent = "Loading sections...";
-      const res = await fetch(`${API_URL}/sections`);
+      const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
       const data = await res.json();
       renderSections(data);
       loader.textContent = "";
@@ -241,6 +241,7 @@
       const res = await fetch(`${API_URL}/sections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ name }),
       });
       const data = await res.json();
@@ -251,7 +252,7 @@
 
     async function deleteSection(name) {
       if (!confirm(`Delete section '${name}' and all related dresses?`)) return;
-      const res = await fetch(`${API_URL}/sections/${name}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/sections/${name}`, { method: "DELETE", credentials: "include" });
       const data = await res.json();
       alert(data.message);
       loadSections();
@@ -262,7 +263,7 @@
       categoryList.innerHTML = "";
       const selected = sectionSelect.value;
       if (!selected) return;
-      const res = await fetch(`${API_URL}/sections`);
+      const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
       const data = await res.json();
       const sec = data.find(s => s.name === selected);
       if (!sec) return;
@@ -282,6 +283,7 @@
       const res = await fetch(`${API_URL}/categories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ sectionName, category }),
       });
       const data = await res.json();
@@ -292,7 +294,7 @@
 
     async function deleteCategory(section, category) {
       if (!confirm(`Delete category '${category}' from '${section}'?`)) return;
-      const res = await fetch(`${API_URL}/categories/${section}/${category}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/categories/${section}/${category}`, { method: "DELETE", credentials: "include" });
       const data = await res.json();
       alert(data.message);
       loadCategories();
@@ -300,7 +302,7 @@
 
     async function resetDefaults() {
       if (!confirm("Are you sure you want to reset all sections and categories to default?")) return;
-      const res = await fetch(`${API_URL}/reset-defaults`, { method: "POST" });
+      const res = await fetch(`${API_URL}/reset-defaults`, { method: "POST", credentials: "include" });
       const data = await res.json();
       alert(data.message);
       loadSections();
