@@ -175,7 +175,8 @@
   <button class="feedback-btn" onclick="window.location.href='feedback.html'">💬 Feedback</button>
 
   <script>
-    const API_URL = "http://localhost:8080/api";
+    const API_URL = window.location.origin.includes("localhost")? "http://localhost:8080": "https://dress-organiser.onrender.com";
+
     const sectionSelect = document.getElementById("section");
     const categorySelect = document.getElementById("category");
     const statusText = document.getElementById("status");

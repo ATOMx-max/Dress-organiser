@@ -37,7 +37,12 @@ if (missing.length) {
 }
 
 // --- Middleware ---
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "7mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -238,6 +243,19 @@ app.get("/verify", async (req, res) => {
     res.redirect("/verify.html?status=error");
   }
 });
+app.get("/verify-email", async (req, res) => {
+  try {
+    const { token, id } = req.query;
+    const found = await Token.findOne({ userId: id, token, purpose: "verify" });
+    if (!found) return res.status(400).json({ success: false, message: "Invalid or expired token." });
+    await User.updateOne({ _id: id }, { verified: true });
+    await Token.deleteOne({ _id: found._id });
+    res.json({ success: true, message: "Email verified successfully." });
+  } catch (err) {
+    console.error("❌ Verify-email error:", err);
+    res.status(500).json({ success: false, message: "Verification failed." });
+  }
+});
 
 app.post("/login", async (req, res) => {
   try {
@@ -309,12 +327,12 @@ app.post("/forgot-password", async (req, res) => {
 // 2) Reset password: verify token and update password (called from reset.html form)
 app.post("/reset-password", async (req, res) => {
   try {
-    const { userId, token, password } = req.body;
-    if (!userId || !token || !password)
-      return res.status(400).json({ message: "userId, token and password are required." });
+    const { id, token, password } = req.body;
+    if (!id || !token || !password)
+      return res.status(400).json({ message: "id, token and password are required." });
 
-    const tokenDoc = await Token.findOne({ userId, purpose: "reset" });
-    if (!tokenDoc) return res.status(400).json({ message: "Invalid or expired reset token." });
+    const tokenDoc = await Token.findOne({ userId: id, purpose: "reset" });
+    await User.updateOne({ _id: id }, { $set: { password: hashed } });
 
     const isValid = await bcrypt.compare(token, tokenDoc.token);
     if (!isValid) return res.status(400).json({ message: "Invalid or expired reset token." });
@@ -569,8 +587,8 @@ app.get("/reset.html", (req, res) => res.sendFile(path.join(__dirname, "public",
 async function startServer() {
   try {
     await connectMongo();
+    await seedDefaults(); // ✅ Moved above mailer
     await verifyMailer();
-    await seedDefaults();
 
     app.listen(PORT,"0.0.0.0",() => {
       console.log(`🚀 Server running at: http://0.0.0.0:${PORT}`);
