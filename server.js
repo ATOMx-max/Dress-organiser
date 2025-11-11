@@ -52,10 +52,7 @@ app.use(
 // --- MongoDB Connection helper (robust) ---
 async function connectMongo() {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ MongoDB Connected");
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err.message || err);
@@ -168,10 +165,11 @@ async function verifyMailer() {
     await transporter.verify();
     console.log("✅ Mailer is ready (Gmail).");
   } catch (err) {
-    console.error("❌ Mailer verification failed:", err.message || err);
-    throw err;
+    console.warn("⚠️ Mailer verification failed or timed out. Continuing without fatal error.");
+    // Don’t exit; Render blocks SMTP verify
   }
 }
+
 
 // --- Seed global defaults ---
 async function seedDefaults() {
@@ -575,7 +573,7 @@ async function startServer() {
     await seedDefaults();
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at: http://localhost:${PORT}`);
+      console.log(`🚀 Server running at: http://0.0.0.0:${PORT}`);
     });
   } catch (err) {
     console.error("❌ Fatal startup error, exiting:", err.message || err);
