@@ -207,7 +207,7 @@ app.post("/register", async (req, res) => {
     const token = crypto.randomBytes(32).toString("hex");
     await Token.create({ userId: user._id, token, purpose: "verify" });
 
-    const verifyLink = `${process.env.CLIENT_URL}/verify?token=${token}&id=${user._id}`;
+    const verifyLink = `${process.env.CLIENT_URL}/verify.html?token=${token}&id=${user._id}`;
 
     // ✨ Stylish HTML Email
     const htmlContent = `
