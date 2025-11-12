@@ -12,6 +12,7 @@ const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 const cloudinary = require("cloudinary").v2;
 const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 
 
@@ -162,17 +163,42 @@ const defaultSections = [
 
 // --- Mailer ---
 async function sendEmail({ to, subject, html }) {
+  // 1️⃣ Try Resend first
   try {
-    console.log("📨 Resend API called successfully for:", to);
+    console.log(`📨 Trying Resend for: ${to}`);
     await resend.emails.send({
-      from: "Dress Organizer <onboarding@resend.dev>", // you can change this later to no-reply@dressorganizer.app
+      from: process.env.EMAIL_FROM || "Dress Organizer <onboarding@resend.dev>",
       to,
       subject,
       html,
     });
-    console.log(`✅ Email sent to ${to}`);
+    console.log(`✅ Resend email sent to ${to}`);
+    return; // stop here if successful
   } catch (err) {
-    console.error("❌ Email send error:", err.message || err);
+    console.error("⚠️ Resend failed, switching to Gmail fallback:", err.message || err);
+  }
+
+  // 2️⃣ Gmail fallback (Nodemailer)
+  try {
+    console.log(`📬 Sending via Gmail fallback to: ${to}`);
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || `"Dress Organizer" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+
+    console.log(`✅ Gmail fallback email sent to ${to}`);
+  } catch (gmailErr) {
+    console.error("❌ Gmail fallback failed:", gmailErr.message || gmailErr);
   }
 }
 
