@@ -1,4 +1,4 @@
-// 🌐 Dress Organizer Backend (v11.3 — Corrected startup & DB/Email/Cloudinary checks; password reset added; all features preserved)
+// 🌐 Dress Organizer Backend (v11.4 — Fixed email timeout issues)
 
 const express = require("express");
 const cors = require("cors");
@@ -158,32 +158,46 @@ const defaultSections = [
   },
 ];
 
-// --- Mailer ---
-// --- Mailer (Render-ready Gmail setup) ---
+// --- Mailer (Fixed with timeout handling) ---
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // important: use STARTTLS, not SSL
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
   tls: {
-    rejectUnauthorized: false, // bypass certificate issues on free hosts
+    rejectUnauthorized: false,
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 });
 
-// ✅ Safe mailer check — won’t hang or block Render startup
+// ✅ Safe mailer check with timeout
 async function verifyMailer() {
+  const timeout = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Verification timeout')), 5000)
+  );
+  
   try {
-    await transporter.verify();
+    await Promise.race([transporter.verify(), timeout]);
     console.log("✅ Mailer connected and ready to send emails!");
   } catch (err) {
-    console.warn("⚠️ Mailer verification skipped (timeout possible). Continuing anyway...");
+    console.warn("⚠️ Mailer verification skipped:", err.message);
   }
 }
 
-
+// Helper function to send emails without blocking
+async function sendEmailAsync(mailOptions) {
+  setImmediate(async () => {
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Email sent to ${mailOptions.to}`);
+    } catch (error) {
+      console.error(`❌ Failed to send email to ${mailOptions.to}:`, error.message);
+    }
+  });
+}
 
 // --- Seed global defaults ---
 async function seedDefaults() {
@@ -218,25 +232,21 @@ app.post("/register", async (req, res) => {
           <a href="${verifyLink}" style="display:inline-block;margin-top:20px;background:#4f46e5;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;">
             Verify My Email
           </a>
-          <p style="margin-top:20px;color:#888;font-size:13px;">If you didn’t create this account, you can safely ignore this email.</p>
+          <p style="margin-top:20px;color:#888;font-size:13px;">If you didn't create this account, you can safely ignore this email.</p>
         </div>
         <p style="margin-top:30px;color:#aaa;font-size:12px;">© 2025 Dress Organizer | All Rights Reserved</p>
       </div>
     `;
 
-    try {
-      await transporter.sendMail({
-        from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
-        to: user.email,
-        subject: "🌸 Verify Your Email - Dress Organizer",
-        html: htmlContent,
-      });
-      console.log(`📧 Verification email sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send verification email:", error.message);
-    }
+    // Send email asynchronously (non-blocking)
+    sendEmailAsync({
+      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "🌸 Verify Your Email - Dress Organizer",
+      html: htmlContent,
+    });
 
-
+    // Respond immediately
     res.json({ message: "✅ Registered successfully! Please check your email for verification." });
   } catch (err) {
     console.error("❌ Registration error:", err);
@@ -258,6 +268,7 @@ app.get("/verify", async (req, res) => {
     res.redirect("/verify.html?status=error");
   }
 });
+
 app.get("/verify-email", async (req, res) => {
   try {
     const { token, id } = req.query;
@@ -290,8 +301,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// ---------- PASSWORD RESET (Added) ----------
-// 1) Request reset: sends email with link to /reset.html?token=...&id=...
+// ---------- PASSWORD RESET ----------
 app.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -325,19 +335,15 @@ app.post("/forgot-password", async (req, res) => {
       </div>
     `;
 
-    try {
-      await transporter.sendMail({
-        from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
-        to: user.email,
-        subject: "🔑 Password Reset Request - Dress Organizer",
-        html,
-      });
-      console.log(`📧 Password reset email sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send password reset email:", error.message);
-    }
+    // Send email asynchronously
+    sendEmailAsync({
+      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "🔑 Password Reset Request - Dress Organizer",
+      html,
+    });
 
-
+    // Respond immediately
     res.json({ message: "✅ Password reset email sent." });
   } catch (err) {
     console.error("❌ Forgot password error:", err);
@@ -345,7 +351,6 @@ app.post("/forgot-password", async (req, res) => {
   }
 });
 
-// 2) Reset password: verify token and update password (called from reset.html form)
 app.post("/reset-password", async (req, res) => {
   try {
     const { id, token, password } = req.body;
@@ -377,25 +382,20 @@ app.post("/feedback", async (req, res) => {
 
     await Feedback.create({ user: user || "Anonymous", message });
 
-    try {
-      await transporter.sendMail({
-        from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER,
-        subject: "💬 New Feedback Received - Dress Organizer",
-        html: `
-          <div style="font-family:Poppins,sans-serif;padding:20px;">
-            <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
+    // Send email asynchronously
+    sendEmailAsync({
+      from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: "💬 New Feedback Received - Dress Organizer",
+      html: `
+        <div style="font-family:Poppins,sans-serif;padding:20px;">
+          <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
           <p style="color:#333;white-space:pre-line;">${message}</p>
         </div>
-        `,
-      });
-      console.log(`📧 Feedback email sent from ${user || "Anonymous"}`);
-    } catch (error) {
-      console.error("❌ Failed to send feedback email:", error.message);
-    }
+      `,
+    });
 
-
-    res.json({ message: "✅ Feedback received and emailed to admin!" });
+    res.json({ message: "✅ Feedback received!" });
   } catch (err) {
     console.error("❌ Feedback error:", err);
     res.status(500).json({ message: "Error sending feedback." });
@@ -608,14 +608,14 @@ app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.ht
 app.get("/verify.html", (req, res) => res.sendFile(path.join(__dirname, "public", "verify.html")));
 app.get("/reset.html", (req, res) => res.sendFile(path.join(__dirname, "public", "reset.html")));
 
-// ---------- Startup sequence: connect DB, verify mailer, seed defaults, then listen ----------
+// ---------- Startup sequence: connect DB, seed defaults, verify mailer, then listen ----------
 async function startServer() {
   try {
     await connectMongo();
-    await seedDefaults(); // ✅ Moved above mailer
+    await seedDefaults();
     await verifyMailer();
 
-    app.listen(PORT,"0.0.0.0",() => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running at: http://0.0.0.0:${PORT}`);
     });
   } catch (err) {
