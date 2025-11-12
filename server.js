@@ -8,10 +8,13 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const multer = require("multer");
 const fs = require("fs");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 const cloudinary = require("cloudinary").v2;
-require("dotenv").config();
+const crypto = require("crypto");
+
+
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -19,12 +22,11 @@ const PORT = process.env.PORT || 8080;
 // ---------- Startup checks for required environment variables ----------
 const requiredEnv = [
   "MONGO_URI",
-  "EMAIL_USER",
-  "EMAIL_PASS",
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "CLIENT_URL",
+  "RESEND_API_KEY",
 ];
 const missing = requiredEnv.filter((k) => !process.env[k]);
 if (missing.length) {
@@ -159,22 +161,20 @@ const defaultSections = [
 ];
 
 // --- Mailer ---
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-});
-
-// Verify email transporter on startup (fail fast if credentials wrong)
-async function verifyMailer() {
+async function sendEmail({ to, subject, html }) {
   try {
-    await transporter.verify();
-    console.log("✅ Mailer is ready (Gmail).");
+    console.log("📨 Resend API called successfully for:", to);
+    await resend.emails.send({
+      from: "Dress Organizer <onboarding@resend.dev>", // you can change this later to no-reply@dressorganizer.app
+      to,
+      subject,
+      html,
+    });
+    console.log(`✅ Email sent to ${to}`);
   } catch (err) {
-    console.warn("⚠️ Mailer verification failed or timed out. Continuing without fatal error.");
-    // Don’t exit; Render blocks SMTP verify
+    console.error("❌ Email send error:", err.message || err);
   }
 }
-
 
 // --- Seed global defaults ---
 async function seedDefaults() {
@@ -215,8 +215,7 @@ app.post("/register", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: user.email,
       subject: "🌸 Verify Your Email - Dress Organizer",
       html: htmlContent,
@@ -310,12 +309,12 @@ app.post("/forgot-password", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+    await sendEmail({
       to: user.email,
       subject: "🔑 Password Reset Request - Dress Organizer",
       html,
     });
+
 
     res.json({ message: "✅ Password reset email sent." });
   } catch (err) {
@@ -328,19 +327,26 @@ app.post("/forgot-password", async (req, res) => {
 app.post("/reset-password", async (req, res) => {
   try {
     const { id, token, password } = req.body;
-    if (!id || !token || !password)
-      return res.status(400).json({ message: "id, token and password are required." });
 
+    // Validate input
+    if (!id || !token || !password)
+      return res.status(400).json({ message: "Missing required fields." });
+
+    // Find reset token for this user
     const tokenDoc = await Token.findOne({ userId: id, purpose: "reset" });
+    if (!tokenDoc)
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+
+    // Compare provided token with stored hashed token
+    const isValid = await bcrypt.compare(token, tokenDoc.token);
+    if (!isValid)
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+
+    // Hash new password and update user
+    const hashed = await bcrypt.hash(password, 10);
     await User.updateOne({ _id: id }, { $set: { password: hashed } });
 
-    const isValid = await bcrypt.compare(token, tokenDoc.token);
-    if (!isValid) return res.status(400).json({ message: "Invalid or expired reset token." });
-
-    const hashed = await bcrypt.hash(password, 10);
-    await User.updateOne({ _id: userId }, { $set: { password: hashed } });
-
-    // delete the reset token after successful use
+    // Delete the used reset token
     await Token.deleteOne({ _id: tokenDoc._id });
 
     res.json({ message: "✅ Password reset successful." });
@@ -350,6 +356,7 @@ app.post("/reset-password", async (req, res) => {
   }
 });
 
+
 // ---------- FEEDBACK ----------
 app.post("/feedback", async (req, res) => {
   try {
@@ -358,9 +365,8 @@ app.post("/feedback", async (req, res) => {
 
     await Feedback.create({ user: user || "Anonymous", message });
 
-    await transporter.sendMail({
-      from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+    await sendEmail({
+      to: process.env.FEEDBACK_EMAIL || "dressorganizer.team@gmail.com",
       subject: "💬 New Feedback Received - Dress Organizer",
       html: `
         <div style="font-family:Poppins,sans-serif;padding:20px;">
@@ -588,7 +594,6 @@ async function startServer() {
   try {
     await connectMongo();
     await seedDefaults(); // ✅ Moved above mailer
-    await verifyMailer();
 
     app.listen(PORT,"0.0.0.0",() => {
       console.log(`🚀 Server running at: http://0.0.0.0:${PORT}`);
