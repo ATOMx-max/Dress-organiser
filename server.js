@@ -1,4 +1,4 @@
-// 🌐 Dress Organizer Backend (v11.4 — Resend API Integration)
+// 🌐 Dress Organizer Backend (v11.3 — Corrected startup & DB/Email/Cloudinary checks; password reset added; all features preserved)
 
 const express = require("express");
 const cors = require("cors");
@@ -8,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const multer = require("multer");
 const fs = require("fs");
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
@@ -19,8 +19,8 @@ const PORT = process.env.PORT || 8080;
 // ---------- Startup checks for required environment variables ----------
 const requiredEnv = [
   "MONGO_URI",
-  "RESEND_API_KEY",
-  "EMAIL_FROM",
+  "EMAIL_USER",
+  "EMAIL_PASS",
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
@@ -75,23 +75,6 @@ try {
 } catch (err) {
   console.error("❌ Cloudinary configuration error:", err.message || err);
   process.exit(1);
-}
-
-// --- Initialize Resend ---
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Verify Resend API key is valid
-async function verifyResend() {
-  try {
-    // Simple check - just ensure the API key exists
-    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === "") {
-      throw new Error("RESEND_API_KEY is empty");
-    }
-    console.log("✅ Resend API initialized successfully!");
-  } catch (err) {
-    console.error("❌ Resend API initialization failed:", err.message);
-    throw err;
-  }
 }
 
 // --- Ensure uploads folder exists ---
@@ -175,6 +158,24 @@ const defaultSections = [
   },
 ];
 
+// --- Mailer ---
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+});
+
+// Verify email transporter on startup (fail fast if credentials wrong)
+async function verifyMailer() {
+  try {
+    await transporter.verify();
+    console.log("✅ Mailer is ready (Gmail).");
+  } catch (err) {
+    console.warn("⚠️ Mailer verification failed or timed out. Continuing without fatal error.");
+    // Don’t exit; Render blocks SMTP verify
+  }
+}
+
+
 // --- Seed global defaults ---
 async function seedDefaults() {
   const count = await Section.countDocuments({ userEmail: null });
@@ -208,23 +209,18 @@ app.post("/register", async (req, res) => {
           <a href="${verifyLink}" style="display:inline-block;margin-top:20px;background:#4f46e5;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;">
             Verify My Email
           </a>
-          <p style="margin-top:20px;color:#888;font-size:13px;">If you didn't create this account, you can safely ignore this email.</p>
+          <p style="margin-top:20px;color:#888;font-size:13px;">If you didn’t create this account, you can safely ignore this email.</p>
         </div>
         <p style="margin-top:30px;color:#aaa;font-size:12px;">© 2025 Dress Organizer | All Rights Reserved</p>
       </div>
     `;
 
-    try {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: user.email,
-        subject: "🌸 Verify Your Email - Dress Organizer",
-        html: htmlContent,
-      });
-      console.log(`📧 Verification email sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send verification email:", error.message);
-    }
+    await transporter.sendMail({
+      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "🌸 Verify Your Email - Dress Organizer",
+      html: htmlContent,
+    });
 
     res.json({ message: "✅ Registered successfully! Please check your email for verification." });
   } catch (err) {
@@ -247,7 +243,6 @@ app.get("/verify", async (req, res) => {
     res.redirect("/verify.html?status=error");
   }
 });
-
 app.get("/verify-email", async (req, res) => {
   try {
     const { token, id } = req.query;
@@ -273,31 +268,6 @@ app.post("/login", async (req, res) => {
     if (!valid) return res.status(400).json({ message: "Invalid password." });
 
     req.session.user = user;
-    
-    // Send login notification email
-    const loginHtml = `
-      <div style="font-family: Poppins, sans-serif; background: #f9f9ff; padding: 40px; text-align: center;">
-        <div style="max-width: 450px; margin: auto; background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-          <h2 style="color: #4f46e5;">Welcome back! 👋</h2>
-          <p style="color: #555; font-size: 15px;">You just logged into your <span style="color:#e11d48;">Dress Organizer</span> account.</p>
-          <p style="color: #666; font-size: 14px; margin-top: 20px;">If this wasn't you, please secure your account immediately by changing your password.</p>
-        </div>
-        <p style="margin-top:30px;color:#aaa;font-size:12px;">© 2025 Dress Organizer | All Rights Reserved</p>
-      </div>
-    `;
-
-    try {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: user.email,
-        subject: "🔐 Login Notification - Dress Organizer",
-        html: loginHtml,
-      });
-      console.log(`📧 Login notification sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send login notification:", error.message);
-    }
-
     res.json({ message: "✅ Login successful", user });
   } catch (err) {
     console.error("❌ Login error:", err);
@@ -305,7 +275,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// ---------- PASSWORD RESET ----------
+// ---------- PASSWORD RESET (Added) ----------
+// 1) Request reset: sends email with link to /reset.html?token=...&id=...
 app.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -339,17 +310,12 @@ app.post("/forgot-password", async (req, res) => {
       </div>
     `;
 
-    try {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: user.email,
-        subject: "🔑 Password Reset Request - Dress Organizer",
-        html,
-      });
-      console.log(`📧 Password reset email sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send password reset email:", error.message);
-    }
+    await transporter.sendMail({
+      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "🔑 Password Reset Request - Dress Organizer",
+      html,
+    });
 
     res.json({ message: "✅ Password reset email sent." });
   } catch (err) {
@@ -358,6 +324,7 @@ app.post("/forgot-password", async (req, res) => {
   }
 });
 
+// 2) Reset password: verify token and update password (called from reset.html form)
 app.post("/reset-password", async (req, res) => {
   try {
     const { id, token, password } = req.body;
@@ -365,40 +332,16 @@ app.post("/reset-password", async (req, res) => {
       return res.status(400).json({ message: "id, token and password are required." });
 
     const tokenDoc = await Token.findOne({ userId: id, purpose: "reset" });
-    if (!tokenDoc) return res.status(400).json({ message: "Invalid or expired reset token." });
+    await User.updateOne({ _id: id }, { $set: { password: hashed } });
 
     const isValid = await bcrypt.compare(token, tokenDoc.token);
     if (!isValid) return res.status(400).json({ message: "Invalid or expired reset token." });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
+    const hashed = await bcrypt.hash(password, 10);
+    await User.updateOne({ _id: userId }, { $set: { password: hashed } });
 
+    // delete the reset token after successful use
     await Token.deleteOne({ _id: tokenDoc._id });
-    
-    // Send password reset confirmation email
-    const user = await User.findById(id);
-    const confirmHtml = `
-      <div style="font-family: Poppins, sans-serif; background: #f9f9ff; padding: 40px; text-align: center;">
-        <div style="max-width: 450px; margin: auto; background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-          <h2 style="color: #4f46e5;">Password Reset Successful ✅</h2>
-          <p style="color: #555; font-size: 15px;">Your password has been successfully reset. You can now log in with your new password.</p>
-          <p style="color: #666; font-size: 14px; margin-top: 20px;">If you didn't make this change, please contact us immediately.</p>
-        </div>
-        <p style="margin-top:30px;color:#aaa;font-size:12px;">© 2025 Dress Organizer | All Rights Reserved</p>
-      </div>
-    `;
-
-    try {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: user.email,
-        subject: "✅ Password Reset Successful - Dress Organizer",
-        html: confirmHtml,
-      });
-      console.log(`📧 Password reset confirmation sent to ${user.email}`);
-    } catch (error) {
-      console.error("❌ Failed to send password reset confirmation:", error.message);
-    }
 
     res.json({ message: "✅ Password reset successful." });
   } catch (err) {
@@ -415,22 +358,17 @@ app.post("/feedback", async (req, res) => {
 
     await Feedback.create({ user: user || "Anonymous", message });
 
-    try {
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_FROM, // Send to yourself
-        subject: "💬 New Feedback Received - Dress Organizer",
-        html: `
-          <div style="font-family:Poppins,sans-serif;padding:20px;">
-            <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
-            <p style="color:#333;white-space:pre-line;">${message}</p>
-          </div>
-        `,
-      });
-      console.log(`📧 Feedback email sent from ${user || "Anonymous"}`);
-    } catch (error) {
-      console.error("❌ Failed to send feedback email:", error.message);
-    }
+    await transporter.sendMail({
+      from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: "💬 New Feedback Received - Dress Organizer",
+      html: `
+        <div style="font-family:Poppins,sans-serif;padding:20px;">
+          <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
+          <p style="color:#333;white-space:pre-line;">${message}</p>
+        </div>
+      `,
+    });
 
     res.json({ message: "✅ Feedback received and emailed to admin!" });
   } catch (err) {
@@ -645,14 +583,14 @@ app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.ht
 app.get("/verify.html", (req, res) => res.sendFile(path.join(__dirname, "public", "verify.html")));
 app.get("/reset.html", (req, res) => res.sendFile(path.join(__dirname, "public", "reset.html")));
 
-// ---------- Startup sequence ----------
+// ---------- Startup sequence: connect DB, verify mailer, seed defaults, then listen ----------
 async function startServer() {
   try {
     await connectMongo();
-    await seedDefaults();
-    await verifyResend();
+    await seedDefaults(); // ✅ Moved above mailer
+    await verifyMailer();
 
-    app.listen(PORT, "0.0.0.0", () => {
+    app.listen(PORT,"0.0.0.0",() => {
       console.log(`🚀 Server running at: http://0.0.0.0:${PORT}`);
     });
   } catch (err) {

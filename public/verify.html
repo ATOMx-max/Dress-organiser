@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Email Verification | Dress Organizer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,7 +17,6 @@
       justify-content: center;
       height: 100vh;
       text-align: center;
-      padding: 15px;
     }
 
     .box {
@@ -29,7 +25,7 @@
       border-radius: 25px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
       max-width: 420px;
-      width: 100%;
+      width: 90%;
       color: #333;
       animation: fadeIn 1s ease;
     }
@@ -102,27 +98,25 @@
       emoji.textContent = "🎉";
       title.textContent = "Email Verified!";
       title.className = "success-text";
-      message.textContent = "Your account has been verified. Redirecting to login...";
+      message.textContent = "Your account has been successfully verified. You can now log in to your Dress Organizer account.";
       loginBtn.style.display = "inline-block";
-      setTimeout(() => (window.location.href = "login.html"), 3000);
     } 
     else if (status === "invalid") {
       emoji.textContent = "❌";
       title.textContent = "Invalid or Expired Link";
       title.className = "error-text";
-      message.textContent = "This link is invalid or already used. Please sign up again.";
+      message.textContent = "The verification link is invalid or has already been used. Please register again or request a new verification email.";
     } 
     else if (status === "error") {
       emoji.textContent = "⚠️";
       title.textContent = "Verification Failed";
       title.className = "warning-text";
-      message.textContent = "Something went wrong while verifying your email. Try again later.";
+      message.textContent = "Something went wrong while verifying your email. Please try again later.";
     } 
     else {
-      emoji.textContent = "ℹ️";
-      title.textContent = "Verification Pending";
-      title.className = "warning-text";
-      message.textContent = "No verification status found. Please check your verification link.";
+      emoji.textContent = "⏳";
+      title.textContent = "Verifying Email...";
+      message.textContent = "Please wait while we confirm your verification link.";
     }
   </script>
 </body>
