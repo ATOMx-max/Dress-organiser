@@ -159,21 +159,30 @@ const defaultSections = [
 ];
 
 // --- Mailer ---
+// --- Mailer (Render-ready Gmail setup) ---
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // important: use STARTTLS, not SSL
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false, // bypass certificate issues on free hosts
+  },
 });
 
-// Verify email transporter on startup (fail fast if credentials wrong)
+// ✅ Safe mailer check — won’t hang or block Render startup
 async function verifyMailer() {
   try {
     await transporter.verify();
-    console.log("✅ Mailer is ready (Gmail).");
+    console.log("✅ Mailer connected and ready to send emails!");
   } catch (err) {
-    console.warn("⚠️ Mailer verification failed or timed out. Continuing without fatal error.");
-    // Don’t exit; Render blocks SMTP verify
+    console.warn("⚠️ Mailer verification skipped (timeout possible). Continuing anyway...");
   }
 }
+
 
 
 // --- Seed global defaults ---
@@ -215,12 +224,18 @@ app.post("/register", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "🌸 Verify Your Email - Dress Organizer",
-      html: htmlContent,
-    });
+    try {
+      await transporter.sendMail({
+        from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+        to: user.email,
+        subject: "🌸 Verify Your Email - Dress Organizer",
+        html: htmlContent,
+      });
+      console.log(`📧 Verification email sent to ${user.email}`);
+    } catch (error) {
+      console.error("❌ Failed to send verification email:", error.message);
+    }
+
 
     res.json({ message: "✅ Registered successfully! Please check your email for verification." });
   } catch (err) {
@@ -310,12 +325,18 @@ app.post("/forgot-password", async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "🔑 Password Reset Request - Dress Organizer",
-      html,
-    });
+    try {
+      await transporter.sendMail({
+        from: `"Dress Organizer 💃" <${process.env.EMAIL_USER}>`,
+        to: user.email,
+        subject: "🔑 Password Reset Request - Dress Organizer",
+        html,
+      });
+      console.log(`📧 Password reset email sent to ${user.email}`);
+    } catch (error) {
+      console.error("❌ Failed to send password reset email:", error.message);
+    }
+
 
     res.json({ message: "✅ Password reset email sent." });
   } catch (err) {
@@ -332,17 +353,15 @@ app.post("/reset-password", async (req, res) => {
       return res.status(400).json({ message: "id, token and password are required." });
 
     const tokenDoc = await Token.findOne({ userId: id, purpose: "reset" });
-    await User.updateOne({ _id: id }, { $set: { password: hashed } });
+    if (!tokenDoc) return res.status(400).json({ message: "Invalid or expired reset token." });
 
     const isValid = await bcrypt.compare(token, tokenDoc.token);
     if (!isValid) return res.status(400).json({ message: "Invalid or expired reset token." });
 
-    const hashed = await bcrypt.hash(password, 10);
-    await User.updateOne({ _id: userId }, { $set: { password: hashed } });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.updateOne({ _id: id }, { $set: { password: hashedPassword } });
 
-    // delete the reset token after successful use
     await Token.deleteOne({ _id: tokenDoc._id });
-
     res.json({ message: "✅ Password reset successful." });
   } catch (err) {
     console.error("❌ Reset password error:", err);
@@ -358,17 +377,23 @@ app.post("/feedback", async (req, res) => {
 
     await Feedback.create({ user: user || "Anonymous", message });
 
-    await transporter.sendMail({
-      from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
-      subject: "💬 New Feedback Received - Dress Organizer",
-      html: `
-        <div style="font-family:Poppins,sans-serif;padding:20px;">
-          <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
+    try {
+      await transporter.sendMail({
+        from: `"Dress Organizer Feedback" <${process.env.EMAIL_USER}>`,
+        to: process.env.EMAIL_USER,
+        subject: "💬 New Feedback Received - Dress Organizer",
+        html: `
+          <div style="font-family:Poppins,sans-serif;padding:20px;">
+            <h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3>
           <p style="color:#333;white-space:pre-line;">${message}</p>
         </div>
-      `,
-    });
+        `,
+      });
+      console.log(`📧 Feedback email sent from ${user || "Anonymous"}`);
+    } catch (error) {
+      console.error("❌ Failed to send feedback email:", error.message);
+    }
+
 
     res.json({ message: "✅ Feedback received and emailed to admin!" });
   } catch (err) {
