@@ -8,8 +8,6 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const multer = require("multer");
 const fs = require("fs");
-const { Resend } = require("resend");
-const resend = new Resend(process.env.RESEND_API_KEY);
 const cloudinary = require("cloudinary").v2;
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -162,23 +160,29 @@ const defaultSections = [
 ];
 
 // --- Mailer ---
+// --- Mailer (Improved Resend + Gmail fallback) ---
 async function sendEmail({ to, subject, html }) {
-  // 1️⃣ Try Resend first
   try {
     console.log(`📨 Trying Resend for: ${to}`);
+
+    // ✅ Initialize inside the function to ensure correct API key is used each time
+    const { Resend } = require("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     await resend.emails.send({
       from: process.env.EMAIL_FROM || "Dress Organizer <onboarding@resend.dev>",
       to,
       subject,
       html,
     });
+
     console.log(`✅ Resend email sent to ${to}`);
     return; // stop here if successful
   } catch (err) {
     console.error("⚠️ Resend failed, switching to Gmail fallback:", err.message || err);
   }
 
-  // 2️⃣ Gmail fallback (Nodemailer)
+  // Gmail fallback
   try {
     console.log(`📬 Sending via Gmail fallback to: ${to}`);
     const transporter = nodemailer.createTransport({
@@ -607,6 +611,21 @@ app.delete("/api/dresses/:id", async (req, res) => {
   } catch (err) {
     console.error("❌ Delete Dress Error:", err);
     res.status(500).json({ message: "Server error during delete." });
+  }
+});
+
+// --- Test Email Route (for verification) ---
+app.get("/test-email", async (req, res) => {
+  try {
+    await sendEmail({
+      to: "souvik2072005@gmail.com",
+      subject: "🔍 Dress Organizer Test Email",
+      html: "<p>This is a test email from your Render backend. ✅</p>",
+    });
+    res.send("✅ Test email sent — check your inbox or Resend dashboard!");
+  } catch (err) {
+    console.error("❌ Test email error:", err);
+    res.status(500).send("Error sending test email.");
   }
 });
 
