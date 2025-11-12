@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reset Password | Dress Organizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,6 +17,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      padding: 20px;
     }
 
     .reset-container {
@@ -22,7 +25,7 @@
       padding: 45px 40px;
       border-radius: 25px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      width: 90%;
+      width: 100%;
       max-width: 400px;
       text-align: center;
       animation: fadeIn 0.8s ease;
@@ -106,8 +109,12 @@
   </div>
 
   <script>
-    const API_URL = window.location.origin.includes("localhost")? "http://localhost:8080": "https://dress-organiser.onrender.com";
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080"
+      : "https://dress-organiser.onrender.com";
+
     const msg = document.getElementById("msg");
+    const form = document.getElementById("resetForm");
 
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -116,10 +123,9 @@
     if (!token || !id) {
       msg.textContent = "❌ Invalid or missing reset link.";
       msg.className = "message error";
-      document.getElementById("resetForm").style.display = "none";
+      form.style.display = "none";
     }
 
-    const form = document.getElementById("resetForm");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -132,7 +138,7 @@
         return;
       }
 
-      msg.textContent = "⏳ Updating password...";
+      msg.innerHTML = "⏳ Updating password... <span style='font-size:18px;'>🔄</span>";
       msg.className = "message info";
 
       try {
@@ -148,7 +154,7 @@
           msg.textContent = "✅ Password reset successful! Redirecting to login...";
           msg.className = "message success";
           form.reset();
-          setTimeout(() => (window.location.href = "login.html"), 1500);
+          setTimeout(() => (window.location.href = "login.html"), 2000);
         } else {
           msg.textContent = "❌ " + data.message;
           msg.className = "message error";
