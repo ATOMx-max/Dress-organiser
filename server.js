@@ -605,7 +605,7 @@ app.delete("/api/dresses/:id", async (req, res) => {
 });
 
 // --- Test Email Route (for verification) ---
-a// --- ✅ Brevo Test Email Route ---
+// --- ✅ Brevo Test Email Route ---
 app.get("/test-email", async (req, res) => {
   try {
     await sendEmail({
@@ -626,7 +626,14 @@ app.get("/test-email", async (req, res) => {
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/verify.html", (req, res) => res.sendFile(path.join(__dirname, "public", "verify.html")));
 app.get("/reset.html", (req, res) => res.sendFile(path.join(__dirname, "public", "reset.html")));
-
+// --- Seed global defaults ---
+async function seedDefaults() {
+  const count = await Section.countDocuments({ userEmail: null });
+  if (count === 0) {
+    await Section.insertMany(defaultSections.map((s) => ({ ...s, userEmail: null })));
+    console.log("🌱 Default global sections added.");
+  }
+}
 // ---------- Startup sequence: connect DB, verify mailer, seed defaults, then listen ----------
 async function startServer() {
   try {
