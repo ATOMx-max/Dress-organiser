@@ -25,8 +25,10 @@ const requiredEnv = [
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "CLIENT_URL",
-  "RESEND_API_KEY",
+  "EMAIL_USER",
+  "EMAIL_PASS"
 ];
+
 const missing = requiredEnv.filter((k) => !process.env[k]);
 if (missing.length) {
   console.error(
@@ -161,30 +163,11 @@ const defaultSections = [
 
 // --- Mailer ---
 // --- Mailer (Improved Resend + Gmail fallback) ---
+// --- Mailer (Gmail-only mode) ---
 async function sendEmail({ to, subject, html }) {
   try {
-    console.log(`📨 Trying Resend for: ${to}`);
+    console.log(`📬 Sending Gmail email to: ${to}`);
 
-    // ✅ Initialize inside the function to ensure correct API key is used each time
-    const { Resend } = require("resend");
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    await resend.emails.send({
-      from: process.env.EMAIL_FROM || "Dress Organizer <onboarding@resend.dev>",
-      to,
-      subject,
-      html,
-    });
-
-    console.log(`✅ Resend email sent to ${to}`);
-    return; // stop here if successful
-  } catch (err) {
-    console.error("⚠️ Resend failed, switching to Gmail fallback:", err.message || err);
-  }
-
-  // Gmail fallback
-  try {
-    console.log(`📬 Sending via Gmail fallback to: ${to}`);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -200,9 +183,9 @@ async function sendEmail({ to, subject, html }) {
       html,
     });
 
-    console.log(`✅ Gmail fallback email sent to ${to}`);
-  } catch (gmailErr) {
-    console.error("❌ Gmail fallback failed:", gmailErr.message || gmailErr);
+    console.log(`✅ Gmail email successfully sent to ${to}`);
+  } catch (err) {
+    console.error("❌ Gmail email send failed:", err.message || err);
   }
 }
 
