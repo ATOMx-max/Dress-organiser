@@ -10,24 +10,31 @@ const multer = require("multer");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
-
-
-
-
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 // ---------- Startup checks for required environment variables ----------
+// --- Helper: safely extract sender email from EMAIL_FROM ---
+function extractEmailFromEnv() {
+  const from = process.env.EMAIL_FROM || "";
+  const match = from.match(/<\s*([^>]+)\s*>/);
+  if (match && match[1]) return match[1]; // if EMAIL_FROM="Name <email@domain>"
+  if (/\S+@\S+\.\S+/.test(from)) return from; // if EMAIL_FROM is just the email itself
+  return "souvik2072005@gmail.com"; // fallback safe default
+}
+if (typeof fetch === "undefined") {
+  global.fetch = (...args) => import("node-fetch").then(({ default: f }) => f(...args));
+}
 const requiredEnv = [
   "MONGO_URI",
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "CLIENT_URL",
-  "EMAIL_USER",
-  "EMAIL_PASS"
+  "BREVO_API_KEY",
+  "EMAIL_FROM"
 ];
+
 
 const missing = requiredEnv.filter((k) => !process.env[k]);
 if (missing.length) {
@@ -164,39 +171,39 @@ const defaultSections = [
 // --- Mailer ---
 // --- Mailer (Improved Resend + Gmail fallback) ---
 // --- Mailer (Gmail-only mode) ---
+// --- Mailer (Gmail-only with direct SMTP) ---
+// --- Mailer (Brevo API using HTTPS) ---
 async function sendEmail({ to, subject, html }) {
   try {
-    console.log(`📬 Sending Gmail email to: ${to}`);
+    console.log(`📬 Sending email via Brevo API to: ${to}`);
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "accept": "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
       },
+      body: JSON.stringify({
+        sender: { name: "Dress Organizer", email: extractEmailFromEnv() },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
     });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM || `"Dress Organizer" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
-    });
+    const data = await response.json();
 
-    console.log(`✅ Gmail email successfully sent to ${to}`);
+    if (response.ok) {
+      console.log(`✅ Email sent successfully via Brevo to ${to}`);
+    } else {
+      console.error("❌ Brevo send failed:", data);
+    }
   } catch (err) {
-    console.error("❌ Gmail email send failed:", err.message || err);
+    console.error("❌ Brevo API error:", err.message || err);
   }
 }
 
-// --- Seed global defaults ---
-async function seedDefaults() {
-  const count = await Section.countDocuments({ userEmail: null });
-  if (count === 0) {
-    await Section.insertMany(defaultSections.map((s) => ({ ...s, userEmail: null })));
-    console.log("🌱 Default global sections added.");
-  }
-}
 
 // ---------- AUTH ROUTES ----------
 app.post("/register", async (req, res) => {
@@ -598,19 +605,22 @@ app.delete("/api/dresses/:id", async (req, res) => {
 });
 
 // --- Test Email Route (for verification) ---
+a// --- ✅ Brevo Test Email Route ---
 app.get("/test-email", async (req, res) => {
   try {
     await sendEmail({
       to: "souvik2072005@gmail.com",
-      subject: "🔍 Dress Organizer Test Email",
-      html: "<p>This is a test email from your Render backend. ✅</p>",
+      subject: "📨 Brevo Test Email - Dress Organizer",
+      html: "<p>✅ Your Brevo integration is working perfectly!<br>This email was sent via the Brevo SMTP API from Render.</p>",
     });
-    res.send("✅ Test email sent — check your inbox or Resend dashboard!");
+    console.log("✅ Test email triggered successfully via /test-email route.");
+    res.send("✅ Test email sent successfully! Check your inbox or spam folder.");
   } catch (err) {
     console.error("❌ Test email error:", err);
-    res.status(500).send("Error sending test email.");
+    res.status(500).send("❌ Failed to send test email.");
   }
 });
+
 
 // ---------- Serve frontend ----------
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
