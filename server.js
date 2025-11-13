@@ -313,28 +313,37 @@ app.post("/forgot-password", async (req, res) => {
 
     await Token.create({ userId: user._id, token: hashedToken, purpose: "reset" });
 
-    const resetLink = `${process.env.CLIENT_URL}/reset.html?token=${rawToken}&id=${user._id}`;
+    const baseURL = process.env.CLIENT_URL.replace(/\/+$/, ""); 
+    const resetLink = `${baseURL}/reset.html?token=${rawToken}&id=${user._id}`;
 
     const html = `
       <div style="font-family:Poppins,sans-serif;padding:20px;">
         <div style="max-width:520px;margin:auto;background:#fff;border-radius:12px;padding:24px;box-shadow:0 6px 18px rgba(0,0,0,0.08);">
-          <h2 style="color:#4f46e5;">Password reset requested</h2>
+          <h2 style="color:#4f46e5;">Password Reset Requested</h2>
           <p style="color:#333;">Click the button below to reset your password. This link is valid for 1 hour.</p>
-          <div style="text-align:center;margin-top:20px;">
-            <a href="${resetLink}" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600;">Reset Password</a>
-          </div>
-          <p style="color:#777;margin-top:18px;font-size:13px;">If you didn't request this, you can ignore this email.</p>
-        </div>
-        <p style="text-align:center;color:#aaa;font-size:12px;margin-top:12px;">© 2025 Dress Organizer</p>
+
+          <p style="text-align:center;margin-top:20px;">
+            <a href="${resetLink}" 
+              style="display:inline-block;background:#4f46e5;color:#fff;
+              padding:12px 20px;border-radius:8px;text-decoration:none;
+              font-weight:600;">
+            Reset Password
+          </a>
+        </p>
+        <p style="color:#888;font-size:12px;margin-top:20px;">
+          If the button doesn’t work, copy and paste this link in your browser:<br><br>
+          <span style="color:#4f46e5;word-break:break-all;">${resetLink}</span>
+        </p>
       </div>
-    `;
+    </div>
+  `;
+
 
     await sendEmail({
       to: user.email,
       subject: "🔑 Password Reset Request - Dress Organizer",
       html,
     });
-
 
     res.json({ message: "✅ Password reset email sent." });
   } catch (err) {
