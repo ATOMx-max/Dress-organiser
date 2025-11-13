@@ -31,12 +31,10 @@ const requiredEnv = [
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "CLIENT_URL",
-  "SMTP_HOST",
-  "SMTP_PORT",
-  "SMTP_USER",
-  "SMTP_PASS",
+  "BREVO_API_KEY",
   "EMAIL_FROM"
 ];
+
 
 
 
@@ -172,34 +170,40 @@ const defaultSections = [
   },
 ];
 
-// --- Mailer (Brevo SMTP via Nodemailer) ---
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false, // false for port 587
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
+// --- Mailer (Brevo API HTTPS) ---
 async function sendEmail({ to, subject, html }) {
   try {
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM || "Dress Organizer <no-reply@brevo.com>",
-      to,
-      subject,
-      html,
+    console.log(`📬 Sending email via Brevo API to: ${to}`);
+
+    const resp = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: { 
+          name: "Dress Organizer",
+          email: extractEmailFromEnv() // pulls email from EMAIL_FROM
+        },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
     });
 
-    console.log(`✅ Email sent successfully via Brevo SMTP to ${to}`);
+    const data = await resp.json().catch(() => null);
+
+    if (resp.ok) {
+      console.log(`✅ Email sent successfully via Brevo API to ${to}`);
+    } else {
+      console.error("❌ Brevo API failed:", resp.status, data);
+    }
   } catch (err) {
-    console.error("❌ SMTP Email Error:", err.message || err);
+    console.error("❌ Brevo API error:", err.message || err);
   }
 }
-
 
 // ---------- AUTH ROUTES ----------
 app.post("/register", async (req, res) => {
