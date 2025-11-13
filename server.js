@@ -31,9 +31,13 @@ const requiredEnv = [
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
   "CLIENT_URL",
-  "BREVO_API_KEY",
+  "SMTP_HOST",
+  "SMTP_PORT",
+  "SMTP_USER",
+  "SMTP_PASS",
   "EMAIL_FROM"
 ];
+
 
 
 const missing = requiredEnv.filter((k) => !process.env[k]);
@@ -168,39 +172,31 @@ const defaultSections = [
   },
 ];
 
-// --- Mailer ---
-// --- Mailer (Improved Resend + Gmail fallback) ---
-// --- Mailer (Gmail-only mode) ---
-// --- Mailer (Gmail-only with direct SMTP) ---
-// --- Mailer (Brevo API using HTTPS) ---
+// --- Mailer (Brevo SMTP via Nodemailer) ---
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  secure: false, // false for port 587
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
 async function sendEmail({ to, subject, html }) {
   try {
-    console.log(`📬 Sending email via Brevo API to: ${to}`);
-
-    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "accept": "application/json",
-        "api-key": process.env.BREVO_API_KEY,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        sender: { name: "Dress Organizer", email: extractEmailFromEnv() },
-        to: [{ email: to }],
-        subject,
-        htmlContent: html,
-      }),
+    await transporter.sendMail({
+      from: process.env.EMAIL_FROM || "Dress Organizer <no-reply@brevo.com>",
+      to,
+      subject,
+      html,
     });
 
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log(`✅ Email sent successfully via Brevo to ${to}`);
-    } else {
-      console.error("❌ Brevo send failed:", data);
-    }
+    console.log(`✅ Email sent successfully via Brevo SMTP to ${to}`);
   } catch (err) {
-    console.error("❌ Brevo API error:", err.message || err);
+    console.error("❌ SMTP Email Error:", err.message || err);
   }
 }
 
