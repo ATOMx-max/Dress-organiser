@@ -49,27 +49,36 @@
     .controls{display:flex;gap:10px;align-items:center}
     .small{font-size:13px;opacity:0.95}
 
-    /* Buttons */
+    /* Buttons - UPDATED (more visible glass + inner glow) */
     .btn{
-      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
-      border:1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       padding:10px 16px;
       font-weight:600;
       border-radius:12px;
       color:white;
       cursor:pointer;
-      backdrop-filter:blur(8px);
-      transition: transform .14s cubic-bezier(.2,.9,.2,1), box-shadow .14s, opacity .12s;
-      box-shadow:0 8px 24px rgba(0,0,0,0.25);
-      display:inline-flex;align-items:center;gap:8px;
+      backdrop-filter:blur(10px);
+      transition: transform .14s cubic-bezier(.2,.9,.2,1),
+                  box-shadow .14s,
+                  opacity .12s;
+      box-shadow:0 6px 18px rgba(0,0,0,0.35),
+                 inset 0 0 8px rgba(255,255,255,0.12);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
       user-select:none;
     }
-    .btn:active{ transform: scale(.985) translateY(1px) }
-    .btn:focus{ outline:2px solid rgba(192,132,252,0.14); outline-offset:2px }
-    .btn.logout{ background:linear-gradient(180deg, rgba(255,0,0,0.14), rgba(255,0,0,0.08)); border-color: rgba(255,0,0,0.28) }
-
-    /* Pop / bounce on hover for iOS-style feel */
-    .btn:hover{ transform: translateY(-3px) scale(1.02); box-shadow:0 14px 36px rgba(0,0,0,0.32) }
+    .btn:hover{
+      transform: translateY(-3px) scale(1.03);
+      box-shadow:0 14px 36px rgba(0,0,0,0.45),
+                 inset 0 0 10px rgba(255,255,255,0.16);
+    }
+    .btn:active{ transform: scale(.96); }
+    .btn.logout{
+      background: rgba(255, 80, 80, 0.22);
+      border-color: rgba(255, 80, 80, 0.45);
+    }
 
     .container{max-width:980px;margin:0 auto;position:relative;z-index:10}
     .flex-row{display:flex;gap:18px;align-items:flex-start}
@@ -92,20 +101,38 @@
     }
     input[type="text"]:focus, select:focus{ box-shadow:0 6px 18px rgba(192,132,252,0.08); border-color:var(--accent); transform:translateY(-2px) }
 
-    /* Tags */
+    /* Tags - updated so actions don't get cut */
     .tag-container{
       display:flex;flex-wrap:wrap;gap:10px;padding:8px;
-      /* mobile: horizontal scrolling */
       -webkit-overflow-scrolling:touch;
     }
     .tag{
-      display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);
-      min-width:92px;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      min-width:120px;
+      max-width:420px;
+      /* allow actions to be visible outside text truncation */
+      overflow:visible;
       transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s, opacity .18s;
     }
-    .tag .name{font-weight:600}
+    /* content that can truncate */
+    .tag .tag-content{
+      display:flex;
+      flex-direction:column;
+      min-width:0; /* IMPORTANT for truncation to work */
+      max-width: calc(100% - 96px); /* reserve space for actions (approx) */
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+    .tag .name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .tag .meta{font-size:12px;opacity:.9}
-    .tag .actions{margin-left:auto;display:flex;gap:8px}
+    .tag .actions{margin-left:auto;display:flex;gap:8px;flex:0 0 auto}
     .tag:hover{ transform: translateY(-4px) scale(1.02); box-shadow:0 10px 28px rgba(0,0,0,0.28) }
 
     .icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer;transition:transform .12s}
@@ -119,7 +146,8 @@
       .btn{width:100%;justify-content:center;padding:12px}
       input[type="text"],select{width:100%}
       .tag-container{overflow:auto;white-space:nowrap;padding-bottom:8px}
-      .tag{display:inline-flex;white-space:nowrap}
+      .tag{display:inline-flex;white-space:nowrap; max-width:80%}
+      .tag .tag-content{max-width: calc(100% - 88px);}
       .controls{gap:8px}
       .small{display:none}
       body{padding:14px}
@@ -328,9 +356,14 @@
 
     function createSectionTag(sec){
       const d = document.createElement('div'); d.className = 'tag'; d.draggable = true; d.dataset.name = sec.name;
-      const name = document.createElement('div'); name.className = 'name'; name.textContent = sec.name; d.appendChild(name);
-      const meta = document.createElement('div'); meta.className = 'meta small'; meta.textContent = (sec.categories?.length || 0) + ' categories'; d.appendChild(meta);
 
+      // tag content (name + meta) - this is the truncating part
+      const content = document.createElement('div'); content.className = 'tag-content';
+      const name = document.createElement('div'); name.className = 'name'; name.textContent = sec.name; content.appendChild(name);
+      const meta = document.createElement('div'); meta.className = 'meta small'; meta.textContent = (sec.categories?.length || 0) + ' categories'; content.appendChild(meta);
+      d.appendChild(content);
+
+      // actions - always visible
       const actions = document.createElement('div'); actions.className = 'actions';
       const editBtn = document.createElement('button'); editBtn.className = 'icon-btn'; editBtn.title = 'Rename'; editBtn.innerHTML = '✎';
       editBtn.onclick = (e)=>{ e.stopPropagation(); startEditSection(d, sec.name); };
@@ -382,7 +415,12 @@
 
     function createCategoryTag(sectionName, cat){
       const d = document.createElement('div'); d.className = 'tag'; d.dataset.cat = cat; d.dataset.section = sectionName;
-      const name = document.createElement('div'); name.className = 'name'; name.textContent = cat; d.appendChild(name);
+
+      const content = document.createElement('div'); content.className = 'tag-content';
+      const name = document.createElement('div'); name.className = 'name'; name.textContent = cat; content.appendChild(name);
+      // no meta for categories currently, but keep the structure
+      d.appendChild(content);
+
       const actions = document.createElement('div'); actions.className = 'actions';
       const editBtn = document.createElement('button'); editBtn.className = 'icon-btn'; editBtn.title = 'Rename'; editBtn.innerHTML = '✎';
       editBtn.onclick = (e)=>{ e.stopPropagation(); startEditCategory(sectionName, cat, d); };
