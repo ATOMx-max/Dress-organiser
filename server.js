@@ -57,7 +57,11 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json({ limit: "7mb" }));
+// ⭐ ADD THIS HERE — before session()
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1); // trust Render's proxy so secure cookies work
+}
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
@@ -67,9 +71,10 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,     // required for HTTPS on Render
-      sameSite: "none", // allow cross-site cookie
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     }
+
   })
 );
 
