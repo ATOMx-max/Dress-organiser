@@ -64,7 +64,12 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecretkey",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: true,     // required for HTTPS on Render
+      sameSite: "none", // allow cross-site cookie
+    }
   })
 );
 

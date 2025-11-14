@@ -400,12 +400,27 @@
     }
 
     // Simulate stats (replace with actual API calls)
-    function loadStats() {
-      document.getElementById("dressCount").textContent = "24";
-      document.getElementById("sectionCount").textContent = "6";
-      document.getElementById("recentUploads").textContent = "5";
+    // Load REAL stats from backend
+async function loadStats() {
+  try {
+    const res = await fetch(`${API_URL}/api/stats`, {
+      credentials: "include"
+    });
+
+    if (!res.ok) {
+      console.log("Not logged in / stats error");
+      return;
     }
 
+    const stats = await res.json();
+
+    document.getElementById("dressCount").textContent = stats.dresses || 0;
+    document.getElementById("sectionCount").textContent = stats.sections || 0;
+    document.getElementById("recentUploads").textContent = (stats.recent || []).length;
+  } catch (err) {
+    console.error("Stats load failed:", err);
+  }
+}
     loadStats();
 
     function go(page) {
