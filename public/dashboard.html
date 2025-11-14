@@ -174,7 +174,174 @@
       font-weight: 400;
     }
 
-    /* Grid */
+    /* Stats Bar */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 50px;
+      animation: fadeIn 0.8s ease 0.3s both;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #c7d2fe;
+      font-weight: 500;
+    }
+
+    /* ⭐ Favourite Section Header */
+    .fav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 40px 0 15px;
+    }
+
+    .view-all-btn {
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .view-all-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+
+    /* Favourite Scroll */
+    .fav-scroll {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .fav-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+    .fav-scroll::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+    }
+    .fav-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+    }
+
+    .fav-item {
+      width: 140px;
+      height: 180px;
+      border-radius: 20px;
+      object-fit: cover;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+      transition: 0.35s ease;
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    .fav-item:hover {
+      transform: translateY(-10px) scale(1.07);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity:0; transform:translateY(20px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    /* ⭐ Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: rgba(30,30,60,0.85);
+      padding: 25px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      animation: scaleIn 0.35s ease;
+      position: relative;
+    }
+
+    .modal-img {
+      width: 100%;
+      border-radius: 16px;
+      margin-bottom: 15px;
+    }
+
+    .modal-title {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-section {
+      color: #c7d2fe;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 18px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+    }
+
+    @keyframes scaleIn {
+      from { transform:scale(0.7); opacity:0; }
+      to { transform:scale(1); opacity:1; }
+    }
+
+    /* Cards Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -250,47 +417,6 @@
       line-height: 1.5;
     }
 
-    /* Stats Bar */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 50px;
-      animation: fadeIn 0.8s ease 0.3s both;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
-      padding: 25px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 5px;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: #c7d2fe;
-      font-weight: 500;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
       .header {
         flex-direction: column;
@@ -356,24 +482,24 @@
         <div class="stat-label">Recent Uploads</div>
       </div>
     </div>
-    <!-- ⭐ Favourite Dresses Preview Panel -->
-    <h2 style="margin-top:40px;margin-bottom:15px;">⭐ Favourite Dresses</h2>
 
-    <div id="favPanel" style="
-      display:flex;
-      gap:18px;
-      overflow-x:auto;
-      padding-bottom:10px;
-      scroll-behavior:smooth;
-    "></div>
-
-    <div style="text-align:right; margin-top:10px;">
-      <button class="logout-btn" onclick="go('favourites.html')" 
-        style="padding:10px 20px;font-size:0.9rem;">
-        View All →
-      </button>
+    <!-- ⭐ Favourite Section -->
+    <div class="fav-header">
+      <h2>⭐ Favourite Dresses</h2>
+      <button class="view-all-btn" onclick="go('favourites.html')">View All →</button>
     </div>
 
+    <div id="favPanel" class="fav-scroll"></div>
+
+    <!-- ⭐ POPUP MODAL -->
+    <div id="favModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">×</span>
+        <img id="modalImg" class="modal-img" />
+        <h3 id="modalTitle" class="modal-title"></h3>
+        <p id="modalSection" class="modal-section"></p>
+      </div>
+    </div>
 
     <div class="grid">
       <div class="card" onclick="go('upload.html')">
@@ -411,40 +537,35 @@
       window.location.href = "login.html";
     }
 
-    // Display user name
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (loggedInUser) {
       document.getElementById("userName").textContent = loggedInUser;
     }
 
-    // Simulate stats (replace with actual API calls)
-    // Load REAL stats from backend
-async function loadStats() {
-  try {
-    const res = await fetch(`${API_URL}/api/stats`, {
-      credentials: "include"
-    });
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_URL}/api/stats`, {
+          credentials: "include"
+        });
 
-    if (!res.ok) {
-      console.log("Not logged in / stats error");
-      return;
+        if (!res.ok) return;
+
+        const stats = await res.json();
+
+        document.getElementById("dressCount").textContent = stats.dresses || 0;
+        document.getElementById("sectionCount").textContent = stats.sections || 0;
+        document.getElementById("recentUploads").textContent = (stats.recent || []).length;
+      } catch (err) {
+        console.error("Stats load failed:", err);
+      }
     }
-
-    const stats = await res.json();
-
-    document.getElementById("dressCount").textContent = stats.dresses || 0;
-    document.getElementById("sectionCount").textContent = stats.sections || 0;
-    document.getElementById("recentUploads").textContent = (stats.recent || []).length;
-  } catch (err) {
-    console.error("Stats load failed:", err);
-  }
-}
     loadStats();
 
     function go(page) {
       window.location.href = page;
     }
-    // ⭐ Load Favourite Dresses into Dashboard
+
+    // ⭐ Load Favourite Dresses with Modal Popup
     async function loadDashboardFavourites() {
       const res = await fetch(`${API_URL}/api/favourites`, { credentials: "include" });
       const favs = await res.json();
@@ -457,25 +578,36 @@ async function loadStats() {
         return;
       }
 
-      panel.innerHTML = favs.slice(0, 12).map(f => `
+      panel.innerHTML = favs.slice(0, 12).map((f, i) => `
         <img 
           src="${f.imageUrl}" 
-          style="
-            width:120px;
-            height:150px;
-            border-radius:16px;
-            object-fit:cover;
-            cursor:pointer;
-            box-shadow:0 6px 16px rgba(0,0,0,0.3);
-          "
-          onclick="go('favourites.html')"
+          class="fav-item"
+          style="animation-delay:${i * 0.05}s"
+          onclick='openModal(${JSON.stringify(f)})'
         />
       `).join("");
     }
 
-    loadDashboardFavourites();  // ⭐ run it
+    loadDashboardFavourites();
 
+    // ⭐ Modal Controls
+    function openModal(f) {
+      document.getElementById("modalImg").src = f.imageUrl;
+      document.getElementById("modalTitle").textContent = f.name || "Favourite Dress";
+      document.getElementById("modalSection").textContent = f.sectionName 
+        ? "Section: " + f.sectionName 
+        : "";
 
+      document.getElementById("favModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("favModal").style.display = "none";
+    }
+
+    document.getElementById("favModal").addEventListener("click", (e) => {
+      if (e.target.id === "favModal") closeModal();
+    });
 
     function logout() {
       fetch(`${API_URL}/logout`, {

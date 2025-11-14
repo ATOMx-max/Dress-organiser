@@ -1,370 +1,629 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Manage Sections & Categories | Dress Organizer</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-
-    body {
-      background: linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);
-      font-family:"Inter",sans-serif;
+    /* -------------------------
+       Base / Theme
+       ------------------------- */
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.22);
+      --accent:#c084fc;
+      --muted:rgba(255,255,255,0.7);
+      --surface: rgba(255,255,255,0.02);
+      --btn-press: rgba(0,0,0,0.15);
+    }
+    html,body{height:100%}
+    body{
       min-height:100vh;
-      padding:25px;
-      color:white;
+      padding:22px;
+      font-family:'Inter',sans-serif;
+      color:#fff;
+      background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#4c1d95 100%);
       position:relative;
-      overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Floating Orbs */
-    .orb{
-      position:absolute;border-radius:50%;
-      filter:blur(90px);opacity:.18;z-index:0;
-      animation:float 22s infinite ease-in-out;
-    }
-    .orb-1{
-      background:linear-gradient(135deg,#818cf8,#c084fc);
-      width:480px;height:480px;top:-180px;left:-120px;
-    }
-    .orb-2{
-      background:linear-gradient(135deg,#f472b6,#fb923c);
-      width:400px;height:400px;bottom:-150px;right:-120px;
-      animation-delay:6s;
-    }
-    .orb-3{
-      background:linear-gradient(135deg,#06b6d4,#3b82f6);
-      width:360px;height:360px;top:40%;left:50%;
-      animation-delay:10s;
-    }
-
-    @keyframes float{
-      0%,100%{transform:translate(0,0) scale(1);}
-      33%{transform:translate(40px,-40px) scale(1.08);}
-      66%{transform:translate(-30px,30px) scale(0.92);}
-    }
+    /* Orbs */
+    .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.14;z-index:0;animation:float 22s infinite ease-in-out;pointer-events:none}
+    .orb-1{background:linear-gradient(135deg,#818cf8,#c084fc);width:520px;height:520px;top:-200px;left:-140px}
+    .orb-2{background:linear-gradient(135deg,#f472b6,#fb923c);width:420px;height:420px;bottom:-160px;right:-160px;animation-delay:6s}
+    .orb-3{background:linear-gradient(135deg,#06b6d4,#3b82f6);width:360px;height:360px;top:40%;left:50%;animation-delay:10s;transform:translateX(-30%)}
+    @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-40px) scale(1.06)}66%{transform:translate(-30px,30px) scale(0.94)}}
 
     /* Header */
     header{
-      display:flex;justify-content:space-between;align-items:center;
-      max-width:1200px;margin:0 auto 30px;
-      position:relative;z-index:10;
+      display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto 18px;position:sticky;top:12px;z-index:30;padding:8px 6px;border-radius:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
     }
+    header h1{font-size:1.6rem;font-weight:700;background:linear-gradient(135deg,#fff,#e0e7ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 
-    header h1{
-      font-size:2rem;font-weight:700;
-      background:linear-gradient(135deg,#fff,#e0e7ff);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
+    .controls{display:flex;gap:10px;align-items:center}
+    .small{font-size:13px;opacity:0.95}
 
     /* Buttons */
     .btn{
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.25);
-      padding:10px 25px;font-weight:600;
-      border-radius:14px;color:white;
-      cursor:pointer;
-      backdrop-filter:blur(14px);
-      transition:.25s;
-      box-shadow:0 4px 14px rgba(0,0,0,0.2);
-    }
-    .btn:hover{
-      transform:translateY(-3px);
-      background:rgba(255,255,255,0.22);
-    }
-
-    .logout{
-      background:rgba(255,0,0,0.25);
-      border-color:rgba(255,0,0,0.4);
-    }
-    .logout:hover{
-      background:rgba(255,0,0,0.35);
-    }
-
-    /* Glass Panels */
-    .panel{
-      max-width:900px;margin:0 auto 25px;
-      background:rgba(255,255,255,0.08);
-      padding:28px;border-radius:24px;
-      backdrop-filter:blur(14px);
-      border:1px solid rgba(255,255,255,0.22);
-      box-shadow:0 10px 40px rgba(0,0,0,0.3);
-      position:relative;z-index:10;
-    }
-
-    .panel h2{
-      text-align:center;
-      background:linear-gradient(135deg,#fff,#e0e7ff);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      margin-bottom:20px;font-size:1.4rem;font-weight:600;
-    }
-
-    /* Input row */
-    .input-row{
-      display:flex;flex-wrap:wrap;
-      gap:12px;justify-content:center;margin-bottom:20px;
-    }
-
-    input,select{
-      padding:12px 16px;
-      border-radius:14px;
-      background:rgba(255,255,255,0.15);
-      border:1px solid rgba(255,255,255,0.25);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border:1px solid var(--glass-border);
+      padding:10px 16px;
+      font-weight:600;
+      border-radius:12px;
       color:white;
-      backdrop-filter:blur(10px);
-      min-width:220px;flex:1;
-      transition:.25s;
+      cursor:pointer;
+      backdrop-filter:blur(8px);
+      transition: transform .14s cubic-bezier(.2,.9,.2,1), box-shadow .14s, opacity .12s;
+      box-shadow:0 8px 24px rgba(0,0,0,0.25);
+      display:inline-flex;align-items:center;gap:8px;
+      user-select:none;
     }
-    input:focus,select:focus{
-      border-color:#c084fc;
-      box-shadow:0 0 0 4px rgba(192,132,252,0.25);
-      outline:none;
+    .btn:active{ transform: scale(.985) translateY(1px) }
+    .btn:focus{ outline:2px solid rgba(192,132,252,0.14); outline-offset:2px }
+    .btn.logout{ background:linear-gradient(180deg, rgba(255,0,0,0.14), rgba(255,0,0,0.08)); border-color: rgba(255,0,0,0.28) }
+
+    /* Pop / bounce on hover for iOS-style feel */
+    .btn:hover{ transform: translateY(-3px) scale(1.02); box-shadow:0 14px 36px rgba(0,0,0,0.32) }
+
+    .container{max-width:980px;margin:0 auto;position:relative;z-index:10}
+    .flex-row{display:flex;gap:18px;align-items:flex-start}
+
+    .panel{
+      flex:1;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      padding:18px;border-radius:14px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 10px 44px rgba(0,0,0,0.35);
+      transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
     }
+    .panel:hover{ transform: translateY(-6px); box-shadow:0 20px 60px rgba(0,0,0,0.42) }
+    .panel h2{text-align:center;margin-bottom:10px;font-size:1.15rem;font-weight:600;background:linear-gradient(135deg,#fff,#e0e7ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+    .input-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:12px}
+    input[type="text"], select{
+      padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+      color:white;min-width:160px;flex:1;outline:none;font-size:14px;
+      transition: box-shadow .12s, border-color .12s, transform .12s;
+    }
+    input[type="text"]:focus, select:focus{ box-shadow:0 6px 18px rgba(192,132,252,0.08); border-color:var(--accent); transform:translateY(-2px) }
 
     /* Tags */
     .tag-container{
-      display:flex;flex-wrap:wrap;
-      justify-content:center;gap:10px;margin-top:8px;
+      display:flex;flex-wrap:wrap;gap:10px;padding:8px;
+      /* mobile: horizontal scrolling */
+      -webkit-overflow-scrolling:touch;
     }
     .tag{
-      background:rgba(255,255,255,0.15);
-      padding:6px 12px;border-radius:16px;
-      border:1px solid rgba(255,255,255,0.2);
-      display:flex;align-items:center;gap:8px;
+      display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);
+      min-width:92px;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s, opacity .18s;
     }
-    .tag span{
-      background:rgba(255,0,0,0.6);
-      width:20px;height:20px;display:flex;
-      justify-content:center;align-items:center;
-      border-radius:50%;cursor:pointer;
-      color:white;font-size:14px;
+    .tag .name{font-weight:600}
+    .tag .meta{font-size:12px;opacity:.9}
+    .tag .actions{margin-left:auto;display:flex;gap:8px}
+    .tag:hover{ transform: translateY(-4px) scale(1.02); box-shadow:0 10px 28px rgba(0,0,0,0.28) }
+
+    .icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);cursor:pointer;transition:transform .12s}
+    .icon-btn:active{ transform: scale(.94) }
+
+    /* Small screens: make buttons wide and inputs touch-friendly */
+    @media (max-width:760px){
+      header{padding:10px}
+      .flex-row{flex-direction:column;gap:12px}
+      .input-row{flex-direction:column;align-items:stretch}
+      .btn{width:100%;justify-content:center;padding:12px}
+      input[type="text"],select{width:100%}
+      .tag-container{overflow:auto;white-space:nowrap;padding-bottom:8px}
+      .tag{display:inline-flex;white-space:nowrap}
+      .controls{gap:8px}
+      .small{display:none}
+      body{padding:14px}
     }
 
-    /* Reset Button */
-    .reset-btn{
-      display:block;
-      margin:20px auto;
-      padding:12px 24px;
-      border-radius:14px;
-      background:rgba(0,255,120,0.2);
-      border:1px solid rgba(0,255,120,0.35);
-      color:white;font-weight:600;
-      cursor:pointer;transition:.3s;
-    }
-    .reset-btn:hover{
-      transform:translateY(-3px);
-      background:rgba(0,255,120,0.3);
-    }
+    /* Toasts & modal */
+    .toast-wrap{position:fixed;right:16px;bottom:16px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+    .toast{min-width:220px;padding:10px 14px;border-radius:10px;color:#fff;background:linear-gradient(180deg,#222,#111);display:flex;align-items:center;gap:10px;box-shadow:0 8px 28px rgba(0,0,0,0.36)}
+    .toast.success{background:linear-gradient(90deg,#10b981,#059669)}
+    .toast.error{background:linear-gradient(90deg,#ef4444,#dc2626)}
 
-    .loader{text-align:center;margin-top:10px;color:white;}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:2000}
+    .modal{background:var(--glass-bg);padding:16px;border-radius:12px;border:1px solid var(--glass-border);width:420px;max-width:92%;box-shadow:0 16px 60px rgba(0,0,0,0.55);transform-origin:center;transition:transform .22s cubic-bezier(.2,.9,.2,1), opacity .18s}
+    .modal.show{ transform: translateY(0) scale(1); opacity:1 }
+    .modal.hide{ transform: translateY(8px) scale(.98); opacity:0 }
+
+    /* Empty states */
+    .empty{padding:18px;text-align:center;color:var(--muted);opacity:0.95}
+
+    /* Pop / Bounce animations (iOS-style) */
+    @keyframes pop {
+      0%{ transform: scale(0.92); opacity:0; }
+      35%{ transform: scale(1.12); opacity:1; }
+      65%{ transform: scale(0.98); }
+      100%{ transform: scale(1); opacity:1; }
+    }
+    .pop{ animation: pop .46s cubic-bezier(.2,.9,.2,1); }
+
+    @keyframes remove {
+      0%{ transform: scale(1); opacity:1 }
+      100%{ transform: scale(.86); opacity:0; height:0; margin:0; padding:0; }
+    }
+    .removing{ animation: remove .22s ease forwards; }
+
+    /* small helpers */
+    .dragging{ opacity:.5 }
+    .hidden{ display:none !important }
   </style>
 </head>
-
 <body>
 
-<!-- Background Orbs -->
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
-<!-- Header -->
-<header>
-  <h1>⚙️ Manage Sections & Categories</h1>
-  <button class="btn logout" id="logoutBtn">Logout</button>
-</header>
+  <header>
+    <h1>⚙️ Manage Sections & Categories</h1>
+    <div class="controls">
+      <div class="small" id="userEmail" style="opacity:0.9"></div>
+      <button class="btn logout" id="logoutBtn" title="Logout">Logout</button>
+    </div>
+  </header>
 
-<!-- Add Section -->
-<div class="panel">
-  <h2>🧩 Add Section</h2>
-  <div class="input-row">
-    <input type="text" id="sectionInput" placeholder="Enter new section" />
-    <button class="btn" id="addSectionBtn">Add Section</button>
+  <main class="container">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+      <input id="searchInput" type="text" placeholder="Search sections or categories..." style="flex:1;min-width:200px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);color:#fff" />
+      <button class="btn" id="importBtn" title="Import JSON">Import JSON</button>
+      <button class="btn" id="exportBtn" title="Export JSON">Export JSON</button>
+    </div>
+
+    <div class="flex-row">
+      <section class="panel" id="sectionsPanel">
+        <h2>🧩 Sections</h2>
+        <div class="input-row">
+          <input id="sectionInput" type="text" placeholder="Enter new section" />
+          <button class="btn" id="addSectionBtn">Add Section</button>
+        </div>
+        <div id="sectionsTags" class="tag-container" aria-live="polite"></div>
+        <div id="sectionsEmpty" class="empty" style="display:none">No sections yet. Add your first section above ✨</div>
+      </section>
+
+      <section class="panel" id="categoriesPanel">
+        <h2>📂 Categories</h2>
+        <div class="input-row">
+          <select id="sectionSelect"><option value="">Select Section</option></select>
+          <input id="categoryInput" type="text" placeholder="Enter new category" />
+          <button class="btn" id="addCategoryBtn">Add Category</button>
+        </div>
+        <div id="categoriesTags" class="tag-container"></div>
+        <div id="categoriesEmpty" class="empty" style="display:none">Select a section to view categories.</div>
+      </section>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin-top:18px;gap:12px;flex-wrap:wrap">
+      <button class="btn" id="resetBtn">♻ Reset to Default</button>
+      <button class="btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+    </div>
+  </main>
+
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 id="modalTitle">Confirm</h3>
+      <p id="modalMessage">Are you sure?</p>
+      <div class="row" style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn" id="modalCancel">Cancel</button>
+        <button class="btn" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
   </div>
-  <div class="tag-container" id="sectionList"></div>
-</div>
 
-<!-- Add Category -->
-<div class="panel">
-  <h2>📂 Add Category</h2>
-  <div class="input-row">
-    <select id="sectionSelect"><option value="">Select Section</option></select>
-    <input type="text" id="categoryInput" placeholder="Enter new category" />
-    <button class="btn" id="addCategoryBtn">Add Category</button>
-  </div>
-  <div class="tag-container" id="categoryList"></div>
-</div>
+  <script>
+    /*****************************************************************
+     * Manage Sections & Categories - JS (with pop/bounce animations)
+     *****************************************************************/
+    const API_URL = (window.location.origin.includes('localhost') || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:8080/api'
+      : 'https://dress-organiser.onrender.com/api';
 
-<!-- Reset Button -->
-<button class="reset-btn" onclick="resetDefaults()">♻ Reset to Default</button>
+    let SECTIONS = []; // array of { name, categories:[] }
+    let OFFLINE_MODE = false;
+    const LOCAL_KEY = 'do_sections_cache_v1';
 
-<!-- Back Button -->
-<div style="display:flex;justify-content:center;margin-top:20px;">
-  <button class="btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
-</div>
+    const DEFAULT_SECTIONS = [
+      { name: 'Men', categories: ['Shirts', 'Trousers', 'Jackets'] },
+      { name: 'Women', categories: ['Dresses', 'Tops', 'Skirts'] },
+      { name: 'Accessories', categories: ['Belts', 'Hats'] }
+    ];
 
-<div id="loader" class="loader"></div>
+    // Elements
+    const sectionsTags = document.getElementById('sectionsTags');
+    const categoriesTags = document.getElementById('categoriesTags');
+    const sectionSelect = document.getElementById('sectionSelect');
+    const toastWrap = document.getElementById('toastWrap');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const modalCancel = document.getElementById('modalCancel');
 
-<!-- JS = EXACT SAME AS YOUR ORIGINAL -->
-<script>
-  const API_URL = window.location.origin.includes("localhost")
-    ? "http://localhost:8080/api"
-    : "https://dress-organiser.onrender.com/api";
-
-  async function checkSession() {
-    const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
-    if (res.status === 401) {
-      localStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
+    // Toast helper
+    function showToast(msg, type='default', ms=3000){
+      const t = document.createElement('div');
+      t.className = 'toast fade-in ' + (type==='success' ? 'success' : type==='error' ? 'error' : '');
+      t.textContent = msg;
+      toastWrap.appendChild(t);
+      setTimeout(()=>{ t.style.opacity = 0; t.style.transform = 'translateX(10px)'; }, Math.max(600, ms - 350));
+      setTimeout(()=>{ if(t.parentNode) t.parentNode.removeChild(t); }, ms);
     }
-  }
 
-  document.getElementById("logoutBtn").onclick = () => {
-    localStorage.removeItem("loggedInUser");
-    window.location.href = "login.html";
-  };
+    // Modal helper (with simple show/hide classes)
+    function showModal(title, message){
+      modalTitle.textContent = title; modalMessage.textContent = message;
+      modalBackdrop.style.display = 'flex';
+      const modal = modalBackdrop.querySelector('.modal'); modal.classList.remove('hide'); modal.classList.add('show');
+      return new Promise(resolve => {
+        function cleanup(){ modal.classList.remove('show'); modal.classList.add('hide'); setTimeout(()=> modalBackdrop.style.display='none', 200); modalConfirm.removeEventListener('click', onYes); modalCancel.removeEventListener('click', onNo); }
+        function onYes(){ cleanup(); resolve(true); }
+        function onNo(){ cleanup(); resolve(false); }
+        modalConfirm.addEventListener('click', onYes);
+        modalCancel.addEventListener('click', onNo);
+      });
+    }
 
-  const sectionList = document.getElementById("sectionList");
-  const sectionSelect = document.getElementById("sectionSelect");
-  const categoryList = document.getElementById("categoryList");
-  const loader = document.getElementById("loader");
+    // Local persistence
+    function saveSectionsToLocal(){
+      try{ localStorage.setItem(LOCAL_KEY, JSON.stringify(SECTIONS)); }
+      catch(e){ console.warn('Failed saving to localStorage', e); }
+    }
+    function loadSectionsFromLocal(){
+      try{
+        const raw = localStorage.getItem(LOCAL_KEY);
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        if(!Array.isArray(parsed)) return null;
+        return parsed;
+      } catch(e){ console.warn('Failed reading local cache', e); return null; }
+    }
 
-  async function loadSections() {
-    loader.textContent = "Loading sections...";
-    const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
-    const data = await res.json();
-    loader.textContent = "";
-    renderSections(data);
-  }
+    // API fetch wrapper with graceful fallback
+    async function apiFetch(path, opts = {}){
+      if(!path.startsWith('/')) path = '/' + path;
+      try{
+        const res = await fetch(API_URL + path, Object.assign({ credentials: 'include' }, opts));
+        if(res.status === 401){ localStorage.removeItem('loggedInUser'); window.location.href = 'login.html'; throw new Error('Unauthorized'); }
+        const body = await res.json().catch(()=>({}));
+        if(!res.ok){ const msg = body && body.message ? body.message : `Request failed (${res.status})`; throw new Error(msg); }
+        return body;
+      } catch(err){
+        console.error('apiFetch error', err);
+        // network/CORS failures -> switch to offline fallback
+        if(err instanceof TypeError || /failed to fetch/i.test(String(err))){
+          if(!OFFLINE_MODE){ OFFLINE_MODE = true; showToast('API unreachable — switched to offline mode', 'error', 4000); }
+          const cached = loadSectionsFromLocal() || DEFAULT_SECTIONS.slice();
+          return cached;
+        }
+        throw err;
+      }
+    }
 
-  function renderSections(sections) {
-    sectionList.innerHTML = "";
-    sectionSelect.innerHTML = `<option value="">Select Section</option>`;
-    sections.forEach(sec => {
-      const tag = document.createElement("div");
-      tag.className = "tag";
-      tag.innerHTML = `${sec.name} <span onclick="deleteSection('${sec.name}')">×</span>`;
-      sectionList.appendChild(tag);
+    // UI helpers
+    function populateSectionSelect(sections){
+      sectionSelect.innerHTML = '<option value="">Select Section</option>';
+      sections.forEach(s=>{ const opt = document.createElement('option'); opt.value = s.name; opt.textContent = s.name; sectionSelect.appendChild(opt); });
+    }
 
-      const opt = document.createElement("option");
-      opt.value = sec.name;
-      opt.textContent = sec.name;
-      sectionSelect.appendChild(opt);
+    function animatePop(el){
+      el.classList.remove('pop');
+      // force reflow to restart animation
+      void el.offsetWidth;
+      el.classList.add('pop');
+      // remove pop class after animation
+      el.addEventListener('animationend', ()=> el.classList.remove('pop'), { once:true });
+    }
+
+    function createSectionTag(sec){
+      const d = document.createElement('div'); d.className = 'tag'; d.draggable = true; d.dataset.name = sec.name;
+      const name = document.createElement('div'); name.className = 'name'; name.textContent = sec.name; d.appendChild(name);
+      const meta = document.createElement('div'); meta.className = 'meta small'; meta.textContent = (sec.categories?.length || 0) + ' categories'; d.appendChild(meta);
+
+      const actions = document.createElement('div'); actions.className = 'actions';
+      const editBtn = document.createElement('button'); editBtn.className = 'icon-btn'; editBtn.title = 'Rename'; editBtn.innerHTML = '✎';
+      editBtn.onclick = (e)=>{ e.stopPropagation(); startEditSection(d, sec.name); };
+
+      const delBtn = document.createElement('button'); delBtn.className = 'icon-btn'; delBtn.title = 'Delete'; delBtn.innerHTML = '✕';
+      delBtn.onclick = async (e)=>{ e.stopPropagation(); const ok = await showModal('Delete section', `Delete \"${sec.name}\" and all related dresses?`); if(!ok) return;
+        try{
+          // animate removal visually first
+          d.classList.add('removing');
+          setTimeout(async ()=>{
+            if(OFFLINE_MODE){
+              SECTIONS = SECTIONS.filter(s => s.name !== sec.name);
+              saveSectionsToLocal();
+              showToast('Section deleted (offline)','success');
+              renderSections(SECTIONS); populateSectionSelect(SECTIONS);
+              categoriesTags.innerHTML = ''; document.getElementById('categoriesEmpty').style.display='none';
+            } else {
+              const res = await apiFetch(`/sections/${encodeURIComponent(sec.name)}`, { method: 'DELETE' });
+              showToast(res.message || 'Deleted','success');
+              await loadSections();
+              categoriesTags.innerHTML = ''; document.getElementById('categoriesEmpty').style.display='none';
+            }
+          }, 220);
+        } catch(err){ showToast(err.message || 'Delete failed','error'); }
+      };
+
+      actions.appendChild(editBtn); actions.appendChild(delBtn); d.appendChild(actions);
+
+      d.addEventListener('click', ()=>{ sectionSelect.value = sec.name; loadCategoriesFor(sec.name); highlightSelectedSection(sec.name); });
+      d.addEventListener('dragstart', (e)=>{ d.classList.add('dragging'); e.dataTransfer.setData('text/section', sec.name); });
+      d.addEventListener('dragend', ()=>d.classList.remove('dragging'));
+
+      // pop animation on create/update
+      setTimeout(()=> animatePop(d), 20);
+
+      return d;
+    }
+
+    function renderSections(list){
+      sectionsTags.innerHTML = '';
+      if(!list || !list.length){ document.getElementById('sectionsEmpty').style.display = 'block'; return; }
+      document.getElementById('sectionsEmpty').style.display = 'none';
+      list.forEach(sec => sectionsTags.appendChild(createSectionTag(sec)));
+    }
+
+    function highlightSelectedSection(name){
+      Array.from(sectionsTags.children).forEach(ch=>{ ch.style.borderColor = ch.dataset.name === name ? 'rgba(192,132,252,0.55)' : 'rgba(255,255,255,0.04)'; });
+    }
+
+    function createCategoryTag(sectionName, cat){
+      const d = document.createElement('div'); d.className = 'tag'; d.dataset.cat = cat; d.dataset.section = sectionName;
+      const name = document.createElement('div'); name.className = 'name'; name.textContent = cat; d.appendChild(name);
+      const actions = document.createElement('div'); actions.className = 'actions';
+      const editBtn = document.createElement('button'); editBtn.className = 'icon-btn'; editBtn.title = 'Rename'; editBtn.innerHTML = '✎';
+      editBtn.onclick = (e)=>{ e.stopPropagation(); startEditCategory(sectionName, cat, d); };
+      const delBtn = document.createElement('button'); delBtn.className = 'icon-btn'; delBtn.title = 'Delete'; delBtn.innerHTML = '✕';
+      delBtn.onclick = async (e)=>{ e.stopPropagation(); const ok = await showModal('Delete category', `Delete \"${cat}\" from \"${sectionName}\"?`); if(!ok) return;
+        try{
+          d.classList.add('removing');
+          setTimeout(async ()=>{
+            if(OFFLINE_MODE){
+              const sec = SECTIONS.find(s=>s.name===sectionName); if(sec){ sec.categories = sec.categories.filter(c=>c!==cat); saveSectionsToLocal(); showToast('Category deleted (offline)','success'); loadCategoriesFor(sectionName); }
+            } else {
+              const res = await apiFetch(`/categories/${encodeURIComponent(sectionName)}/${encodeURIComponent(cat)}`, { method: 'DELETE' });
+              showToast(res.message || 'Deleted','success'); loadCategoriesFor(sectionName);
+            }
+          }, 220);
+        } catch(err){ showToast(err.message || 'Delete failed','error'); }
+      };
+      actions.appendChild(editBtn); actions.appendChild(delBtn); d.appendChild(actions);
+
+      setTimeout(()=> animatePop(d), 20);
+      return d;
+    }
+
+    function renderCategoriesFor(sec){
+      categoriesTags.innerHTML = '';
+      if(!sec || !sec.categories || !sec.categories.length){ document.getElementById('categoriesEmpty').style.display = 'block'; return; }
+      document.getElementById('categoriesEmpty').style.display = 'none';
+      sec.categories.forEach(cat => categoriesTags.appendChild(createCategoryTag(sec.name, cat)));
+    }
+
+    async function loadCategoriesFor(sectionName){
+      try{
+        const sec = SECTIONS.find(s=>s.name===sectionName);
+        if(!sec) await loadSections();
+        const fresh = SECTIONS.find(s=>s.name===sectionName);
+        renderCategoriesFor(fresh || { name: sectionName, categories: [] });
+      } catch(err){ showToast('Failed to load categories','error'); }
+    }
+
+    // Load sections from server, or fallback to local/default
+    async function loadSections(){
+      try{
+        document.getElementById('sectionsEmpty').style.display = 'none';
+        const data = await apiFetch('/sections');
+        SECTIONS = Array.isArray(data) ? data : (data.sections || data);
+        if(!OFFLINE_MODE) saveSectionsToLocal();
+        renderSections(SECTIONS);
+        populateSectionSelect(SECTIONS);
+      } catch(err){
+        try{
+          if(!SECTIONS || !SECTIONS.length){
+            const local = loadSectionsFromLocal();
+            SECTIONS = local || DEFAULT_SECTIONS.slice();
+          }
+          renderSections(SECTIONS);
+          populateSectionSelect(SECTIONS);
+          showToast('Using local data','default',2000);
+        } catch(e){ showToast('Failed to load sections','error'); console.error(e); }
+      }
+    }
+
+    // Add section
+    async function addSection(){
+      const input = document.getElementById('sectionInput');
+      const name = input.value.trim();
+      if(!name) return showToast('Enter a section name','error');
+      disableButton('addSectionBtn', true);
+      try{
+        if(SECTIONS.some(s=>s.name.toLowerCase()===name.toLowerCase())){ showToast('Section already exists','error'); disableButton('addSectionBtn', false); return; }
+        if(OFFLINE_MODE){
+          SECTIONS.push({ name, categories: [] });
+          saveSectionsToLocal();
+          showToast('Section added (offline)','success');
+          input.value=''; input.focus();
+          renderSections(SECTIONS); populateSectionSelect(SECTIONS);
+        } else {
+          const res = await apiFetch('/sections', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ name })});
+          showToast(res.message || 'Section added','success');
+          input.value=''; input.focus();
+          await loadSections();
+        }
+      } catch(err){ showToast(err.message || 'Add failed','error'); }
+      disableButton('addSectionBtn', false);
+    }
+
+    // Add category
+    async function addCategory(){
+      const sectionName = sectionSelect.value;
+      const input = document.getElementById('categoryInput');
+      const category = input.value.trim();
+      if(!sectionName) return showToast('Select a section first','error');
+      if(!category) return showToast('Enter a category name','error');
+      disableButton('addCategoryBtn', true);
+      try{
+        const sec = SECTIONS.find(s=>s.name===sectionName);
+        if(sec && sec.categories && sec.categories.some(c=>c.toLowerCase()===category.toLowerCase())){ showToast('Category already exists in this section','error'); disableButton('addCategoryBtn', false); return; }
+        if(OFFLINE_MODE){
+          if(!sec){ SECTIONS.push({ name: sectionName, categories: [category] }); } else { sec.categories.push(category); }
+          saveSectionsToLocal();
+          showToast('Category added (offline)','success');
+          input.value=''; input.focus();
+          renderSections(SECTIONS); populateSectionSelect(SECTIONS); loadCategoriesFor(sectionName);
+        } else {
+          const res = await apiFetch('/categories', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ sectionName, category })});
+          showToast(res.message || 'Category added','success');
+          input.value=''; input.focus();
+          await loadSections(); loadCategoriesFor(sectionName);
+        }
+      } catch(err){ showToast(err.message || 'Add failed','error'); }
+      disableButton('addCategoryBtn', false);
+    }
+
+    function disableButton(id, val){ const b = document.getElementById(id); if(b) b.disabled = !!val; }
+
+    async function resetDefaults(){
+      const ok = await showModal('Reset to defaults', 'This will reset sections & categories to defaults. Continue?');
+      if(!ok) return;
+      try{
+        if(OFFLINE_MODE){
+          SECTIONS = DEFAULT_SECTIONS.slice();
+          saveSectionsToLocal();
+          renderSections(SECTIONS); populateSectionSelect(SECTIONS);
+          showToast('Reset locally','success');
+        } else {
+          const res = await apiFetch('/reset-defaults', { method: 'POST' });
+          showToast(res.message || 'Reset','success');
+          await loadSections();
+        }
+      } catch(err){ showToast(err.message || 'Reset failed','error'); }
+    }
+
+    // Inline rename section
+    function startEditSection(elem, oldName){
+      if(elem.classList.contains('editing')) return;
+      elem.classList.add('editing'); elem.innerHTML='';
+      const inp = document.createElement('input'); inp.className='edit-input'; inp.value = oldName; inp.style.minWidth='120px';
+      const saveBtn = document.createElement('button'); saveBtn.className='btn'; saveBtn.textContent='Save';
+      const cancelBtn = document.createElement('button'); cancelBtn.className='btn'; cancelBtn.textContent='Cancel';
+      elem.appendChild(inp); elem.appendChild(saveBtn); elem.appendChild(cancelBtn);
+      inp.focus(); inp.select();
+      cancelBtn.onclick = ()=>{ elem.classList.remove('editing'); renderSections(SECTIONS); };
+      saveBtn.onclick = async ()=>{
+        const newName = inp.value.trim(); if(!newName) return showToast('Name cannot be empty','error');
+        if(newName === oldName){ elem.classList.remove('editing'); renderSections(SECTIONS); return; }
+        try{
+          if(OFFLINE_MODE){
+            const sec = SECTIONS.find(s=>s.name === oldName); if(sec) sec.name = newName;
+            saveSectionsToLocal(); showToast('Renamed (offline)','success'); renderSections(SECTIONS); populateSectionSelect(SECTIONS);
+          } else {
+            const res = await apiFetch('/sections/rename', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ oldName, newName })});
+            showToast(res.message || 'Renamed','success'); await loadSections();
+          }
+        } catch(err){ showToast(err.message || 'Rename failed','error'); renderSections(SECTIONS); }
+      };
+    }
+
+    // Inline rename category
+    function startEditCategory(sectionName, oldCat, tagElem){
+      if(tagElem.classList.contains('editing')) return;
+      tagElem.classList.add('editing'); tagElem.innerHTML='';
+      const inp = document.createElement('input'); inp.className='edit-input'; inp.value = oldCat; inp.style.minWidth='120px';
+      const saveBtn = document.createElement('button'); saveBtn.className='btn'; saveBtn.textContent='Save';
+      const cancelBtn = document.createElement('button'); cancelBtn.className='btn'; cancelBtn.textContent='Cancel';
+      tagElem.appendChild(inp); tagElem.appendChild(saveBtn); tagElem.appendChild(cancelBtn);
+      inp.focus(); inp.select();
+      cancelBtn.onclick = ()=>{ tagElem.classList.remove('editing'); loadCategoriesFor(sectionName); };
+      saveBtn.onclick = async ()=>{
+        const newCat = inp.value.trim(); if(!newCat) return showToast('Name cannot be empty','error');
+        if(newCat === oldCat){ tagElem.classList.remove('editing'); loadCategoriesFor(sectionName); return; }
+        try{
+          if(OFFLINE_MODE){
+            const sec = SECTIONS.find(s=>s.name === sectionName);
+            if(sec){ const idx = sec.categories.indexOf(oldCat); if(idx >= 0){ sec.categories[idx] = newCat; saveSectionsToLocal(); showToast('Renamed (offline)','success'); loadCategoriesFor(sectionName); } }
+          } else {
+            const res = await apiFetch('/categories/rename', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ sectionName, oldCat, newCat })});
+            showToast(res.message || 'Renamed','success'); await loadSections(); loadCategoriesFor(sectionName);
+          }
+        } catch(err){ showToast(err.message || 'Rename failed','error'); loadCategoriesFor(sectionName); }
+      };
+    }
+
+    // Search
+    let searchTimer = null;
+    document.getElementById('searchInput').addEventListener('input', (e)=>{ const q = e.target.value.trim().toLowerCase(); clearTimeout(searchTimer); searchTimer = setTimeout(()=> applySearch(q), 220); });
+    function applySearch(q){
+      if(!q){ renderSections(SECTIONS); populateSectionSelect(SECTIONS); const sel = sectionSelect.value; if(sel) loadCategoriesFor(sel); return; }
+      const filtered = SECTIONS.map(s=>({ ...s, categories: (s.categories||[]).filter(c=>c.toLowerCase().includes(q)) })).filter(s=>s.name.toLowerCase().includes(q) || (s.categories && s.categories.length));
+      renderSections(filtered); populateSectionSelect(filtered); categoriesTags.innerHTML=''; document.getElementById('categoriesEmpty').style.display='block';
+    }
+
+    // Import / Export
+    document.getElementById('exportBtn').addEventListener('click', ()=>{ const data = JSON.stringify(SECTIONS, null, 2); const blob = new Blob([data], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'sections-categories.json'; a.click(); URL.revokeObjectURL(url); });
+
+    document.getElementById('importBtn').addEventListener('click', ()=>{
+      const input = document.createElement('input'); input.type = 'file'; input.accept = 'application/json';
+      input.onchange = async (e)=>{
+        const file = e.target.files[0]; if(!file) return;
+        try{
+          const txt = await file.text();
+          const parsed = JSON.parse(txt);
+          if(!Array.isArray(parsed)) return showToast('Invalid JSON format','error');
+
+          if(OFFLINE_MODE){
+            SECTIONS = parsed; saveSectionsToLocal(); renderSections(SECTIONS); populateSectionSelect(SECTIONS); showToast('Imported locally','success');
+          } else {
+            try{
+              const res = await apiFetch('/sections/import', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ sections: parsed })});
+              showToast(res.message || 'Imported','success'); await loadSections();
+            } catch(err){
+              SECTIONS = parsed; saveSectionsToLocal(); renderSections(SECTIONS); populateSectionSelect(SECTIONS); showToast('Imported locally (server import failed)','success');
+            }
+          }
+        } catch(err){ showToast('Failed to import: ' + (err && err.message ? err.message : String(err)),'error'); }
+      };
+      input.click();
     });
-  }
 
-  async function addSection() {
-    const name = document.getElementById("sectionInput").value.trim();
-    if (!name) return alert("Enter a section name!");
+    // Hooks
+    document.getElementById('resetBtn').addEventListener('click', resetDefaults);
+    document.getElementById('addSectionBtn').addEventListener('click', addSection);
+    document.getElementById('addCategoryBtn').addEventListener('click', addCategory);
+    sectionSelect.addEventListener('change', (e)=>{ const val = e.target.value; if(val) loadCategoriesFor(val); else { categoriesTags.innerHTML=''; document.getElementById('categoriesEmpty').style.display='block'; } });
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{ localStorage.removeItem('loggedInUser'); window.location.href='login.html'; });
 
-    const res = await fetch(`${API_URL}/sections`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ name }),
-    });
+    // Session check (non-fatal)
+    async function checkSession(){
+      try{
+        const res = await fetch(API_URL + '/me', { credentials: 'include' }).catch(()=>null);
+        if(res && res.status === 401){ localStorage.removeItem('loggedInUser'); window.location.href = 'login.html'; return; }
+        if(res && res.ok){ const body = await res.json().catch(()=>null); if(body && body.email) document.getElementById('userEmail').textContent = body.email; }
+      } catch(e){ console.warn('Session check failed (non-fatal)', e); }
+    }
 
-    const data = await res.json();
-    alert(data.message);
-    document.getElementById("sectionInput").value = "";
-    loadSections();
-  }
+    // Init
+    (async function init(){
+      await checkSession();
+      const cached = loadSectionsFromLocal(); if(cached){ SECTIONS = cached; }
+      await loadSections();
+      if(!SECTIONS || !SECTIONS.length){ SECTIONS = DEFAULT_SECTIONS.slice(); renderSections(SECTIONS); populateSectionSelect(SECTIONS); saveSectionsToLocal(); }
+    })();
 
-  async function deleteSection(name) {
-    if (!confirm(`Delete section '${name}' and all related dresses?`)) return;
-
-    const res = await fetch(`${API_URL}/sections/${name}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-
-    const data = await res.json();
-    alert(data.message);
-    loadSections();
-    categoryList.innerHTML = "";
-  }
-
-  async function loadCategories() {
-    categoryList.innerHTML = "";
-    const sectionName = sectionSelect.value;
-
-    if (!sectionName) return;
-
-    const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
-    const data = await res.json();
-
-    const sec = data.find(s => s.name === sectionName);
-    if (!sec) return;
-
-    sec.categories.forEach(cat => {
-      const tag = document.createElement("div");
-      tag.className = "tag";
-      tag.innerHTML = `${cat} <span onclick="deleteCategory('${sectionName}','${cat}')">×</span>`;
-      categoryList.appendChild(tag);
-    });
-  }
-
-  async function addCategory() {
-    const sectionName = sectionSelect.value;
-    const category = document.getElementById("categoryInput").value.trim();
-
-    if (!sectionName) return alert("Select a section first!");
-    if (!category) return alert("Enter a category name!");
-
-    const res = await fetch(`${API_URL}/categories`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ sectionName, category }),
-    });
-
-    const data = await res.json();
-    alert(data.message);
-
-    document.getElementById("categoryInput").value = "";
-    loadCategories();
-  }
-
-  async function deleteCategory(section, category) {
-    if (!confirm(`Delete category '${category}'?`)) return;
-
-    const res = await fetch(`${API_URL}/categories/${section}/${category}`, {
-      method: "DELETE",
-      credentials: "include"
-    });
-
-    const data = await res.json();
-    alert(data.message);
-    loadCategories();
-  }
-
-  async function resetDefaults() {
-    if (!confirm("Reset all sections & categories to default?")) return;
-
-    const res = await fetch(`${API_URL}/reset-defaults`, {
-      method: "POST",
-      credentials: "include"
-    });
-
-    const data = await res.json();
-    alert(data.message);
-
-    loadSections();
-    categoryList.innerHTML = "";
-  }
-
-  document.getElementById("addSectionBtn").onclick = addSection;
-  document.getElementById("addCategoryBtn").onclick = addCategory;
-  sectionSelect.onchange = loadCategories;
-
-  (async () => {
-    await checkSession();
-    loadSections();
-  })();
-</script>
-
+  </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search Dresses | Dress Organizer</title>
+  <title>Search Dresses | Dress Organizer (Updated)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
@@ -20,159 +20,114 @@
       overflow-x: hidden;
     }
 
-    /*********** Animated Orbs ***********/
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.18;
-      z-index: 0;
-      animation: float 22s infinite ease-in-out;
+    /* ---------- Skeleton styles ---------- */
+    .skeleton-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+      gap: 32px;
+      max-width: 1300px;
+      margin: 0 auto;
     }
+    .skeleton-card {
+      height: 360px;
+      border-radius: 24px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06));
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .skeleton-anim {
+      position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%);
+      animation: shimmer 1.2s infinite linear;
+    }
+    @keyframes shimmer { from { transform: translateX(-100%);} to { transform: translateX(100%);} }
 
+    /*********** Animated Orbs ***********/
+    .orb { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.18; z-index: 0; animation: float 22s infinite ease-in-out; }
     .orb-1 { background: linear-gradient(135deg, #818cf8, #c084fc); width: 480px; height: 480px; top: -180px; left: -120px; }
     .orb-2 { background: linear-gradient(135deg, #f472b6, #fb923c); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: 6s; }
     .orb-3 { background: linear-gradient(135deg, #06b6d4, #3b82f6); width: 360px; height: 360px; top: 40%; left: 50%; animation-delay: 10s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0,0) scale(1); }
-      33% { transform: translate(40px,-40px) scale(1.08); }
-      66% { transform: translate(-30px,30px) scale(0.92); }
-    }
+    @keyframes float { 0%,100%{ transform: translate(0,0) scale(1);} 33%{ transform: translate(40px,-40px) scale(1.08);} 66%{ transform: translate(-30px,30px) scale(0.92);} }
 
     /*********** Header ***********/
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
-      position: relative;
-      margin-bottom: 40px;
-      animation: fadeIn 0.7s ease;
-    }
+    header { display: flex; justify-content: space-between; align-items: center; z-index: 10; position: relative; margin-bottom: 16px; animation: fadeIn 0.7s ease; }
+    header h1 { font-size: 2.1rem; font-weight: 700; background: linear-gradient(135deg, #fff, #e0e7ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    header h1 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #fff, #e0e7ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0);} }
 
     /*********** Buttons ***********/
-    .btn {
-      padding: 12px 30px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    }
+    .btn { padding: 10px 18px; border-radius: 14px; background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); color: white; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; font-weight: 600; transition: all 0.25s ease; }
+    .btn:hover { transform: translateY(-3px); background: rgba(255,255,255,0.14); }
+    .btn-danger { background: rgba(255,0,0,0.16); border-color: rgba(255,0,0,0.28); }
+    .btn-gradient { background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 50%, #fb923c 100%); border: none; color: white; padding: 8px 14px; border-radius: 12px; font-weight: 700; box-shadow: 0 8px 24px rgba(139,92,246,0.12); }
 
-    .btn:hover { transform: translateY(-3px); background: rgba(255,255,255,0.18); }
-
-    .btn-danger { background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.3); }
-    .btn-danger:hover { background: rgba(255,0,0,0.33); }
-
-    /* Gradient small button (Edit) */
-    .btn-gradient {
-      background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 50%, #fb923c 100%);
-      border: none;
-      color: white;
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      box-shadow: 0 8px 24px rgba(139,92,246,0.12);
-      transition: transform .18s ease, box-shadow .18s ease;
-      cursor: pointer;
-    }
-    .btn-gradient:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 40px rgba(139,92,246,0.16); }
-
-    /*********** Filter Bar ***********/
+    /*********** Filter Bar (Aligned & Responsive: Auto mode) ***********/
     .filter-bar {
       background: rgba(255,255,255,0.07);
       backdrop-filter: blur(20px);
-      padding: 25px;
-      border-radius: 22px;
-      margin: 0 auto 30px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      margin: 0 auto 18px;
       max-width: 1200px;
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-      border: 1px solid rgba(255,255,255,0.15);
+      align-items: center;
+      gap: 12px;
+      flex-wrap: nowrap;           /* keep single row when possible */
+      border: 1px solid rgba(255,255,255,0.12);
       z-index: 10;
       position: relative;
-      animation: fadeIn 1s ease;
+
+      /* Auto-mode: allow horizontal scroll when items overflow */
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
     }
 
-    select, input {
-      padding: 14px 16px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.12);
+    /* ensure consistent child sizing (won't stretch) */
+    .filter-bar > * {
+      flex: 0 0 auto;
+    }
+
+    /* default widths for controls (desktop-friendly) */
+    .filter-bar select,
+    .filter-bar input {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
       color: white;
-      flex: 1;
-      min-width: 200px;
-      backdrop-filter: blur(10px);
+      min-width: 150px;
+      max-width: 320px;
+      height: 40px;
     }
 
-    select option { color: black; }
-
-    select:focus, input:focus {
-      outline: 0;
-      border-color: #c084fc;
-      box-shadow: 0 0 8px rgba(192,132,252,0.7);
+    /* search gets slightly larger */
+    #searchInput {
+      min-width: 240px;
+      max-width: 420px;
+      flex: 0 0 auto;
     }
+
+    /* make the filters not show ugly outline in Safari when scrolled */
+    .filter-bar::-webkit-scrollbar { height: 8px; }
+    .filter-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 999px; }
+
+    /* small mobile filter toggle (visible on very small screens) */
+    .mobile-filter-toggle { display:none; }
 
     /*********** Suggestions ***********/
-    .suggestions {
-      position: absolute;
-      top: 72px;
-      left: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.1);
-      border-radius: 14px;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 35px rgba(0,0,0,0.25);
-      z-index: 20;
-    }
-
-    .suggestion-item {
-      padding: 12px 15px;
-      cursor: pointer;
-      font-weight: 500;
-      color: white;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .suggestion-item:hover {
-      background: rgba(129,140,248,0.35);
-    }
+    .suggestions { position: absolute; top: 54px; left: 0; width: 100%; background: rgba(255,255,255,0.08); border-radius: 12px; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 35px rgba(0,0,0,0.25); z-index: 20; max-height: 260px; overflow:auto; }
+    .suggestion-item { padding: 10px 12px; cursor: pointer; font-weight: 500; color: white; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .suggestion-item:hover { background: rgba(129,140,248,0.28); }
 
     /*********** Counter Bar ***********/
-    .counter-bar {
-      text-align: center;
-      margin-bottom: 25px;
-      font-size: 1.2rem;
-      opacity: 0;
-      animation: fadeIn 1.1s ease forwards;
-    }
+    .counter-bar { text-align: center; margin-bottom: 12px; font-size: 1rem; opacity: 0; animation: fadeIn 1.1s ease forwards; }
 
     /*********** Gallery ***********/
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
-      gap: 32px;
+      gap: 28px;
       max-width: 1300px;
       margin: 0 auto;
       position: relative;
@@ -180,271 +135,100 @@
     }
 
     /*********** Card (Dashboard Style) ***********/
-    .card {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      padding-bottom: 15px;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      overflow: hidden;
-      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28);
-      position: relative;
-    }
-    .fav-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 24px;
-      background: rgba(255,255,255,0.2);
-      border: none;
-      border-radius: 50%;
-      padding: 8px;
-      cursor: pointer;
-      z-index: 10;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition: transform .18s ease, opacity .25s ease;
-    }
+    .card { background: rgba(255,255,255,0.06); backdrop-filter: blur(14px); padding-bottom: 12px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 32px rgba(0,0,0,0.28); overflow: hidden; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28); position: relative; }
+    .fav-btn { position: absolute; top: 12px; right: 12px; font-size: 22px; background: rgba(255,255,255,0.14); border: none; border-radius: 50%; padding: 8px; cursor: pointer; z-index: 10; display:flex; align-items:center; justify-content:center; }
 
-    /* ⭐ Heartbeat animation (add) */
-    @keyframes heartBeat {
-      0% { transform: scale(1); }
-      14% { transform: scale(1.25); }
-      28% { transform: scale(0.95); }
-      42% { transform: scale(1.1); }
-      70% { transform: scale(1); }
-    }
-    .heart-beat {
-      animation: heartBeat 420ms ease forwards;
-    }
+    .card:hover { transform: translateY(-10px); box-shadow: 0 22px 60px rgba(0,0,0,0.35); }
+    .card img { width: 100%; height: 220px; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: transform .28s ease; }
+    .card img:hover { transform: scale(1.04); }
 
-    /* ⭐ Quick fade-out for heart on unfavourite */
-    .fade-heart {
-      animation: fadeHeart 420ms ease forwards;
-    }
-    @keyframes fadeHeart {
-      0% { transform: scale(1); opacity: 1; }
-      100% { transform: scale(0.6); opacity: 0; }
-    }
+    .card-content { padding: 12px; text-align: center; }
+    .card-content h3 { font-size: 1.05rem; margin-bottom: 8px; color: #fff; }
+    .card-content p { color: #c7d2fe; font-size: 0.9rem; margin-bottom: 8px; }
+    .btn-row { display:flex; gap:8px; justify-content:center; align-items:center; }
+    .delete-btn { padding: 8px 14px; border-radius: 10px; background: rgba(255,0,0,0.18); color: white; border: 1px solid rgba(255,0,0,0.28); cursor: pointer; font-weight: 600; }
 
-    .card:hover {
-      transform: translateY(-12px);
-      box-shadow: 0 22px 60px rgba(0,0,0,0.35);
-      background: rgba(255,255,255,0.13);
-      border-color: rgba(255,255,255,0.25);
-    }
+    /* tags */
+    .tags { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+    .tag { background: rgba(0,0,0,0.2); padding:6px 8px; border-radius: 999px; font-size:12px; color:#e9d5ff; border:1px solid rgba(255,255,255,0.04); }
 
-    .card img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .card img:hover { transform: scale(1.06); }
-
-    .card-content {
-      padding: 18px;
-      text-align: center;
-    }
-
-    .card-content h3 { font-size: 1.15rem; margin-bottom: 8px; color: #fff; }
-    .card-content p { color: #c7d2fe; font-size: 0.9rem; margin-bottom: 12px; }
-
-    .btn-row {
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      align-items:center;
-    }
-
-    .delete-btn {
-      padding: 10px 20px;
-      border-radius: 12px;
-      background: rgba(255,0,0,0.2);
-      color: white;
-      border: 1px solid rgba(255,0,0,0.3);
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .delete-btn:hover {
-      background: rgba(255,0,0,0.3);
-      transform: translateY(-3px);
-    }
-
-    /*********** Preview Modal ***********/
-    .preview-modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
-    }
-
+    /* preview modal */
+    .preview-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); display:flex; align-items:center; justify-content:center; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
     .preview-modal.active { opacity: 1; pointer-events: all; }
+    .preview-content { position: relative; max-width: 90vw; max-height: 85vh; }
+    .preview-content img { max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; }
+    .preview-close { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.95); border-radius: 50%; width: 38px; height: 38px; font-size: 20px; font-weight: bold; cursor: pointer; }
 
-    .preview-content {
-      position: relative;
-      max-width: 90vw;
-      max-height: 85vh;
-    }
-
-    .preview-content img {
-      max-width: 100%;
-      max-height: 80vh;
-      border-radius: 18px;
-      object-fit: contain;
-    }
-
-    .preview-close {
-      position: absolute;
-      top: 12px;
-      right: 18px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /*********** Edit Modal (glass) ***********/
-    .edit-modal {
-      position: fixed;
-      inset: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:1200;
-      pointer-events:none;
-      opacity:0;
-      transition: opacity .25s ease, transform .25s ease;
-    }
+    /* edit modal */
+    .edit-modal { position: fixed; inset: 0; display:flex; align-items:center; justify-content:center; z-index:1200; pointer-events:none; opacity:0; transition: opacity .25s ease, transform .25s ease; }
     .edit-modal.active { pointer-events:all; opacity:1; }
-
-    .edit-card {
-      width: 420px;
-      max-width: 92%;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(14px);
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 20px;
-      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
-      transform: translateY(8px);
-    }
-    .edit-modal.active .edit-card { transform: translateY(0); }
-
-    .edit-card h3 {
-      margin-bottom: 10px;
-      font-size: 1.15rem;
-      color: #fff;
-    }
-    .input {
-      width:100%;
-      padding:10px 12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.03);
-      color:#fff;
-      margin-bottom:10px;
-    }
-    .actions {
-      display:flex;
-      gap:10px;
-      justify-content:flex-end;
-      margin-top:8px;
-    }
+    .edit-card { width: 440px; max-width: 94%; background: rgba(255,255,255,0.05); backdrop-filter: blur(14px); border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); padding: 18px; box-shadow: 0 20px 60px rgba(2,6,23,0.6); transform: translateY(8px); }
+    .edit-card h3 { margin-bottom: 8px; font-size: 1.1rem; color: #fff; }
+    .input { width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.03); color:#fff; margin-bottom:10px; }
     .muted { color:#c7d2fe; font-size:0.9rem; margin-bottom:8px; }
+    .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
 
-    /*********** Toast (top-right) ***********/
-    .toast-wrap {
-      position: fixed;
-      top: 18px;
-      right: 18px;
-      z-index: 2000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      pointer-events: none; /* clicks fall through except on toasts */
-    }
-
-    .toast {
-      pointer-events: auto;
-      min-width: 180px;
-      max-width: 320px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(8px);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 8px 28px rgba(2,6,23,0.6);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transform-origin: top right;
-      animation: toastIn .25s ease, toastOut .25s ease .5s forwards;
-    }
-
+    /* toast */
+    .toast-wrap { position: fixed; top: 18px; right: 18px; z-index: 2000; display:flex; flex-direction:column; gap:10px; pointer-events:none; }
+    .toast { pointer-events:auto; min-width: 160px; max-width: 320px; background: rgba(255,255,255,0.08); backdrop-filter: blur(8px); color: white; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 28px rgba(2,6,23,0.6); font-weight: 600; display:flex; align-items:center; gap:10px; }
     .toast.success { background: linear-gradient(90deg,#0ea5e9,#7c3aed); }
     .toast.warn { background: linear-gradient(90deg,#f97316,#ef4444); }
 
-    @keyframes toastIn {
-      from { transform: translateY(-8px) scale(0.98); opacity: 0; }
-      to   { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    @keyframes toastOut {
-      to { transform: translateY(-8px) scale(0.98); opacity: 0; }
+    .sr-live { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    /* responsive mobile tweaks */
+    @media (max-width: 760px) {
+      header h1 { font-size: 1.6rem; }
+      .filter-bar { padding: 10px; border-radius: 14px; gap: 10px; }
+
+      /* on small screens we show the mobile toggle button */
+      .mobile-filter-toggle { display: inline-flex; }
+
+      /* collapsed controls: hide full controls until filter bar toggled open */
+      .filter-collapsed { display: none; }
+
+      /* When expanded show controls stacked (column) for easier tapping if user expands */
+      .filter-bar.expanded .filter-collapsed {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+        width: 100%;
+      }
+
+      /* make the gallery tighter */
+      .gallery { gap: 14px; }
+      .card img { height: 180px; }
     }
 
-    .toast .emoji { font-size: 18px; }
+    /* VERY SMALL DEVICES: stack everything full width for max accessibility */
+    @media (max-width: 420px) {
+      .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        overflow-x: visible; /* no horizontal scroll on very tiny */
+      }
 
-    /* small icon */
-    .toast .msg { flex:1; font-weight:600; font-size:14px; }
+      .filter-bar > * {
+        flex: 0 0 auto;
+        width: 100% !important;
+      }
 
-    /* accessible live region hidden but available */
-    .sr-live {
-      position: absolute;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
+      #searchInput { min-width: 100% !important; max-width: 100% !important; }
+      .filter-bar select, .filter-bar input { width: 100% !important; }
+      #clearBtn { width: 100% !important; }
     }
 
-    /* responsive */
-    @media (max-width:600px){
-      .toast-wrap { right: 12px; left: 12px; top: 12px; }
-      .toast { width: auto; }
-    }
   </style>
 </head>
-
 <body>
-  <!-- Orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
-  <!-- Header -->
   <header>
     <h1>🔍 Search Dresses</h1>
-    <div style="display:flex; gap:15px;">
+    <div style="display:flex; gap:12px; align-items:center;">
       <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
       <button class="btn btn-danger" onclick="logoutUser()">Logout</button>
     </div>
@@ -458,20 +242,34 @@
     }
   </script>
 
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <select id="sectionFilter">
+  <!-- Filter Bar (with sorting + mobile toggle) -->
+  <div id="filterBar" class="filter-bar" role="region" aria-label="Filters">
+    <button id="mobileFilterToggle" class="btn mobile-filter-toggle" title="Toggle filters">Filters</button>
+
+    <select id="sectionFilter" class="filter-collapsed" aria-label="Section">
       <option value="">All Sections</option>
     </select>
 
-    <select id="categoryFilter">
+    <select id="categoryFilter" class="filter-collapsed" aria-label="Category">
       <option value="">All Categories</option>
     </select>
 
-    <div style="flex:1; position:relative;">
-      <input type="text" id="searchInput" placeholder="Search by name..." autocomplete="off" />
+    <select id="sortSelect" aria-label="Sort" class="filter-collapsed" style="min-width:160px;">
+      <option value="">Sort: Default</option>
+      <option value="name_asc">Name (A–Z)</option>
+      <option value="name_desc">Name (Z–A)</option>
+      <option value="recent">Recently Added</option>
+      <option value="fav_first">Favourites First</option>
+    </select>
+
+    <div style="flex:1; position:relative; min-width:160px;">
+      <input type="text" id="searchInput" placeholder="Search by name..." autocomplete="off" aria-label="Search dresses by name" />
       <div id="suggestions" class="suggestions" style="display:none;"></div>
     </div>
+
+    <select id="tagFilter" class="filter-collapsed" aria-label="Tag" style="min-width:140px;">
+      <option value="">All Tags</option>
+    </select>
 
     <button class="btn" id="clearBtn">Clear</button>
   </div>
@@ -479,11 +277,12 @@
   <!-- Counter -->
   <div id="counterBar" class="counter-bar">Showing all dresses</div>
 
-  <!-- Gallery -->
-  <div id="gallery" class="gallery"></div>
+  <!-- Gallery & Skeleton container -->
+  <div id="gallery" class="gallery" aria-live="polite" aria-atomic="true"></div>
+  <div id="skeletons" class="skeleton-grid" style="display:none; margin-top:12px;"></div>
 
-  <!-- Loader -->
-  <div id="loader" class="counter-bar"></div>
+  <!-- Loader small -->
+  <div id="loader" class="counter-bar" aria-hidden="true"></div>
 
   <!-- Preview Modal -->
   <div id="previewModal" class="preview-modal" aria-hidden="true">
@@ -497,11 +296,13 @@
   <div id="editModal" class="edit-modal" aria-hidden="true">
     <div class="edit-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
       <h3 id="editTitle">Edit Dress</h3>
-      <div class="muted">Update name, section or category</div>
+      <div class="muted">Update name, section, category or tags</div>
 
-      <input id="editName" class="input" placeholder="Dress name" />
-      <select id="editSection" class="input"></select>
-      <select id="editCategory" class="input"></select>
+      <input id="editName" class="input" placeholder="Dress name" aria-label="Edit name" />
+      <select id="editSection" class="input" aria-label="Edit section"></select>
+      <select id="editCategory" class="input" aria-label="Edit category"></select>
+
+      <input id="editTags" class="input" placeholder="Tags (comma separated)" aria-label="Edit tags" />
 
       <div class="actions">
         <button class="btn" id="cancelEdit">Cancel</button>
@@ -514,7 +315,6 @@
   <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
   <div class="sr-live" id="srLive" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Your Original JS (modified to add animations/toast & no re-render on fav) -->
   <script>
     const API_URL = window.location.origin.includes("localhost")
       ? "http://localhost:8080/api"
@@ -530,12 +330,18 @@
     const previewModal = document.getElementById("previewModal");
     const previewImage = document.getElementById("previewImage");
     const closePreview = document.getElementById("closePreview");
+    const skeletons = document.getElementById("skeletons");
+    const tagFilter = document.getElementById("tagFilter");
+    const sortSelect = document.getElementById("sortSelect");
+    const mobileFilterToggle = document.getElementById("mobileFilterToggle");
+    const filterBar = document.getElementById("filterBar");
 
     // Edit modal elements
     const editModal = document.getElementById("editModal");
     const editName = document.getElementById("editName");
     const editSection = document.getElementById("editSection");
     const editCategory = document.getElementById("editCategory");
+    const editTags = document.getElementById("editTags");
     const cancelEdit = document.getElementById("cancelEdit");
     const saveEdit = document.getElementById("saveEdit");
 
@@ -545,62 +351,100 @@
 
     let dresses = [];
     let sections = [];
+    let tagsSet = new Set();
     let currentEditId = null;
 
-    /* ---------- Helpers: Toast & DOM event ---------- */
+    // Infinite scroll state
+    const CHUNK = 20; // items per batch
+    let renderedCount = 0;
+    let filteredCached = [];
 
+    /* ---------- Helpers: Toast & DOM event ---------- */
     function showToast({ text = "Done", variant = "success", duration = 1600 } = {}) {
       const t = document.createElement("div");
       t.className = `toast ${variant}`;
       t.innerHTML = `<div class="emoji">${variant === 'success' ? '💖' : '💔'}</div><div class="msg">${text}</div>`;
       toastWrap.prepend(t);
-
-      // announce to screen readers
       srLive.textContent = text;
-
-      // remove after duration + animation
-      setTimeout(() => {
-        t.style.transform = "translateY(-8px) scale(.98)";
-        t.style.opacity = "0";
-      }, duration - 260); // start fade a little before removal
+      setTimeout(() => { t.style.transform = "translateY(-8px) scale(.98)"; t.style.opacity = "0"; }, duration - 260);
       setTimeout(() => t.remove(), duration + 120);
     }
 
-    // dispatch global event for other pages to listen (optional)
-    function emitFavouriteEvent(detail) {
-      window.dispatchEvent(new CustomEvent("favourite-changed", { detail }));
+    function emitFavouriteEvent(detail) { window.dispatchEvent(new CustomEvent("favourite-changed", { detail })); }
+
+    /* ---------- Skeleton helpers ---------- */
+    function showSkeletons(count = 6) {
+      skeletons.innerHTML = '';
+      skeletons.style.display = 'grid';
+      for (let i=0;i<count;i++) {
+        const div = document.createElement('div');
+        div.className = 'skeleton-card';
+        div.innerHTML = `<div class="skeleton-anim"></div>`;
+        skeletons.appendChild(div);
+      }
     }
+    function hideSkeletons() { skeletons.style.display = 'none'; skeletons.innerHTML = ''; }
 
     /* ---------- Data loading & render ---------- */
-
     async function loadData() {
+      showSkeletons(8);
       loader.textContent = "Loading...";
-      const [dRes, sRes] = await Promise.all([
-        fetch(`${API_URL}/dresses`, { credentials: "include" }),
-        fetch(`${API_URL}/sections`, { credentials: "include" })
-      ]);
 
-      if (!dRes.ok) {
-        loader.textContent = "Auth failed. Login again.";
-        setTimeout(() => location.href = "login.html", 1500);
-        return;
+      try {
+        const [dRes, sRes] = await Promise.all([
+          fetch(`${API_URL}/dresses`, { credentials: "include" }),
+          fetch(`${API_URL}/sections`, { credentials: "include" })
+        ]);
+
+        if (!dRes.ok) {
+          loader.textContent = "Auth failed. Login again.";
+          setTimeout(() => location.href = "login.html", 1500);
+          return;
+        }
+
+        dresses = await dRes.json();
+        sections = await sRes.json();
+
+        // make sure tags exist on objects (backwards compat)
+        dresses = dresses.map(d => ({ ...d, tags: d.tags || [] }));
+
+        // collect tags
+        tagsSet = new Set();
+        dresses.forEach(d => (d.tags || []).forEach(t => tagsSet.add(t)));
+
+        renderSections();
+        populateTagFilter();
+
+        // initial render with infinite scroll
+        renderedCount = 0;
+        filteredCached = applyFilters();
+        gallery.innerHTML = '';
+        hideSkeletons();
+        renderMore();
+
+        loader.textContent = '';
+      } catch (err) {
+        console.error(err);
+        hideSkeletons();
+        loader.textContent = 'Error loading data';
       }
-
-      dresses = await dRes.json();
-      sections = await sRes.json();
-
-      renderSections();
-      renderGallery();
-      loader.textContent = "";
     }
 
     function renderSections() {
       sectionFilter.innerHTML = `<option value="">All Sections</option>`;
+      editSection.innerHTML = '';
       sections.forEach(sec => {
-        const opt = document.createElement("option");
-        opt.value = sec.name;
-        opt.textContent = sec.name;
-        sectionFilter.appendChild(opt);
+        const opt = document.createElement("option"); opt.value = sec.name; opt.textContent = sec.name; sectionFilter.appendChild(opt);
+        const opt2 = document.createElement("option"); opt2.value = sec.name; opt2.textContent = sec.name; editSection.appendChild(opt2);
+      });
+      // ensure categories are filled initially
+      fillCategoriesForEdit(editSection.value || (sections[0] && sections[0].name));
+    }
+
+    function populateTagFilter() {
+      tagFilter.innerHTML = `<option value="">All Tags</option>`;
+      Array.from(tagsSet).sort().forEach(t => {
+        const opt = document.createElement('option'); opt.value = t; opt.textContent = t; tagFilter.appendChild(opt);
       });
     }
 
@@ -609,385 +453,244 @@
       const selected = sections.find(s => s.name === sectionFilter.value);
       if (selected) {
         selected.categories.forEach(cat => {
-          const opt = document.createElement("option");
-          opt.value = cat;
-          opt.textContent = cat;
-          categoryFilter.appendChild(opt);
+          const opt = document.createElement("option"); opt.value = cat; opt.textContent = cat; categoryFilter.appendChild(opt);
         });
       }
-      renderGallery();
+      resetAndRender();
     };
 
-    categoryFilter.onchange = renderGallery;
+    categoryFilter.onchange = () => resetAndRender();
+    tagFilter.onchange = () => resetAndRender();
+    sortSelect.onchange = () => resetAndRender();
 
     document.getElementById("clearBtn").onclick = () => {
       sectionFilter.value = "";
       categoryFilter.innerHTML = `<option value="">All Categories</option>`;
+      tagFilter.value = "";
+      sortSelect.value = "";
       searchInput.value = "";
       suggestionsBox.style.display = "none";
-      renderGallery();
+      resetAndRender();
     };
 
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      if (!query) {
-        suggestionsBox.style.display = "none";
-        renderGallery();
-        return;
-      }
+    // Debounce helper
+    function debounce(fn, delay=300) {
+      let t;
+      return function(...args) { clearTimeout(t); t = setTimeout(()=>fn.apply(this,args), delay); };
+    }
 
-      const matches = dresses
-        .filter(d => d.name.toLowerCase().includes(query))
-        .slice(0, 5);
-
-      suggestionsBox.innerHTML = "";
-      suggestionsBox.style.display = matches.length ? "block" : "none";
-
+    searchInput.addEventListener("input", debounce(() => {
+      const query = searchInput.value.trim().toLowerCase();
+      if (!query) { suggestionsBox.style.display = 'none'; resetAndRender(); return; }
+      const matches = dresses.filter(d => d.name.toLowerCase().includes(query)).slice(0,6);
+      suggestionsBox.innerHTML = '';
+      suggestionsBox.style.display = matches.length ? 'block' : 'none';
       matches.forEach(m => {
-        const div = document.createElement("div");
-        div.className = "suggestion-item";
-        div.textContent = m.name;
-        div.onclick = () => {
-          searchInput.value = m.name;
-          suggestionsBox.style.display = "none";
-          renderGallery();
-        };
-        suggestionsBox.appendChild(div);
+        const div = document.createElement('div'); div.className='suggestion-item'; div.textContent = m.name; div.onclick = ()=>{ searchInput.value = m.name; suggestionsBox.style.display='none'; resetAndRender(); }; suggestionsBox.appendChild(div);
       });
+      resetAndRender();
+    }, 240));
 
-      renderGallery();
-    });
-
-    async function deleteDress(id, btn) {
-      if (!confirm("Delete this dress?")) return;
-
-      const card = btn.closest(".card");
-      card.style.opacity = "0.4";
-
-      const res = await fetch(`${API_URL}/dresses/${id}`, {
-        method: "DELETE",
-        credentials: "include"
-      });
-
-      if (!res.ok) {
-        alert("Delete failed.");
-        card.style.opacity = "1";
-        return;
-      }
-
-      // animate removal
-      card.style.opacity = "0";
-      card.style.transform = "scale(.98)";
-      setTimeout(() => card.remove(), 400);
-
-      // remove locally
-      dresses = dresses.filter(d => d._id !== id);
-      renderGallery();
+    function resetAndRender() {
+      renderedCount = 0; gallery.innerHTML = '';
+      filteredCached = applyFilters();
+      renderMore(true);
     }
 
-    function openPreview(img) {
-      previewImage.src = img;
-      previewModal.classList.add("active");
-    }
-
-    closePreview.onclick = () => previewModal.classList.remove("active");
-    previewModal.onclick = e => { if (e.target === previewModal) previewModal.classList.remove("active"); };
-
-    function renderGallery() {
-      gallery.innerHTML = "";
-
-      let filtered = dresses;
+    function applyFilters() {
+      let list = dresses.slice();
       const sec = sectionFilter.value;
       const cat = categoryFilter.value;
-      const search = searchInput.value.toLowerCase();
+      const search = searchInput.value.trim().toLowerCase();
+      const tag = tagFilter.value;
 
-      if (sec) filtered = filtered.filter(i => i.section === sec);
-      if (cat) filtered = filtered.filter(i => i.category === cat);
-      if (search) filtered = filtered.filter(i => i.name.toLowerCase().includes(search));
+      if (sec) list = list.filter(i => i.section === sec);
+      if (cat) list = list.filter(i => i.category === cat);
+      if (tag) list = list.filter(i => (i.tags||[]).includes(tag));
+      if (search) list = list.filter(i => i.name.toLowerCase().includes(search));
 
-      counterBar.innerHTML =
-        `Total Dresses: <b>${dresses.length}</b> |
-         ${sec ? `Section <b>${sec}</b>` : "All Sections"} |
-         ${cat ? `Category <b>${cat}</b>` : "All Categories"} |
-         Showing: <b>${filtered.length}</b>`;
+      // Sorting
+      const sort = sortSelect.value;
+      if (sort === 'name_asc') list.sort((a,b)=> a.name.localeCompare(b.name));
+      else if (sort === 'name_desc') list.sort((a,b)=> b.name.localeCompare(a.name));
+      else if (sort === 'fav_first') list.sort((a,b)=> (b.isFavorite?1:0) - (a.isFavorite?1:0));
+      else if (sort === 'recent') list.sort((a,b)=> {
+        const aTime = new Date(a.createdAt || a._id);
+        const bTime = new Date(b.createdAt || b._id);
+        return bTime - aTime;
+      });
 
-      if (!filtered.length) {
-        gallery.innerHTML =
-          `<div style="grid-column:1/-1; text-align:center; color:#ddd;">No dresses found</div>`;
+      return list;
+    }
+
+    // Render a batch for infinite scroll; if fresh=true we scroll to top
+    function renderMore(fresh=false) {
+      const list = filteredCached;
+      if (fresh) window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (renderedCount >= list.length) {
+        if (!renderedCount) gallery.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#ddd;">No dresses found</div>`;
         return;
       }
 
-      filtered.forEach(i => {
-        const card = document.createElement("div");
-        card.className = "card";
+      const slice = list.slice(renderedCount, renderedCount + CHUNK);
+      slice.forEach(i => gallery.appendChild(createCard(i, searchInput.value.trim())));
+      renderedCount += slice.length;
 
-        // create inner content so event handlers can reference functions already in scope
-        card.innerHTML = `
-          <img src="${i.imageUrl}" onclick="openPreview('${i.imageUrl}')" />
-
-          <button class="fav-btn" data-id="${i._id}" aria-label="${i.isFavorite ? 'Unfavourite' : 'Add to favourites'}">
-            ${i.isFavorite ? "❤️" : "🤍"}
-          </button>
-
-          <div class="card-content">
-            <h3>${i.name}</h3>
-            <p>${i.section} → ${i.category}</p>
-            <div class="btn-row">
-              <button class="delete-btn" data-id="${i._id}">Delete</button>
-              <button class="btn-gradient" data-id="${i._id}">Edit</button>
-            </div>
-          </div>
-        `;
-
-        // attach event handlers (avoid inline onclick to keep properly scoped)
-        const favBtn = card.querySelector(".fav-btn");
-        const delBtn = card.querySelector(".delete-btn");
-        const editBtn = card.querySelector(".btn-gradient");
-
-        favBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          toggleFavourite(i._id, favBtn);
-        });
-
-        delBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          deleteDress(i._id, delBtn);
-        });
-
-        editBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          openEditFromCard(i._id);
-        });
-
-        gallery.appendChild(card);
-      });
+      counterBar.innerHTML = `Total Dresses: <b>${dresses.length}</b> | Showing: <b>${renderedCount}</b> / ${list.length}`;
     }
 
-    // Toggle Favourite / Unfavourite (no re-render)
+    // Create DOM card for a dress
+    function createCard(i, searchTerm='') {
+      const card = document.createElement('div'); card.className='card';
+      // highlight function
+      const nameHtml = highlight(i.name, searchTerm);
+      const tagsHtml = (i.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+
+      card.innerHTML = `
+        <img src="${i.imageUrl || ''}" loading="lazy" onclick="openPreview('${i.imageUrl || ''}')" alt="${escapeHtml(i.name)}" />
+        <button class="fav-btn" data-id="${i._id}" aria-label="${i.isFavorite ? 'Unfavourite' : 'Add to favourites'}">${i.isFavorite ? '❤️' : '🤍'}</button>
+        <div class="card-content">
+          <h3>${nameHtml}</h3>
+          <p>${escapeHtml(i.section || '—')} → ${escapeHtml(i.category || '—')}</p>
+          <div class="tags">${tagsHtml}</div>
+          <div class="btn-row">
+            <button class="delete-btn" data-id="${i._id}">Delete</button>
+            <button class="btn-gradient" data-id="${i._id}">Edit</button>
+          </div>
+        </div>
+      `;
+
+      const favBtn = card.querySelector('.fav-btn');
+      const delBtn = card.querySelector('.delete-btn');
+      const editBtn = card.querySelector('.btn-gradient');
+
+      favBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleFavourite(i._id, favBtn); });
+      delBtn.addEventListener('click', (e)=>{ e.stopPropagation(); deleteDress(i._id, delBtn); });
+      editBtn.addEventListener('click', (e)=>{ e.stopPropagation(); openEditFromCard(i._id); });
+
+      return card;
+    }
+
+    // Helpers: escapeHtml & highlight
+    function escapeHtml(s='') { return (s+'').replace(/[&"'<>]/g, ch => ({'&':'&amp;','"':'&quot;',"'":'&#39;','<':'&lt;','>':'&gt;'}[ch])); }
+
+    function highlight(text, term) {
+      if (!term) return escapeHtml(text);
+      try {
+        const re = new RegExp('('+term.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')+')','ig');
+        return escapeHtml(text).replace(re, '<mark style="background:rgba(198,113,255,0.18); color:inherit; padding:0 3px; border-radius:3px;">$1</mark>');
+      } catch (e) { return escapeHtml(text); }
+    }
+
+    /* ---------- Scroll listener for infinite scroll ---------- */
+    let busyScroll = false;
+    window.addEventListener('scroll', () => {
+      if (busyScroll) return; const nearBottom = (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 700);
+      if (nearBottom) { busyScroll = true; setTimeout(()=>{ renderMore(); busyScroll=false; }, 220); }
+    });
+
+    /* ---------- CRUD actions ---------- */
+    async function deleteDress(id, btn) {
+      if (!confirm('Delete this dress?')) return;
+      const card = btn.closest('.card'); card.style.opacity = '0.4';
+      try {
+        const res = await fetch(`${API_URL}/dresses/${id}`, { method: 'DELETE', credentials: 'include' });
+        if (!res.ok) { alert('Delete failed.'); card.style.opacity = '1'; return; }
+        card.style.opacity = '0'; card.style.transform = 'scale(.98)'; setTimeout(()=>card.remove(), 380);
+        dresses = dresses.filter(d=>d._id !== id);
+        tagsSet = new Set(); dresses.forEach(d => (d.tags||[]).forEach(t => tagsSet.add(t)));
+        populateTagFilter();
+        resetAndRender();
+        showToast({ text: 'Deleted', variant: 'warn' });
+      } catch (err) { console.error(err); alert('Delete failed'); card.style.opacity = '1'; }
+    }
+
+    function openPreview(img) { previewImage.src = img || ''; previewModal.classList.add('active'); }
+    closePreview.onclick = () => previewModal.classList.remove('active');
+    previewModal.onclick = e => { if (e.target === previewModal) previewModal.classList.remove('active'); };
+
+    // Toggle Favourite (keeps optimistic UI)
     async function toggleFavourite(id, btn) {
       try {
-        // Optimistic UI: toggle visual immediately while we await server (keeps UX snappy)
-        const index = dresses.findIndex(d => d._id === id);
-        if (index === -1) return;
+        const index = dresses.findIndex(d=>d._id===id); if (index === -1) return;
+        const original = dresses[index].isFavorite;
+        dresses[index].isFavorite = !original; btn.innerHTML = dresses[index].isFavorite ? '❤️' : '🤍';
 
-        const originalState = dresses[index].isFavorite;
-
-        // Immediately update local model (so subsequent actions use consistent state)
-        dresses[index].isFavorite = !originalState;
-
-        // Apply immediate button visual change and animations
-        if (!originalState) {
-          // Was not favourite -> now favourite
-          btn.innerHTML = "❤️";
-          btn.setAttribute("aria-label", "Unfavourite");
-          btn.classList.add("heart-beat");
-          // remove the class after animation ends
-          setTimeout(() => btn.classList.remove("heart-beat"), 480);
-        } else {
-          // Was favourite -> now unfavourited
-          // play a small fade animation on the heart
-          btn.classList.add("fade-heart");
-          // temporarily show white heart while fading
-          btn.innerHTML = "🤍";
-          btn.setAttribute("aria-label", "Add to favourites");
-
-          setTimeout(() => {
-            btn.classList.remove("fade-heart");
-          }, 420);
-        }
-
-        // Fire request
-        const res = await fetch(`${API_URL}/dresses/${id}/favourite`, {
-          method: "PUT",
-          credentials: "include"
-        });
-
+        const res = await fetch(`${API_URL}/dresses/${id}/favourite`, { method:'PUT', credentials:'include' });
         const data = await res.json();
-
-        if (!res.ok || !data.success) {
-          // Revert UI & local model on error
-          dresses[index].isFavorite = originalState;
-          btn.innerHTML = originalState ? "❤️" : "🤍";
-          showToast({ text: "Failed to update favourite", variant: "warn", duration: 1800 });
-          return;
-        }
-
-        // Confirm server response is the truth (synchronize local model)
-        dresses[index].isFavorite = !!data.isFavorite;
-        btn.innerHTML = data.isFavorite ? "❤️" : "🤍";
-        btn.setAttribute("aria-label", data.isFavorite ? "Unfavourite" : "Add to favourites");
-
-        // Show toast & small animation
-        if (data.isFavorite) {
-          showToast({ text: "Added to favourites 💖", variant: "success", duration: 1600 });
-        } else {
-          showToast({ text: "Removed from favourites 💔", variant: "warn", duration: 1400 });
-        }
-
-        // Emit event so other pages (dashboard / favourites) can react if they are open
+        if (!res.ok || !data.success) { dresses[index].isFavorite = original; btn.innerHTML = original? '❤️':'🤍'; showToast({ text: 'Failed to update favourite', variant: 'warn' }); return; }
+        dresses[index].isFavorite = !!data.isFavorite; btn.innerHTML = data.isFavorite ? '❤️':'🤍';
+        showToast({ text: data.isFavorite ? 'Added to favourites 💖' : 'Removed from favourites 💔', variant: data.isFavorite? 'success':'warn' });
         emitFavouriteEvent({ id, isFavorite: !!data.isFavorite, dress: dresses[index] });
-
-        // IMPORTANT: DO NOT re-render the gallery here — keeps items in place.
-      } catch (err) {
-        console.error("Favourite toggle error:", err);
-        showToast({ text: "Server error", variant: "warn", duration: 1400 });
-      }
+      } catch (err) { console.error(err); showToast({ text: 'Server error', variant: 'warn' }); }
     }
 
     /* ----------------- Edit flow ----------------- */
-
-    // Open edit modal for a specific dress id (from card)
     function openEditFromCard(id) {
       const dress = dresses.find(d => d._id === id);
-      if (!dress) return alert("Dress not found.");
-
-      currentEditId = id;
-      populateEditFields(dress);
-      openEditModal();
+      if (!dress) return alert('Dress not found.');
+      currentEditId = id; populateEditFields(dress); openEditModal();
     }
 
-    // Populate edit modal fields and section/category options
     function populateEditFields(dress) {
-      editName.value = dress.name || "";
-
-      // fill section options
-      editSection.innerHTML = "";
-      sections.forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s.name;
-        opt.textContent = s.name;
-        editSection.appendChild(opt);
-      });
-
-      // select the dress section (if exists)
-      if (dress.section) editSection.value = dress.section;
-      else editSection.value = (sections[0] && sections[0].name) || "";
-
-      // fill categories for selected section
+      editName.value = dress.name || '';
+      editTags.value = (dress.tags || []).join(', ');
+      editSection.value = dress.section || (sections[0] && sections[0].name) || '';
       fillCategoriesForEdit(editSection.value);
-
-      // select the category (if exists)
-      if (dress.category) editCategory.value = dress.category;
+      editCategory.value = dress.category || '';
     }
 
     function fillCategoriesForEdit(sectionName) {
-      const sec = sections.find(s => s.name === sectionName);
-      editCategory.innerHTML = "";
-      if (!sec || !sec.categories.length) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "— No categories —";
-        editCategory.appendChild(opt);
-        return;
+      const sec = sections.find(s=>s.name===sectionName);
+      editCategory.innerHTML = '';
+      if (!sec || !sec.categories || !sec.categories.length) {
+        const opt = document.createElement('option'); opt.value = ''; opt.textContent = '— No categories —'; editCategory.appendChild(opt); return;
       }
-      sec.categories.forEach(c => {
-        const opt = document.createElement("option");
-        opt.value = c;
-        opt.textContent = c;
-        editCategory.appendChild(opt);
-      });
+      sec.categories.forEach(c=>{ const opt=document.createElement('option'); opt.value=c; opt.textContent=c; editCategory.appendChild(opt); });
     }
 
-    editSection.addEventListener("change", () => {
-      fillCategoriesForEdit(editSection.value);
-    });
+    editSection.addEventListener('change', ()=> fillCategoriesForEdit(editSection.value));
 
-    function openEditModal() {
-      editModal.classList.add("active");
-      editModal.setAttribute("aria-hidden", "false");
-      // small focus management
-      setTimeout(() => editName.focus(), 120);
-    }
+    function openEditModal() { editModal.classList.add('active'); editModal.setAttribute('aria-hidden','false'); setTimeout(()=> editName.focus(), 120); }
+    function closeEditModal() { editModal.classList.remove('active'); editModal.setAttribute('aria-hidden','true'); currentEditId = null; }
+    cancelEdit.addEventListener('click', (e)=>{ e.preventDefault(); closeEditModal(); });
 
-    function closeEditModal() {
-      editModal.classList.remove("active");
-      editModal.setAttribute("aria-hidden", "true");
-      currentEditId = null;
-    }
-
-    cancelEdit.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeEditModal();
-    });
-
-    // Save edits
-    saveEdit.addEventListener("click", async (e) => {
-      e.preventDefault();
-      if (!currentEditId) return alert("No dress selected.");
-
-      const payload = {
-        name: editName.value.trim(),
-        section: editSection.value,
-        category: editCategory.value
-      };
-
-      if (!payload.name) return alert("Name is required.");
+    saveEdit.addEventListener('click', async (e)=>{
+      e.preventDefault(); if (!currentEditId) return alert('No dress selected.');
+      const payload = { name: editName.value.trim(), section: editSection.value, category: editCategory.value, tags: editTags.value.split(',').map(t=>t.trim()).filter(Boolean) };
+      if (!payload.name) return alert('Name is required.');
 
       try {
-        saveEdit.disabled = true;
-        saveEdit.textContent = "Saving...";
-        const res = await fetch(`${API_URL}/dresses/${currentEditId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(payload)
-        });
-
+        saveEdit.disabled = true; saveEdit.textContent = 'Saving...';
+        const res = await fetch(`${API_URL}/dresses/${currentEditId}`, { method:'PUT', headers:{ 'Content-Type':'application/json' }, credentials:'include', body: JSON.stringify(payload) });
         const data = await res.json();
-        if (!res.ok) {
-          const msg = (data && data.message) ? data.message : "Update failed.";
-          alert(msg);
-          return;
-        }
+        if (!res.ok) { const msg = (data && data.message) ? data.message : 'Update failed.'; alert(msg); return; }
 
-        // If server returns updated dress, use it; otherwise update locally
         const updated = data.dress || data || null;
+        if (updated && updated._id) dresses = dresses.map(d => d._id === updated._id ? updated : d);
+        else dresses = dresses.map(d => d._id === currentEditId ? { ...d, name: payload.name, section: payload.section, category: payload.category, tags: payload.tags } : d);
 
-        if (updated && updated._id) {
-          dresses = dresses.map(d => d._id === updated._id ? updated : d);
-        } else {
-          // update locally using currentEditId
-          dresses = dresses.map(d => {
-            if (d._id === currentEditId) {
-              return { ...d, name: payload.name, section: payload.section, category: payload.category };
-            }
-            return d;
-          });
-        }
+        // refresh tags set
+        tagsSet = new Set(); dresses.forEach(d => (d.tags||[]).forEach(t => tagsSet.add(t)));
+        populateTagFilter();
 
-        renderGallery();
-        closeEditModal();
-      } catch (err) {
-        console.error("Save edit error:", err);
-        alert("Server error while saving.");
-      } finally {
-        saveEdit.disabled = false;
-        saveEdit.textContent = "Save";
-      }
+        resetAndRender(); closeEditModal(); showToast({ text: 'Saved', variant: 'success' });
+      } catch (err) { console.error(err); alert('Server error while saving.'); }
+      finally { saveEdit.disabled = false; saveEdit.textContent = 'Save'; }
     });
 
-    // Allow Esc to close edit modal
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (editModal.classList.contains("active")) closeEditModal();
-        if (previewModal.classList.contains("active")) previewModal.classList.remove("active");
-      }
-    });
+    window.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') { if (editModal.classList.contains('active')) closeEditModal(); if (previewModal.classList.contains('active')) previewModal.classList.remove('active'); } });
 
-    /* ----------------- End Edit flow ----------------- */
+    /* ---------- Mobile filter toggle ---------- */
+    mobileFilterToggle.addEventListener('click', ()=> { filterBar.classList.toggle('expanded'); });
 
+    /* ---------- Utility: escape single quotes for preview onclick usage ---------- */
+    function safeForOnClick(s='') { return (s||'').replace(/'/g, "\\'"); }
+
+    /* ---------- Initialize skeletons & data load ---------- */
+    showSkeletons(8);
     loadData();
 
-    /* ----------------- Optional: react to favourite events (example) -----------------
-       If you want other pages (opened in another tab) to update their UI live,
-       you can listen for the "favourite-changed" event:
-
-       window.addEventListener('favourite-changed', e => {
-         const { id, isFavorite, dress } = e.detail;
-         // e.g. update a favourites preview panel if present on this page
-       });
-    ------------------------------------------------------------------------------- */
   </script>
-
 </body>
 </html>

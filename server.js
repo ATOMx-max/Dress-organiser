@@ -156,8 +156,10 @@ const dressSchema = new mongoose.Schema({
   imageUrl: String,
   userEmail: String,
   isFavorite: { type: Boolean, default: false },
+  tags: { type: [String], default: [] },  // ⭐ NEW FIELD
   createdAt: { type: Date, default: Date.now },
 });
+
 
 const feedbackSchema = new mongoose.Schema({
   user: String,
@@ -716,7 +718,7 @@ app.put("/api/dresses/:id", async (req, res) => {
     const user = req.session.user;
     if (!user) return res.status(401).json({ message: "Unauthorized" });
 
-    const { name, section, category } = req.body;
+    const { name, section, category, tags } = req.body;
 
     if (!name || !section || !category) {
       return res.status(400).json({ message: "All fields are required." });
@@ -724,9 +726,15 @@ app.put("/api/dresses/:id", async (req, res) => {
 
     const updated = await Dress.findOneAndUpdate(
       { _id: req.params.id, userEmail: user.email },
-      { name, section, category },
+      {
+        name,
+        section,
+        category,
+        tags: Array.isArray(tags) ? tags : []
+      },
       { new: true }
     );
+
 
     if (!updated) {
       return res.status(404).json({ message: "Dress not found." });
