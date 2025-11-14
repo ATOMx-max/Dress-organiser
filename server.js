@@ -628,6 +628,7 @@ app.post(
 
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "dress_organizer",
+        format: "jpg",
       });
 
       const dress = await Dress.create({
