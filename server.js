@@ -1,5 +1,7 @@
 // 🌐 Dress Organizer Backend (v11.3 — Corrected startup & DB/Email/Cloudinary checks; password reset added; all features preserved)
 
+require("dotenv").config();
+//=========
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -293,6 +295,61 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ message: "Login failed." });
   }
 });
+// ---------- CURRENT USER / LOGOUT ----------
+app.get("/api/me", (req, res) => {
+  try {
+    if (!req.session || !req.session.user) return res.status(401).json({ message: "Unauthorized" });
+    // Return safe user fields only
+    const { email, verified, _id } = req.session.user;
+    res.json({ email, verified, id: _id });
+  } catch (err) {
+    console.error("❌ /api/me error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/logout", (req, res) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("❌ Logout error:", err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.clearCookie?.("connect.sid"); // best-effort cookie clear if used
+      res.json({ message: "Logged out" });
+    });
+  } catch (err) {
+    console.error("❌ Logout error:", err);
+    res.status(500).json({ message: "Logout failed" });
+  }
+});
+app.get("/api/stats", async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) return res.status(401).json({ message: "Unauthorized" });
+    const userEmail = req.session.user.email;
+    const dressCount = await Dress.countDocuments({ userEmail });
+    const sections = await Section.find({ $or:[{ userEmail:null }, { userEmail }]});
+    let categoryTotal = 0;
+    sections.forEach(s => categoryTotal += (s.categories || []).length);
+    res.json({ dresses: dressCount, sections: sections.length, categories: categoryTotal });
+  } catch (err) {
+    console.error("Stats error", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+app.post("/api/reset-defaults", async (req, res) => {
+  const user = req.session.user;
+  if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+  // delete user-created sections
+  await Section.deleteMany({ userEmail: user.email });
+
+  // delete user dresses
+  await Dress.deleteMany({ userEmail: user.email });
+
+  res.json({ message: "✅ All sections reset to default." });
+});
+
 
 // ---------- PASSWORD RESET (Added) ----------
 // 1) Request reset: sends email with link to /reset.html?token=...&id=...

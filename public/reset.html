@@ -95,9 +95,10 @@
 <body>
   <div class="reset-container">
     <h2>Reset Your Password</h2>
+
     <form id="resetForm">
-      <input type="password" id="password" placeholder="New Password" required />
-      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <input type="password" id="password" placeholder="New Password" required minlength="6" />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6" />
       <button type="submit">Update Password</button>
     </form>
 
@@ -106,25 +107,35 @@
   </div>
 
   <script>
-    const API_URL = window.location.origin.includes("localhost")? "http://localhost:8080": "https://dress-organiser.onrender.com";
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080"
+      : "https://dress-organiser.onrender.com";
+
     const msg = document.getElementById("msg");
 
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
     const id = params.get("id");
 
+    // Invalid URL
     if (!token || !id) {
       msg.textContent = "❌ Invalid or missing reset link.";
       msg.className = "message error";
       document.getElementById("resetForm").style.display = "none";
     }
 
-    const form = document.getElementById("resetForm");
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("resetForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const password = document.getElementById("password").value.trim();
       const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+      // Password validation
+      if (password.length < 6) {
+        msg.textContent = "⚠️ Password must be at least 6 characters.";
+        msg.className = "message error";
+        return;
+      }
 
       if (password !== confirmPassword) {
         msg.textContent = "⚠️ Passwords do not match!";
@@ -139,22 +150,24 @@
         const res = await fetch(`${API_URL}/reset-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, id, password }),
+          body: JSON.stringify({ token, id, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          msg.textContent = "✅ Password reset successful! Redirecting to login...";
+          msg.textContent = "✅ Password reset successful! Redirecting...";
           msg.className = "message success";
-          form.reset();
-          setTimeout(() => (window.location.href = "login.html"), 1500);
+
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+
         } else {
           msg.textContent = "❌ " + data.message;
           msg.className = "message error";
         }
       } catch (err) {
-        console.error(err);
         msg.textContent = "⚠️ Server not reachable. Try again later.";
         msg.className = "message error";
       }

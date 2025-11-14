@@ -17,6 +17,7 @@
       justify-content: center;
       height: 100vh;
       text-align: center;
+      padding: 15px;
     }
 
     .box {
@@ -77,12 +78,15 @@
     .warning-text { color: #f59e0b; }
   </style>
 </head>
+
 <body>
   <div class="box">
     <div class="emoji" id="emoji">⏳</div>
     <h2 id="title">Verifying Email...</h2>
     <p id="message">Please wait while we confirm your email verification.</p>
-    <a href="login.html" class="btn" id="loginBtn" style="display:none;">Go to Login</a>
+
+    <!-- Dynamic button: Login or Dashboard -->
+    <a href="login.html" class="btn" id="actionBtn" style="display:none;"></a>
   </div>
 
   <script>
@@ -92,32 +96,39 @@
     const emoji = document.getElementById("emoji");
     const title = document.getElementById("title");
     const message = document.getElementById("message");
-    const loginBtn = document.getElementById("loginBtn");
+    const actionBtn = document.getElementById("actionBtn");
+
+    const loggedIn = localStorage.getItem("loggedInUser");
+
+    function showButton(text, link) {
+      actionBtn.textContent = text;
+      actionBtn.href = link;
+      actionBtn.style.display = "inline-block";
+    }
 
     if (status === "success") {
       emoji.textContent = "🎉";
       title.textContent = "Email Verified!";
       title.className = "success-text";
-      message.textContent = "Your account has been successfully verified. You can now log in to your Dress Organizer account.";
-      loginBtn.style.display = "inline-block";
+      message.textContent = "Your account has been successfully verified.";
+
+      if (loggedIn) showButton("Go to Dashboard", "dashboard.html");
+      else showButton("Go to Login", "login.html");
     } 
     else if (status === "invalid") {
       emoji.textContent = "❌";
       title.textContent = "Invalid or Expired Link";
       title.className = "error-text";
-      message.textContent = "The verification link is invalid or has already been used. Please register again or request a new verification email.";
+      message.textContent = "The verification link is invalid or expired.";
+      showButton("Go to Login", "login.html");
     } 
     else if (status === "error") {
       emoji.textContent = "⚠️";
       title.textContent = "Verification Failed";
       title.className = "warning-text";
-      message.textContent = "Something went wrong while verifying your email. Please try again later.";
+      message.textContent = "An error occurred while verifying your email.";
+      showButton("Go to Login", "login.html");
     } 
-    else {
-      emoji.textContent = "⏳";
-      title.textContent = "Verifying Email...";
-      message.textContent = "Please wait while we confirm your verification link.";
-    }
   </script>
 </body>
 </html>

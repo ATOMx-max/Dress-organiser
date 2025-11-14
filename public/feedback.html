@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Feedback | Dress Organizer</title>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,6 +28,7 @@
       filter: blur(100px);
       opacity: 0.25;
       animation: float 10s ease-in-out infinite;
+      z-index: 0;
     }
 
     body::before {
@@ -60,7 +62,7 @@
       max-width: 450px;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      z-index: 1;
+      z-index: 10;
       animation: fadeIn 1s ease;
     }
 
@@ -78,7 +80,7 @@
     }
 
     p {
-      color: rgba(255,255,255,0.8);
+      color: rgba(255,255,255,0.85);
       margin-bottom: 25px;
     }
 
@@ -90,7 +92,7 @@
       padding: 15px;
       font-size: 1rem;
       resize: none;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.85);
       color: #333;
       outline: none;
       transition: all 0.3s ease;
@@ -121,27 +123,13 @@
       box-shadow: 0 8px 25px rgba(79,70,229,0.4);
     }
 
-    .back-link {
-      margin-top: 20px;
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .back-link:hover {
-      color: #fbbf24;
-    }
-
     .msg {
       margin-top: 15px;
       font-size: 1rem;
       font-weight: 500;
-      color: #fff;
       min-height: 24px;
     }
 
-    /* 🌀 Loading Spinner */
     .loader {
       border: 3px solid rgba(255,255,255,0.2);
       border-top: 3px solid #fbbf24;
@@ -153,23 +141,57 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .actions {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .actions button {
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+    }
+
+    .green-btn {
+      background: #10b981;
+    }
+
+    .red-btn {
+      background: #ef4444;
     }
   </style>
 </head>
+
 <body>
+
   <div class="glass-card">
     <h2>💬 Feedback</h2>
     <p>Your thoughts help us improve Dress Organizer!</p>
+
     <textarea id="feedbackText" placeholder="Write your feedback here..."></textarea>
+
     <button id="submitFeedback">Submit Feedback</button>
+
     <p id="msg" class="msg"></p>
-    <a href="index.html" class="back-link">← Back to Home</a>
+
+    <div class="actions">
+      <button class="green-btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+      <button class="red-btn" onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <script>
-    // 🌐 Auto-detect backend URL (localhost or Render)
+    // Redirect if not logged in
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    // Auto backend detect
     const API_URL = window.location.origin.includes("localhost")
       ? "http://localhost:8080"
       : "https://dress-organiser.onrender.com";
@@ -187,16 +209,17 @@
         return;
       }
 
-      // Show loading animation
+      // Loading animation
       btn.disabled = true;
       btn.innerHTML = '<span class="loader"></span> Sending...';
       msg.textContent = "";
 
       try {
-        const res = await fetch(`${API_URL}/feedback`, {
+        const res = await fetch(`${API_URL}/api/feedback`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user, message: feedback }),
+          credentials: "include",
+          body: JSON.stringify({ user, message: feedback })
         });
 
         const data = await res.json();
@@ -209,17 +232,22 @@
           msg.textContent = "❌ Failed to send feedback.";
           msg.style.color = "#ef4444";
         }
-      } catch (err) {
+      } catch {
         msg.textContent = "⚠️ Server not reachable.";
         msg.style.color = "#fbbf24";
       }
 
-      // Restore button after short delay
       setTimeout(() => {
         btn.disabled = false;
         btn.innerHTML = "Submit Feedback";
-      }, 1000);
+      }, 1200);
     });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
   </script>
+
 </body>
 </html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Sections & Categories | Dress Organizer</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -39,7 +40,7 @@
       border-radius: 50px;
       padding: 10px 25px;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: 0.3s;
       box-shadow: 0 8px 20px rgba(79,70,229,0.3);
     }
 
@@ -47,7 +48,6 @@
 
     .btn.logout {
       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      box-shadow: 0 8px 20px rgba(239,68,68,0.3);
     }
 
     .panel {
@@ -81,9 +81,9 @@
       border: 2px solid #e5e7eb;
       border-radius: 12px;
       font-size: 15px;
-      transition: all 0.3s;
       flex: 1;
       min-width: 220px;
+      transition: 0.3s;
     }
 
     input:focus, select:focus {
@@ -120,29 +120,8 @@
       height: 20px;
       text-align: center;
       line-height: 20px;
-      font-size: 14px;
       cursor: pointer;
-      transition: all 0.3s;
     }
-
-    .tag span:hover { background: #dc2626; }
-
-    .back-btn {
-      display: block;
-      text-align: center;
-      margin: 30px auto;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      padding: 12px 30px;
-      border-radius: 25px;
-      text-decoration: none;
-      font-weight: bold;
-      width: fit-content;
-      box-shadow: 0 5px 20px rgba(16,185,129,0.4);
-      transition: all 0.3s;
-    }
-
-    .back-btn:hover { transform: scale(1.05); }
 
     .reset-btn {
       display: block;
@@ -154,8 +133,8 @@
       border-radius: 50px;
       cursor: pointer;
       font-weight: 600;
-      transition: 0.3s;
       box-shadow: 0 8px 20px rgba(16,185,129,0.3);
+      transition: 0.3s;
     }
 
     .reset-btn:hover { transform: scale(1.05); }
@@ -169,59 +148,93 @@
   </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header>
     <h1>⚙️ Manage Sections & Categories</h1>
     <button class="btn logout" id="logoutBtn">Logout</button>
   </header>
 
+  <!-- SECTION PANEL -->
   <div class="panel">
     <h2>🧩 Add Section</h2>
     <div class="input-row">
-      <input type="text" id="sectionInput" placeholder="Enter new section (e.g., Dresses)">
+      <input type="text" id="sectionInput" placeholder="Enter new section">
       <button class="btn" id="addSectionBtn">Add Section</button>
     </div>
     <div class="tag-container" id="sectionList"></div>
   </div>
 
+  <!-- CATEGORY PANEL -->
   <div class="panel">
     <h2>📂 Add Category</h2>
     <div class="input-row">
       <select id="sectionSelect"><option value="">Select Section</option></select>
-      <input type="text" id="categoryInput" placeholder="Enter new category (e.g., Tops)">
+      <input type="text" id="categoryInput" placeholder="Enter new category">
       <button class="btn" id="addCategoryBtn">Add Category</button>
     </div>
     <div class="tag-container" id="categoryList"></div>
   </div>
 
+  <!-- RESET DEFAULTS -->
   <button class="reset-btn" onclick="resetDefaults()">♻ Reset to Default</button>
 
-  <a href="index.html" class="back-btn">← Back to Home</a>
+  <!-- BACK BUTTON -->
+  <div style="display:flex; justify-content:center; margin-top:30px;">
+    <button class="btn" onclick="window.location.href='dashboard.html'"
+      style="background:linear-gradient(135deg,#10b981,#059669);padding:12px 30px;">
+      ← Dashboard
+    </button>
+  </div>
+
   <div id="loader" class="loader"></div>
 
+  <!-- MAIN SCRIPT -->
   <script>
-    const API_URL = window.location.origin.includes("localhost") ? "http://localhost:8080/api" : "https://dress-organiser.onrender.com/api";
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080/api"
+      : "https://dress-organiser.onrender.com/api";
 
-    if (!localStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
+    // ============================
+    //  SESSION CHECK
+    // ============================
+    async function checkSession() {
+      const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
+      if (res.status === 401) {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      }
     }
 
+    // ============================
+    //  LOGOUT BUTTON
+    // ============================
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    };
+
+    // DOM elements
     const sectionList = document.getElementById("sectionList");
     const sectionSelect = document.getElementById("sectionSelect");
     const categoryList = document.getElementById("categoryList");
     const loader = document.getElementById("loader");
 
-    // --- Load all sections ---
+    // ============================
+    //  LOAD SECTIONS
+    // ============================
     async function loadSections() {
       loader.textContent = "Loading sections...";
       const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
       const data = await res.json();
-      renderSections(data);
       loader.textContent = "";
+      renderSections(data);
     }
 
     function renderSections(sections) {
       sectionList.innerHTML = "";
       sectionSelect.innerHTML = `<option value="">Select Section</option>`;
+
       sections.forEach(sec => {
         const tag = document.createElement("div");
         tag.className = "tag";
@@ -235,91 +248,139 @@
       });
     }
 
+    // ============================
+    //  ADD SECTION
+    // ============================
     async function addSection() {
       const name = document.getElementById("sectionInput").value.trim();
-      if (!name) return alert("Please enter a section name!");
+      if (!name) return alert("Enter a section name!");
+
       const res = await fetch(`${API_URL}/sections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ name }),
       });
+
       const data = await res.json();
       alert(data.message);
       document.getElementById("sectionInput").value = "";
       loadSections();
     }
 
+    // ============================
+    //  DELETE SECTION
+    // ============================
     async function deleteSection(name) {
       if (!confirm(`Delete section '${name}' and all related dresses?`)) return;
-      const res = await fetch(`${API_URL}/sections/${name}`, { method: "DELETE", credentials: "include" });
+
+      const res = await fetch(`${API_URL}/sections/${name}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
       const data = await res.json();
       alert(data.message);
       loadSections();
       categoryList.innerHTML = "";
     }
 
+    // ============================
+    //  LOAD CATEGORIES
+    // ============================
     async function loadCategories() {
       categoryList.innerHTML = "";
-      const selected = sectionSelect.value;
-      if (!selected) return;
+      const sectionName = sectionSelect.value;
+
+      if (!sectionName) return;
+
       const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
       const data = await res.json();
-      const sec = data.find(s => s.name === selected);
+
+      const sec = data.find(s => s.name === sectionName);
       if (!sec) return;
+
       sec.categories.forEach(cat => {
         const tag = document.createElement("div");
         tag.className = "tag";
-        tag.innerHTML = `${cat} <span onclick="deleteCategory('${selected}','${cat}')">×</span>`;
+        tag.innerHTML = `${cat} <span onclick="deleteCategory('${sectionName}','${cat}')">×</span>`;
         categoryList.appendChild(tag);
       });
     }
 
+    // ============================
+    //  ADD CATEGORY
+    // ============================
     async function addCategory() {
       const sectionName = sectionSelect.value;
       const category = document.getElementById("categoryInput").value.trim();
+
       if (!sectionName) return alert("Select a section first!");
       if (!category) return alert("Enter a category name!");
+
       const res = await fetch(`${API_URL}/categories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ sectionName, category }),
       });
+
       const data = await res.json();
       alert(data.message);
+
       document.getElementById("categoryInput").value = "";
       loadCategories();
     }
 
+    // ============================
+    //  DELETE CATEGORY
+    // ============================
     async function deleteCategory(section, category) {
-      if (!confirm(`Delete category '${category}' from '${section}'?`)) return;
-      const res = await fetch(`${API_URL}/categories/${section}/${category}`, { method: "DELETE", credentials: "include" });
+      if (!confirm(`Delete category '${category}'?`)) return;
+
+      const res = await fetch(`${API_URL}/categories/${section}/${category}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
       const data = await res.json();
       alert(data.message);
       loadCategories();
     }
 
+    // ============================
+    //  RESET DEFAULT VALUES
+    // ============================
     async function resetDefaults() {
-      if (!confirm("Are you sure you want to reset all sections and categories to default?")) return;
-      const res = await fetch(`${API_URL}/reset-defaults`, { method: "POST", credentials: "include" });
+      if (!confirm("Reset all sections & categories to default?")) return;
+
+      const res = await fetch(`${API_URL}/reset-defaults`, {
+        method: "POST",
+        credentials: "include"
+      });
+
       const data = await res.json();
       alert(data.message);
+
       loadSections();
       categoryList.innerHTML = "";
     }
 
-    // --- Event Listeners ---
+    // ============================
+    //  EVENT LISTENERS
+    // ============================
     document.getElementById("addSectionBtn").onclick = addSection;
     document.getElementById("addCategoryBtn").onclick = addCategory;
     sectionSelect.onchange = loadCategories;
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
-    };
 
-    // --- Init ---
-    loadSections();
+    // ============================
+    //  SAFE STARTUP
+    // ============================
+    (async () => {
+      await checkSession();
+      loadSections();
+    })();
   </script>
+
 </body>
 </html>

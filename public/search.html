@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Dresses | Dress Organizer</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -171,7 +172,6 @@
       margin-top: 15px;
     }
 
-    /* Small inline loader for delete */
     .delete-loading {
       width: 22px;
       height: 22px;
@@ -187,7 +187,6 @@
       to { transform: rotate(360deg); }
     }
 
-    /* 🔍 PREVIEW MODAL */
     .preview-modal {
       position: fixed;
       top: 0; left: 0;
@@ -208,35 +207,23 @@
       pointer-events: all;
     }
 
-    /* 🖼️ FIXED PREVIEW MODAL LAYOUT */
     .preview-content {
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: auto;
-      height: auto;
       max-width: 90vw;
       max-height: 85vh;
       padding: 10px;
       border-radius: 20px;
       background: rgba(0, 0, 0, 0.3);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
       animation: popIn 0.4s ease;
-      overflow: hidden;
     }
 
     .preview-content img {
       max-width: 100%;
       max-height: 80vh;
-      width: auto;
-      height: auto;
       border-radius: 15px;
       object-fit: contain;
-      display: block;
-      animation: zoomIn 0.5s ease;
       cursor: zoom-in;
-      transition: transform 0.3s ease;
+      transition: 0.3s ease;
     }
 
     .preview-content img.zoomed {
@@ -257,32 +244,36 @@
       height: 38px;
       cursor: pointer;
       font-weight: bold;
-      transition: 0.3s;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-
-    .preview-close:hover {
-      background: #ef4444;
-      color: white;
-      transform: rotate(90deg);
     }
 
     @keyframes popIn {
       from { transform: scale(0.9); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-
-    @keyframes zoomIn {
-      from { transform: scale(1.05); opacity: 0.8; }
-      to { transform: scale(1); opacity: 1; }
-    }
   </style>
 </head>
+
 <body>
   <header>
     <h1>🔍 Search Dresses</h1>
-    <button class="btn" onclick="window.location.href='index.html'">← Back</button>
+
+    <div style="display:flex; gap:15px;">
+      <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
+
+      <button class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);"
+        onclick="logoutUser()">
+        Logout
+      </button>
+    </div>
   </header>
+
+  <script>
+    function logoutUser() {
+      localStorage.removeItem("loggedInUser");
+      document.cookie = "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = "login.html";
+    }
+  </script>
 
   <div class="filter-bar">
     <select id="sectionFilter">
@@ -298,14 +289,15 @@
       <div id="suggestions" class="suggestions" style="display:none;"></div>
     </div>
 
-    <button class="btn" id="clearBtn">Clear Filters</button>
+    <button class="btn" id="clearBtn">Clear</button>
   </div>
 
   <div id="counterBar" class="counter-bar">Showing all dresses.</div>
+
   <div id="gallery" class="gallery"></div>
   <div id="loader" class="loader"></div>
 
-  <!-- 🖼️ Preview Modal -->
+  <!-- Preview Modal -->
   <div id="previewModal" class="preview-modal">
     <div class="preview-content">
       <button class="preview-close" id="closePreview">✖</button>
@@ -314,7 +306,10 @@
   </div>
 
   <script>
-    const API_URL = window.location.origin.includes("localhost")? "http://localhost:8080/api": "https://dress-organiser.onrender.com/api";
+    // Correct API root
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080/api"
+      : "https://dress-organiser.onrender.com/api";
 
     const gallery = document.getElementById("gallery");
     const sectionFilter = document.getElementById("sectionFilter");
@@ -332,14 +327,24 @@
 
     async function loadData() {
       loader.textContent = "Loading data...";
+
       const [dRes, sRes] = await Promise.all([
-        fetch(`${API_URL}/dresses`),
-        fetch(`${API_URL}/sections`)
+        fetch(`${API_URL}/dresses`, { credentials: "include" }),
+        fetch(`${API_URL}/sections`, { credentials: "include" })
       ]);
+
+      if (!dRes.ok || !sRes.ok) {
+        loader.textContent = "Authentication failed. Please login again.";
+        setTimeout(() => (location.href = "login.html"), 1500);
+        return;
+      }
+
       dresses = await dRes.json();
       sections = await sRes.json();
+
       renderSections();
       renderGallery();
+
       loader.textContent = "";
     }
 
@@ -368,6 +373,7 @@
     };
 
     categoryFilter.onchange = renderGallery;
+
     document.getElementById("clearBtn").onclick = () => {
       sectionFilter.value = "";
       categoryFilter.innerHTML = `<option value="">All Categories</option>`;
@@ -408,12 +414,21 @@
       if (!confirm("🗑️ Delete this dress?")) return;
 
       const card = btn.closest(".card");
-      const loader = document.createElement("div");
-      loader.className = "delete-loading";
+      const loaderDiv = document.createElement("div");
+      loaderDiv.className = "delete-loading";
       card.querySelector(".card-content").innerHTML = "";
-      card.querySelector(".card-content").appendChild(loader);
+      card.querySelector(".card-content").appendChild(loaderDiv);
 
-      await fetch(`${API_URL}/dresses/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_URL}/dresses/${id}`, {
+        method: "DELETE",
+        credentials: "include"
+      });
+
+      if (!res.ok) {
+        alert("Delete failed.");
+        return;
+      }
+
       card.style.opacity = "0";
       setTimeout(() => card.remove(), 400);
     }
@@ -428,13 +443,13 @@
       if (e.target === previewModal) previewModal.classList.remove("active");
     };
 
-    // 🖱️ Optional: Zoom toggle on click
     previewImage.onclick = () => {
       previewImage.classList.toggle("zoomed");
     };
 
     function renderGallery() {
       gallery.innerHTML = "";
+
       let filtered = dresses;
       const sec = sectionFilter.value;
       const cat = categoryFilter.value;
