@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Dress | Dress Organizer</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 15px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1200px; margin: 0 auto 30px; padding: 0 10px;
+    }
+    header h1 { font-size: 1.8rem; font-weight: 700; }
+
+    .btn {
+      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+      border:none;color:white;font-weight:600;
+      border-radius:50px;padding:10px 20px;cursor:pointer;
+      transition:0.3s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .logout { background: linear-gradient(135deg,#ef4444,#dc2626); }
+
+    .container {
+      background:white;color:#333;
+      max-width:650px;margin:0 auto;padding:25px;
+      border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,0.25);
+    }
+
+    h2 { text-align:center;color:#4f46e5;margin-bottom:20px; }
+
+    label { display:block;margin-top:20px;font-weight:600; }
+    input[type="text"], select {
+      width:100%;padding:12px;border-radius:10px;border:2px solid #ddd;
+      font-size:15px;margin-top:5px;
+    }
+
+    input[type="file"] { display:none; }
+    .upload-box {
+      padding:20px;border:2px dashed #888;text-align:center;
+      border-radius:12px;margin-top:10px;cursor:pointer;
+    }
+
+    .preview img {
+      width:100%;margin-top:15px;border-radius:15px;
+    }
+
+    .status { text-align:center;margin-top:15px;font-weight:600; }
+    .success { color:#16a34a; }
+    .error { color:#dc2626; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>👗 Upload Dress</h1>
+    <div style="display:flex; gap:10px;">
+      <button class="btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+      <button class="btn logout" id="logoutBtn">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>📸 Add New Dress</h2>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+      <label>Dress Name:</label>
+      <input type="text" id="name" name="name" placeholder="Red Party Gown" required />
+
+      <label>Section:</label>
+      <select id="section" name="section" required>
+        <option value="">Select Section</option>
+      </select>
+
+      <label>Category:</label>
+      <select id="category" name="category" required>
+        <option value="">Select Category</option>
+      </select>
+
+      <label>Upload Image:</label>
+      <label class="upload-box" for="image">📷 Click to select image</label>
+      <input type="file" id="image" name="image" accept="image/*" required />
+
+      <div class="preview" id="preview"></div>
+
+      <button class="btn" type="submit" style="width:100%; margin-top:25px;">
+        ✨ Upload Dress
+      </button>
+    </form>
+
+    <p id="status" class="status"></p>
+  </div>
+
+  <script>
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080"
+      : "https://dress-organiser.onrender.com";
+
+    const sectionSelect = document.getElementById("section");
+    const categorySelect = document.getElementById("category");
+    const preview = document.getElementById("preview");
+    const statusText = document.getElementById("status");
+
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    // Load sections from backend
+    async function loadSections() {
+      const res = await fetch(`${API_URL}/api/sections`, { credentials: "include" });
+      if (!res.ok) return;
+
+      const data = await res.json();
+      sectionSelect.innerHTML = `<option value="">Select Section</option>`;
+
+      data.forEach(s => {
+        sectionSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+      });
+
+      // Load categories when section changes
+      sectionSelect.onchange = () => {
+        const selected = data.find(x => x.name === sectionSelect.value);
+        categorySelect.innerHTML = `<option value="">Select Category</option>`;
+        if (selected) {
+          selected.categories.forEach(c => {
+            categorySelect.innerHTML += `<option value="${c}">${c}</option>`;
+          });
+        }
+      };
+    }
+
+    loadSections();
+
+    // Preview photo
+    document.getElementById("image").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => (preview.innerHTML = `<img src="${reader.result}" />`);
+      reader.readAsDataURL(file);
+    });
+
+    // Upload form
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+
+      try {
+        const res = await fetch(`${API_URL}/api/dresses`, {
+          method: "POST",
+          body: formData,
+          credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          statusText.textContent = "✅ Uploaded successfully!";
+          statusText.className = "status success";
+          setTimeout(() => location.reload(), 1200);
+        } else {
+          statusText.textContent = "❌ " + data.message;
+          statusText.className = "status error";
+        }
+      } catch {
+        statusText.textContent = "⚠ Network error!";
+        statusText.className = "status error";
+      }
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    };
+  </script>
+</body>
+</html>

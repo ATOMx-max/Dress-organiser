@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | Dress Organizer</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -12,43 +14,39 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       font-family: "Poppins", sans-serif;
       min-height: 100vh;
-      color: #fff;
       padding: 20px;
+      color: #fff;
       position: relative;
       overflow-x: hidden;
     }
 
-    /* Floating Glow Backgrounds */
+    /* Soft Glow Circles */
     body::before, body::after {
       content: "";
       position: absolute;
       border-radius: 50%;
-      filter: blur(100px);
+      filter: blur(90px);
       opacity: 0.25;
       z-index: 0;
       animation: float 10s infinite ease-in-out;
     }
 
     body::before {
-      width: 450px;
-      height: 450px;
       background: #fbbf24;
-      top: -120px;
-      left: -120px;
+      width: 380px; height: 380px;
+      top: -120px; left: -120px;
     }
 
     body::after {
-      width: 480px;
-      height: 480px;
       background: #ec4899;
-      bottom: -150px;
-      right: -150px;
+      width: 420px; height: 420px;
+      bottom: -120px; right: -120px;
       animation-delay: 4s;
     }
 
     @keyframes float {
       0%,100% { transform: translate(0,0); }
-      50% { transform: translate(40px,40px); }
+      50% { transform: translate(35px, 35px); }
     }
 
     /* Topbar */
@@ -56,7 +54,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 35px;
+      margin-bottom: 30px;
       position: relative;
       z-index: 10;
     }
@@ -65,79 +63,54 @@
       font-size: 2rem;
       font-weight: 700;
       text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-      to { text-shadow: 0 4px 35px rgba(255,255,255,0.5); }
     }
 
     .logout-btn {
       padding: 10px 20px;
       border-radius: 12px;
-      background: linear-gradient(135deg,#ef4444,#dc2626);
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
       color: white;
       border: none;
       cursor: pointer;
       font-weight: 600;
       transition: 0.3s;
-      box-shadow: 0 5px 15px rgba(239,68,68,0.35);
     }
 
-    .logout-btn:hover { transform: translateY(-3px); }
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.35);
+      transform: translateY(-2px);
+    }
 
-    /* Dashboard Grid */
+    /* Grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 25px;
       position: relative;
       z-index: 10;
+      margin-top: 20px;
     }
 
     .card {
       background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(20px);
       padding: 35px 25px;
       border-radius: 25px;
       text-align: center;
-      color: white;
-      font-size: 1.2rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: 0.35s;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      border: 1px solid rgba(255,255,255,0.2);
-      position: relative;
-      overflow: hidden;
+      transition: 0.3s ease;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
     .card:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      top: -80px;
-      left: -80px;
-      width: 200px;
-      height: 200px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-      transition: 0.4s;
-      opacity: 0;
-    }
-
-    .card:hover::before {
-      opacity: 1;
-      transform: scale(1.2);
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     }
 
     .emoji {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 12px;
       display: block;
     }
@@ -146,20 +119,14 @@
 
 <body>
 
-  <!-- TOP BAR -->
   <div class="topbar">
-    <h2>DASHBOARD</h2>
-
+    <h2>Dashboard</h2>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 
-  <h1 style="text-align:center; margin-bottom:25px; position:relative; z-index:10;" id="welcomeText">
-    Welcome 👋
-  </h1>
+  <h1 style="text-align:center; margin-bottom:25px;">Welcome 👋</h1>
 
-  <!-- GRID OPTIONS -->
   <div class="grid">
-
     <div class="card" onclick="go('upload.html')">
       <span class="emoji">📸</span>
       Upload Dress
@@ -175,46 +142,22 @@
       Manage Sections
     </div>
 
-    <div class="card" onclick="go('all-dresses.html')">
-      <span class="emoji">📁</span>
-      All Dresses
-    </div>
-
-    <div class="card" onclick="go('feedback.html')">
-      <span class="emoji">💬</span>
-      Feedback
-    </div>
-
     <div class="card" onclick="go('profile.html')">
       <span class="emoji">👤</span>
-      Account Settings
+      Profile / Account
     </div>
 
   </div>
 
   <script>
+    // Auto detect backend (Render or Localhost)
     const API_URL = window.location.origin.includes("localhost")
-      ? "http://localhost:8080/api"
-      : "https://dress-organiser.onrender.com/api";
+      ? "http://localhost:8080"
+      : window.location.origin;
 
-    // Fetch session to verify login
-    async function checkSession() {
-      const res = await fetch(`${API_URL}/sections`, { credentials: "include" });
-
-      if (res.status === 401) {
-        localStorage.removeItem("loggedInUser");
-        window.location.href = "login.html";
-      }
-    }
-    checkSession();
-
-    // Greeting by email
-    const user = localStorage.getItem("loggedInUser");
-    if (!user) {
+    // Redirect if logged out
+    if (!localStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
-    } else {
-      document.getElementById("welcomeText").textContent =
-        `Welcome ${user.split("@")[0]} 👋`;
     }
 
     function go(page) {
@@ -222,8 +165,13 @@
     }
 
     function logout() {
-      localStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
+      fetch(`${API_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+      }).finally(() => {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+      });
     }
   </script>
 

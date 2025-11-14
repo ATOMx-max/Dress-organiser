@@ -692,6 +692,32 @@ app.get("/test-email", async (req, res) => {
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "login.html")));
 app.get("/verify.html", (req, res) => res.sendFile(path.join(__dirname, "public", "verify.html")));
 app.get("/reset.html", (req, res) => res.sendFile(path.join(__dirname, "public", "reset.html")));
+// Frontend pages
+app.get("/dashboard.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"))
+);
+
+app.get("/upload.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "upload.html"))
+);
+
+app.get("/search.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "search.html"))
+);
+
+app.get("/manage.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "manage.html"))
+);
+
+app.get("/profile.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "profile.html"))
+);
+
+app.get("/all-dresses.html", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "all-dresses.html"))
+);
+
+
 // --- Seed global defaults ---
 async function seedDefaults() {
   const count = await Section.countDocuments({ userEmail: null });

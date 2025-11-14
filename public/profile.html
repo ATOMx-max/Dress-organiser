@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile | Dress Organizer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 20px;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 550px;
+      background: rgba(255,255,255,0.95);
+      color: #333;
+      margin: 0 auto;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 27px;
+      color: #4f46e5;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      margin: 20px 0;
+      padding: 18px;
+      border-radius: 15px;
+      background: #f3f4f6;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .logout {
+      background: linear-gradient(135deg,#ef4444,#dc2626);
+    }
+
+    .stats {
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 15px;
+      background: #eef2ff;
+    }
+
+    .stats p {
+      margin: 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>👤 Your Profile</h1>
+
+    <div class="info-box">
+      <p><strong>Email:</strong> <span id="email">Loading...</span></p>
+      <p><strong>Status:</strong> <span id="verified">Loading...</span></p>
+    </div>
+
+    <div class="stats">
+      <p>📌 Total Dresses: <span id="dressCount">0</span></p>
+      <p>📂 Sections: <span id="sectionCount">0</span></p>
+      <p>🏷️ Categories: <span id="categoryCount">0</span></p>
+    </div>
+
+    <a href="dashboard.html" class="btn">← Back to Dashboard</a>
+    <button class="btn logout" id="logoutBtn">Logout</button>
+  </div>
+
+  <script>
+    const API_URL = window.location.origin.includes("localhost")
+      ? "http://localhost:8080"
+      : "https://dress-organiser.onrender.com";
+
+    const emailSpan = document.getElementById("email");
+    const verifiedSpan = document.getElementById("verified");
+    const dressCount = document.getElementById("dressCount");
+    const sectionCount = document.getElementById("sectionCount");
+    const categoryCount = document.getElementById("categoryCount");
+
+    // Redirect if not logged in
+    if (!localStorage.getItem("loggedInUser")) {
+      window.location.href = "login.html";
+    }
+
+    // Load user info
+    async function loadUser() {
+      try {
+        const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
+        if (!res.ok) {
+          window.location.href = "login.html";
+          return;
+        }
+        const user = await res.json();
+        emailSpan.textContent = user.email;
+        verifiedSpan.textContent = user.verified ? "✔ Verified" : "❌ Not Verified";
+      } catch {
+        emailSpan.textContent = "Error";
+      }
+    }
+
+    // Load stats
+    async function loadStats() {
+      const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
+      if (!res.ok) return;
+
+      const stats = await res.json();
+      dressCount.textContent = stats.dresses;
+      sectionCount.textContent = stats.sections;
+      categoryCount.textContent = stats.categories;
+    }
+
+    loadUser();
+    loadStats();
+
+    // Logout
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    };
+  </script>
+</body>
+</html>
