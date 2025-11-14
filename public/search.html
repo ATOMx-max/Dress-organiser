@@ -83,6 +83,20 @@
     .btn-danger { background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.3); }
     .btn-danger:hover { background: rgba(255,0,0,0.33); }
 
+    /* Gradient small button (Edit) */
+    .btn-gradient {
+      background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 50%, #fb923c 100%);
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(139,92,246,0.12);
+      transition: transform .18s ease, box-shadow .18s ease;
+      cursor: pointer;
+    }
+    .btn-gradient:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 18px 40px rgba(139,92,246,0.16); }
+
     /*********** Filter Bar ***********/
     .filter-bar {
       background: rgba(255,255,255,0.07);
@@ -175,6 +189,44 @@
       box-shadow: 0 8px 32px rgba(0,0,0,0.25);
       overflow: hidden;
       transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28);
+      position: relative;
+    }
+    .fav-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 24px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      padding: 8px;
+      cursor: pointer;
+      z-index: 10;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform .18s ease, opacity .25s ease;
+    }
+
+    /* ⭐ Heartbeat animation (add) */
+    @keyframes heartBeat {
+      0% { transform: scale(1); }
+      14% { transform: scale(1.25); }
+      28% { transform: scale(0.95); }
+      42% { transform: scale(1.1); }
+      70% { transform: scale(1); }
+    }
+    .heart-beat {
+      animation: heartBeat 420ms ease forwards;
+    }
+
+    /* ⭐ Quick fade-out for heart on unfavourite */
+    .fade-heart {
+      animation: fadeHeart 420ms ease forwards;
+    }
+    @keyframes fadeHeart {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0.6); opacity: 0; }
     }
 
     .card:hover {
@@ -202,6 +254,13 @@
 
     .card-content h3 { font-size: 1.15rem; margin-bottom: 8px; color: #fff; }
     .card-content p { color: #c7d2fe; font-size: 0.9rem; margin-bottom: 12px; }
+
+    .btn-row {
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      align-items:center;
+    }
 
     .delete-btn {
       padding: 10px 20px;
@@ -262,6 +321,117 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    /*********** Edit Modal (glass) ***********/
+    .edit-modal {
+      position: fixed;
+      inset: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1200;
+      pointer-events:none;
+      opacity:0;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .edit-modal.active { pointer-events:all; opacity:1; }
+
+    .edit-card {
+      width: 420px;
+      max-width: 92%;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(14px);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+      transform: translateY(8px);
+    }
+    .edit-modal.active .edit-card { transform: translateY(0); }
+
+    .edit-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.15rem;
+      color: #fff;
+    }
+    .input {
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.03);
+      color:#fff;
+      margin-bottom:10px;
+    }
+    .actions {
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:8px;
+    }
+    .muted { color:#c7d2fe; font-size:0.9rem; margin-bottom:8px; }
+
+    /*********** Toast (top-right) ***********/
+    .toast-wrap {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none; /* clicks fall through except on toasts */
+    }
+
+    .toast {
+      pointer-events: auto;
+      min-width: 180px;
+      max-width: 320px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 8px 28px rgba(2,6,23,0.6);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform-origin: top right;
+      animation: toastIn .25s ease, toastOut .25s ease .5s forwards;
+    }
+
+    .toast.success { background: linear-gradient(90deg,#0ea5e9,#7c3aed); }
+    .toast.warn { background: linear-gradient(90deg,#f97316,#ef4444); }
+
+    @keyframes toastIn {
+      from { transform: translateY(-8px) scale(0.98); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes toastOut {
+      to { transform: translateY(-8px) scale(0.98); opacity: 0; }
+    }
+
+    .toast .emoji { font-size: 18px; }
+
+    /* small icon */
+    .toast .msg { flex:1; font-weight:600; font-size:14px; }
+
+    /* accessible live region hidden but available */
+    .sr-live {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    /* responsive */
+    @media (max-width:600px){
+      .toast-wrap { right: 12px; left: 12px; top: 12px; }
+      .toast { width: auto; }
+    }
   </style>
 </head>
 
@@ -316,14 +486,35 @@
   <div id="loader" class="counter-bar"></div>
 
   <!-- Preview Modal -->
-  <div id="previewModal" class="preview-modal">
+  <div id="previewModal" class="preview-modal" aria-hidden="true">
     <div class="preview-content">
-      <button class="preview-close" id="closePreview">✖</button>
+      <button class="preview-close" id="closePreview" aria-label="Close preview">✖</button>
       <img id="previewImage" src="" alt="Preview" />
     </div>
   </div>
 
-  <!-- Your Original JS (UNCHANGED) -->
+  <!-- Edit Modal -->
+  <div id="editModal" class="edit-modal" aria-hidden="true">
+    <div class="edit-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <h3 id="editTitle">Edit Dress</h3>
+      <div class="muted">Update name, section or category</div>
+
+      <input id="editName" class="input" placeholder="Dress name" />
+      <select id="editSection" class="input"></select>
+      <select id="editCategory" class="input"></select>
+
+      <div class="actions">
+        <button class="btn" id="cancelEdit">Cancel</button>
+        <button class="btn-gradient" id="saveEdit">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container (top-right) -->
+  <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-live" id="srLive" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Your Original JS (modified to add animations/toast & no re-render on fav) -->
   <script>
     const API_URL = window.location.origin.includes("localhost")
       ? "http://localhost:8080/api"
@@ -340,8 +531,47 @@
     const previewImage = document.getElementById("previewImage");
     const closePreview = document.getElementById("closePreview");
 
+    // Edit modal elements
+    const editModal = document.getElementById("editModal");
+    const editName = document.getElementById("editName");
+    const editSection = document.getElementById("editSection");
+    const editCategory = document.getElementById("editCategory");
+    const cancelEdit = document.getElementById("cancelEdit");
+    const saveEdit = document.getElementById("saveEdit");
+
+    // Toast container
+    const toastWrap = document.getElementById("toastWrap");
+    const srLive = document.getElementById("srLive");
+
     let dresses = [];
     let sections = [];
+    let currentEditId = null;
+
+    /* ---------- Helpers: Toast & DOM event ---------- */
+
+    function showToast({ text = "Done", variant = "success", duration = 1600 } = {}) {
+      const t = document.createElement("div");
+      t.className = `toast ${variant}`;
+      t.innerHTML = `<div class="emoji">${variant === 'success' ? '💖' : '💔'}</div><div class="msg">${text}</div>`;
+      toastWrap.prepend(t);
+
+      // announce to screen readers
+      srLive.textContent = text;
+
+      // remove after duration + animation
+      setTimeout(() => {
+        t.style.transform = "translateY(-8px) scale(.98)";
+        t.style.opacity = "0";
+      }, duration - 260); // start fade a little before removal
+      setTimeout(() => t.remove(), duration + 120);
+    }
+
+    // dispatch global event for other pages to listen (optional)
+    function emitFavouriteEvent(detail) {
+      window.dispatchEvent(new CustomEvent("favourite-changed", { detail }));
+    }
+
+    /* ---------- Data loading & render ---------- */
 
     async function loadData() {
       loader.textContent = "Loading...";
@@ -441,11 +671,18 @@
 
       if (!res.ok) {
         alert("Delete failed.");
+        card.style.opacity = "1";
         return;
       }
 
+      // animate removal
       card.style.opacity = "0";
+      card.style.transform = "scale(.98)";
       setTimeout(() => card.remove(), 400);
+
+      // remove locally
+      dresses = dresses.filter(d => d._id !== id);
+      renderGallery();
     }
 
     function openPreview(img) {
@@ -483,19 +720,273 @@
       filtered.forEach(i => {
         const card = document.createElement("div");
         card.className = "card";
+
+        // create inner content so event handlers can reference functions already in scope
         card.innerHTML = `
           <img src="${i.imageUrl}" onclick="openPreview('${i.imageUrl}')" />
+
+          <button class="fav-btn" data-id="${i._id}" aria-label="${i.isFavorite ? 'Unfavourite' : 'Add to favourites'}">
+            ${i.isFavorite ? "❤️" : "🤍"}
+          </button>
+
           <div class="card-content">
             <h3>${i.name}</h3>
             <p>${i.section} → ${i.category}</p>
-            <button class="delete-btn" onclick="deleteDress('${i._id}', this)">Delete</button>
+            <div class="btn-row">
+              <button class="delete-btn" data-id="${i._id}">Delete</button>
+              <button class="btn-gradient" data-id="${i._id}">Edit</button>
+            </div>
           </div>
         `;
+
+        // attach event handlers (avoid inline onclick to keep properly scoped)
+        const favBtn = card.querySelector(".fav-btn");
+        const delBtn = card.querySelector(".delete-btn");
+        const editBtn = card.querySelector(".btn-gradient");
+
+        favBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleFavourite(i._id, favBtn);
+        });
+
+        delBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          deleteDress(i._id, delBtn);
+        });
+
+        editBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openEditFromCard(i._id);
+        });
+
         gallery.appendChild(card);
       });
     }
 
+    // Toggle Favourite / Unfavourite (no re-render)
+    async function toggleFavourite(id, btn) {
+      try {
+        // Optimistic UI: toggle visual immediately while we await server (keeps UX snappy)
+        const index = dresses.findIndex(d => d._id === id);
+        if (index === -1) return;
+
+        const originalState = dresses[index].isFavorite;
+
+        // Immediately update local model (so subsequent actions use consistent state)
+        dresses[index].isFavorite = !originalState;
+
+        // Apply immediate button visual change and animations
+        if (!originalState) {
+          // Was not favourite -> now favourite
+          btn.innerHTML = "❤️";
+          btn.setAttribute("aria-label", "Unfavourite");
+          btn.classList.add("heart-beat");
+          // remove the class after animation ends
+          setTimeout(() => btn.classList.remove("heart-beat"), 480);
+        } else {
+          // Was favourite -> now unfavourited
+          // play a small fade animation on the heart
+          btn.classList.add("fade-heart");
+          // temporarily show white heart while fading
+          btn.innerHTML = "🤍";
+          btn.setAttribute("aria-label", "Add to favourites");
+
+          setTimeout(() => {
+            btn.classList.remove("fade-heart");
+          }, 420);
+        }
+
+        // Fire request
+        const res = await fetch(`${API_URL}/dresses/${id}/favourite`, {
+          method: "PUT",
+          credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          // Revert UI & local model on error
+          dresses[index].isFavorite = originalState;
+          btn.innerHTML = originalState ? "❤️" : "🤍";
+          showToast({ text: "Failed to update favourite", variant: "warn", duration: 1800 });
+          return;
+        }
+
+        // Confirm server response is the truth (synchronize local model)
+        dresses[index].isFavorite = !!data.isFavorite;
+        btn.innerHTML = data.isFavorite ? "❤️" : "🤍";
+        btn.setAttribute("aria-label", data.isFavorite ? "Unfavourite" : "Add to favourites");
+
+        // Show toast & small animation
+        if (data.isFavorite) {
+          showToast({ text: "Added to favourites 💖", variant: "success", duration: 1600 });
+        } else {
+          showToast({ text: "Removed from favourites 💔", variant: "warn", duration: 1400 });
+        }
+
+        // Emit event so other pages (dashboard / favourites) can react if they are open
+        emitFavouriteEvent({ id, isFavorite: !!data.isFavorite, dress: dresses[index] });
+
+        // IMPORTANT: DO NOT re-render the gallery here — keeps items in place.
+      } catch (err) {
+        console.error("Favourite toggle error:", err);
+        showToast({ text: "Server error", variant: "warn", duration: 1400 });
+      }
+    }
+
+    /* ----------------- Edit flow ----------------- */
+
+    // Open edit modal for a specific dress id (from card)
+    function openEditFromCard(id) {
+      const dress = dresses.find(d => d._id === id);
+      if (!dress) return alert("Dress not found.");
+
+      currentEditId = id;
+      populateEditFields(dress);
+      openEditModal();
+    }
+
+    // Populate edit modal fields and section/category options
+    function populateEditFields(dress) {
+      editName.value = dress.name || "";
+
+      // fill section options
+      editSection.innerHTML = "";
+      sections.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.name;
+        opt.textContent = s.name;
+        editSection.appendChild(opt);
+      });
+
+      // select the dress section (if exists)
+      if (dress.section) editSection.value = dress.section;
+      else editSection.value = (sections[0] && sections[0].name) || "";
+
+      // fill categories for selected section
+      fillCategoriesForEdit(editSection.value);
+
+      // select the category (if exists)
+      if (dress.category) editCategory.value = dress.category;
+    }
+
+    function fillCategoriesForEdit(sectionName) {
+      const sec = sections.find(s => s.name === sectionName);
+      editCategory.innerHTML = "";
+      if (!sec || !sec.categories.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "— No categories —";
+        editCategory.appendChild(opt);
+        return;
+      }
+      sec.categories.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        editCategory.appendChild(opt);
+      });
+    }
+
+    editSection.addEventListener("change", () => {
+      fillCategoriesForEdit(editSection.value);
+    });
+
+    function openEditModal() {
+      editModal.classList.add("active");
+      editModal.setAttribute("aria-hidden", "false");
+      // small focus management
+      setTimeout(() => editName.focus(), 120);
+    }
+
+    function closeEditModal() {
+      editModal.classList.remove("active");
+      editModal.setAttribute("aria-hidden", "true");
+      currentEditId = null;
+    }
+
+    cancelEdit.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeEditModal();
+    });
+
+    // Save edits
+    saveEdit.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!currentEditId) return alert("No dress selected.");
+
+      const payload = {
+        name: editName.value.trim(),
+        section: editSection.value,
+        category: editCategory.value
+      };
+
+      if (!payload.name) return alert("Name is required.");
+
+      try {
+        saveEdit.disabled = true;
+        saveEdit.textContent = "Saving...";
+        const res = await fetch(`${API_URL}/dresses/${currentEditId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          const msg = (data && data.message) ? data.message : "Update failed.";
+          alert(msg);
+          return;
+        }
+
+        // If server returns updated dress, use it; otherwise update locally
+        const updated = data.dress || data || null;
+
+        if (updated && updated._id) {
+          dresses = dresses.map(d => d._id === updated._id ? updated : d);
+        } else {
+          // update locally using currentEditId
+          dresses = dresses.map(d => {
+            if (d._id === currentEditId) {
+              return { ...d, name: payload.name, section: payload.section, category: payload.category };
+            }
+            return d;
+          });
+        }
+
+        renderGallery();
+        closeEditModal();
+      } catch (err) {
+        console.error("Save edit error:", err);
+        alert("Server error while saving.");
+      } finally {
+        saveEdit.disabled = false;
+        saveEdit.textContent = "Save";
+      }
+    });
+
+    // Allow Esc to close edit modal
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (editModal.classList.contains("active")) closeEditModal();
+        if (previewModal.classList.contains("active")) previewModal.classList.remove("active");
+      }
+    });
+
+    /* ----------------- End Edit flow ----------------- */
+
     loadData();
+
+    /* ----------------- Optional: react to favourite events (example) -----------------
+       If you want other pages (opened in another tab) to update their UI live,
+       you can listen for the "favourite-changed" event:
+
+       window.addEventListener('favourite-changed', e => {
+         const { id, isFavorite, dress } = e.detail;
+         // e.g. update a favourites preview panel if present on this page
+       });
+    ------------------------------------------------------------------------------- */
   </script>
 
 </body>

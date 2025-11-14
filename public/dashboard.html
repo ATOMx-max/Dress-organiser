@@ -356,6 +356,24 @@
         <div class="stat-label">Recent Uploads</div>
       </div>
     </div>
+    <!-- ⭐ Favourite Dresses Preview Panel -->
+    <h2 style="margin-top:40px;margin-bottom:15px;">⭐ Favourite Dresses</h2>
+
+    <div id="favPanel" style="
+      display:flex;
+      gap:18px;
+      overflow-x:auto;
+      padding-bottom:10px;
+      scroll-behavior:smooth;
+    "></div>
+
+    <div style="text-align:right; margin-top:10px;">
+      <button class="logout-btn" onclick="go('favourites.html')" 
+        style="padding:10px 20px;font-size:0.9rem;">
+        View All →
+      </button>
+    </div>
+
 
     <div class="grid">
       <div class="card" onclick="go('upload.html')">
@@ -426,6 +444,38 @@ async function loadStats() {
     function go(page) {
       window.location.href = page;
     }
+    // ⭐ Load Favourite Dresses into Dashboard
+    async function loadDashboardFavourites() {
+      const res = await fetch(`${API_URL}/api/favourites`, { credentials: "include" });
+      const favs = await res.json();
+
+      const panel = document.getElementById("favPanel");
+      if (!panel) return;
+
+      if (!favs.length) {
+        panel.innerHTML = `<div style="color:#ccc;">No favourites yet ⭐</div>`;
+        return;
+      }
+
+      panel.innerHTML = favs.slice(0, 12).map(f => `
+        <img 
+          src="${f.imageUrl}" 
+          style="
+            width:120px;
+            height:150px;
+            border-radius:16px;
+            object-fit:cover;
+            cursor:pointer;
+            box-shadow:0 6px 16px rgba(0,0,0,0.3);
+          "
+          onclick="go('favourites.html')"
+        />
+      `).join("");
+    }
+
+    loadDashboardFavourites();  // ⭐ run it
+
+
 
     function logout() {
       fetch(`${API_URL}/logout`, {

@@ -155,6 +155,7 @@ const dressSchema = new mongoose.Schema({
   category: String,
   imageUrl: String,
   userEmail: String,
+  isFavorite: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -692,6 +693,52 @@ app.get("/api/search", async (req, res) => {
     res.status(500).json({ message: "Server error during search." });
   }
 });
+// ⭐ Get Favourite Dresses  ← ADD HERE
+app.get("/api/favourites", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    const dresses = await Dress.find({
+      userEmail: user.email,
+      isFavorite: true
+    });
+
+    res.json(dresses);
+  } catch (err) {
+    console.error("Favourite Fetch Error:", err);
+    res.status(500).json({ message: "Server error fetching favourites." });
+  }
+});
+// ⭐ Update Dress Details (Name, Section, Category)
+app.put("/api/dresses/:id", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    const { name, section, category } = req.body;
+
+    if (!name || !section || !category) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const updated = await Dress.findOneAndUpdate(
+      { _id: req.params.id, userEmail: user.email },
+      { name, section, category },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Dress not found." });
+    }
+
+    res.json({ success: true, dress: updated });
+  } catch (err) {
+    console.error("Update Dress Error:", err);
+    res.status(500).json({ message: "Server error updating dress." });
+  }
+});
+
 
 // ---------- DELETE DRESS (Cloudinary + MongoDB) ----------
 app.delete("/api/dresses/:id", async (req, res) => {
@@ -716,7 +763,25 @@ app.delete("/api/dresses/:id", async (req, res) => {
   }
 });
 
-// --- Test Email Route (for verification) ---
+// ⭐ Toggle Favourite / Unfavourite
+app.put("/api/dresses/:id/favourite", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    const dress = await Dress.findById(req.params.id);
+    if (!dress) return res.status(404).json({ message: "Dress not found." });
+
+    dress.isFavorite = !dress.isFavorite;
+    await dress.save();
+
+    res.json({ success: true, isFavorite: dress.isFavorite });
+  } catch (err) {
+    console.error("Favourite Error:", err);
+    res.status(500).json({ message: "Server error updating favourite." });
+  }
+});
+
 // --- ✅ Brevo Test Email Route ---
 app.get("/test-email", async (req, res) => {
   try {
