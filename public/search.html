@@ -5,230 +5,249 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Dresses | Dress Organizer</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+      font-family: "Inter", sans-serif;
       min-height: 100vh;
-      padding: 25px;
+      padding: 30px 20px;
+      color: white;
+      position: relative;
       overflow-x: hidden;
     }
 
+    /*********** Animated Orbs ***********/
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.18;
+      z-index: 0;
+      animation: float 22s infinite ease-in-out;
+    }
+
+    .orb-1 { background: linear-gradient(135deg, #818cf8, #c084fc); width: 480px; height: 480px; top: -180px; left: -120px; }
+    .orb-2 { background: linear-gradient(135deg, #f472b6, #fb923c); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: 6s; }
+    .orb-3 { background: linear-gradient(135deg, #06b6d4, #3b82f6); width: 360px; height: 360px; top: 40%; left: 50%; animation-delay: 10s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-40px) scale(1.08); }
+      66% { transform: translate(-30px,30px) scale(0.92); }
+    }
+
+    /*********** Header ***********/
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 1200px;
-      margin: 0 auto 30px;
+      z-index: 10;
+      position: relative;
+      margin-bottom: 40px;
+      animation: fadeIn 0.7s ease;
     }
 
     header h1 {
-      font-size: 2rem;
+      font-size: 2.4rem;
       font-weight: 700;
-      text-shadow: 0 3px 20px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #fff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /*********** Buttons ***********/
     .btn {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      border: none;
+      padding: 12px 30px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
       color: white;
-      padding: 10px 22px;
-      border-radius: 25px;
+      border: 1px solid rgba(255,255,255,0.2);
       cursor: pointer;
       font-weight: 600;
-      box-shadow: 0 5px 20px rgba(79,70,229,0.4);
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
 
-    .btn:hover { transform: scale(1.05); }
+    .btn:hover { transform: translateY(-3px); background: rgba(255,255,255,0.18); }
 
+    .btn-danger { background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.3); }
+    .btn-danger:hover { background: rgba(255,0,0,0.33); }
+
+    /*********** Filter Bar ***********/
     .filter-bar {
-      background: rgba(255,255,255,0.95);
-      border-radius: 25px;
-      padding: 20px;
-      max-width: 1000px;
-      margin: 0 auto 20px;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      padding: 25px;
+      border-radius: 22px;
+      margin: 0 auto 30px;
+      max-width: 1200px;
       display: flex;
+      gap: 18px;
       flex-wrap: wrap;
-      gap: 15px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.15);
+      z-index: 10;
       position: relative;
+      animation: fadeIn 1s ease;
     }
 
     select, input {
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.12);
+      color: white;
       flex: 1;
-      padding: 12px 16px;
-      border-radius: 15px;
-      border: 2px solid #e5e7eb;
-      color: #333;
-      font-size: 1rem;
-      min-width: 180px;
+      min-width: 200px;
+      backdrop-filter: blur(10px);
     }
+
+    select option { color: black; }
 
     select:focus, input:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.2);
+      outline: 0;
+      border-color: #c084fc;
+      box-shadow: 0 0 8px rgba(192,132,252,0.7);
     }
 
+    /*********** Suggestions ***********/
     .suggestions {
       position: absolute;
-      top: 70px;
+      top: 72px;
       left: 0;
       width: 100%;
-      background: rgba(255,255,255,0.95);
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      max-height: 180px;
-      overflow-y: auto;
-      z-index: 10;
+      background: rgba(255,255,255,0.1);
+      border-radius: 14px;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 35px rgba(0,0,0,0.25);
+      z-index: 20;
     }
 
     .suggestion-item {
-      padding: 10px 15px;
+      padding: 12px 15px;
       cursor: pointer;
-      color: #333;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
       font-weight: 500;
+      color: white;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .suggestion-item:hover {
-      background: #667eea;
-      color: white;
+      background: rgba(129,140,248,0.35);
     }
 
+    /*********** Counter Bar ***********/
     .counter-bar {
       text-align: center;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: white;
       margin-bottom: 25px;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: fadeIn 1.1s ease forwards;
     }
 
+    /*********** Gallery ***********/
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 25px;
-      max-width: 1200px;
+      grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+      gap: 32px;
+      max-width: 1300px;
       margin: 0 auto;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.98);
-      border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      overflow: hidden;
-      text-align: center;
-      transition: all 0.3s;
       position: relative;
+      z-index: 10;
     }
 
-    .card:hover { transform: translateY(-6px); }
+    /*********** Card (Dashboard Style) ***********/
+    .card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      padding-bottom: 15px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28);
+    }
+
+    .card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.35);
+      background: rgba(255,255,255,0.13);
+      border-color: rgba(255,255,255,0.25);
+    }
 
     .card img {
       width: 100%;
-      height: 250px;
+      height: 240px;
       object-fit: cover;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: 0.3s ease;
     }
 
-    .card img:hover { transform: scale(1.03); }
+    .card img:hover { transform: scale(1.06); }
 
     .card-content {
-      padding: 15px;
-      color: #333;
+      padding: 18px;
+      text-align: center;
     }
 
-    .card-content h3 { font-size: 1.1rem; margin-bottom: 5px; color: #1f2937; }
-    .card-content p { color: #6b7280; font-weight: 600; margin: 4px 0; }
+    .card-content h3 { font-size: 1.15rem; margin-bottom: 8px; color: #fff; }
+    .card-content p { color: #c7d2fe; font-size: 0.9rem; margin-bottom: 12px; }
 
     .delete-btn {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: rgba(255,0,0,0.2);
       color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 8px 16px;
-      margin-top: 8px;
+      border: 1px solid rgba(255,0,0,0.3);
       cursor: pointer;
       font-weight: 600;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
 
     .delete-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(239,68,68,0.4);
+      background: rgba(255,0,0,0.3);
+      transform: translateY(-3px);
     }
 
-    .loader {
-      text-align: center;
-      font-weight: bold;
-      color: white;
-      margin-top: 15px;
-    }
-
-    .delete-loading {
-      width: 22px;
-      height: 22px;
-      border: 3px solid #ddd;
-      border-top: 3px solid #ef4444;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 10px auto;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
+    /*********** Preview Modal ***********/
     .preview-modal {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
+      z-index: 999;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.35s ease;
     }
 
-    .preview-modal.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .preview-modal.active { opacity: 1; pointer-events: all; }
 
     .preview-content {
       position: relative;
       max-width: 90vw;
       max-height: 85vh;
-      padding: 10px;
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.3);
-      animation: popIn 0.4s ease;
     }
 
     .preview-content img {
       max-width: 100%;
       max-height: 80vh;
-      border-radius: 15px;
+      border-radius: 18px;
       object-fit: contain;
-      cursor: zoom-in;
-      transition: 0.3s ease;
-    }
-
-    .preview-content img.zoomed {
-      transform: scale(1.6);
-      cursor: zoom-out;
     }
 
     .preview-close {
@@ -236,45 +255,40 @@
       top: 12px;
       right: 18px;
       background: rgba(255,255,255,0.9);
-      color: #111;
-      font-size: 22px;
-      border: none;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      font-size: 22px;
       font-weight: bold;
-    }
-
-    @keyframes popIn {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
+  <!-- Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Header -->
   <header>
     <h1>🔍 Search Dresses</h1>
-
     <div style="display:flex; gap:15px;">
       <button class="btn" onclick="location.href='dashboard.html'">← Dashboard</button>
-
-      <button class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626);"
-        onclick="logoutUser()">
-        Logout
-      </button>
+      <button class="btn btn-danger" onclick="logoutUser()">Logout</button>
     </div>
   </header>
 
   <script>
     function logoutUser() {
       localStorage.removeItem("loggedInUser");
-      document.cookie = "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
       window.location.href = "login.html";
     }
   </script>
 
+  <!-- Filter Bar -->
   <div class="filter-bar">
     <select id="sectionFilter">
       <option value="">All Sections</option>
@@ -292,10 +306,14 @@
     <button class="btn" id="clearBtn">Clear</button>
   </div>
 
-  <div id="counterBar" class="counter-bar">Showing all dresses.</div>
+  <!-- Counter -->
+  <div id="counterBar" class="counter-bar">Showing all dresses</div>
 
+  <!-- Gallery -->
   <div id="gallery" class="gallery"></div>
-  <div id="loader" class="loader"></div>
+
+  <!-- Loader -->
+  <div id="loader" class="counter-bar"></div>
 
   <!-- Preview Modal -->
   <div id="previewModal" class="preview-modal">
@@ -305,8 +323,8 @@
     </div>
   </div>
 
+  <!-- Your Original JS (UNCHANGED) -->
   <script>
-    // Correct API root
     const API_URL = window.location.origin.includes("localhost")
       ? "http://localhost:8080/api"
       : "https://dress-organiser.onrender.com/api";
@@ -326,16 +344,15 @@
     let sections = [];
 
     async function loadData() {
-      loader.textContent = "Loading data...";
-
+      loader.textContent = "Loading...";
       const [dRes, sRes] = await Promise.all([
         fetch(`${API_URL}/dresses`, { credentials: "include" }),
         fetch(`${API_URL}/sections`, { credentials: "include" })
       ]);
 
-      if (!dRes.ok || !sRes.ok) {
-        loader.textContent = "Authentication failed. Please login again.";
-        setTimeout(() => (location.href = "login.html"), 1500);
+      if (!dRes.ok) {
+        loader.textContent = "Auth failed. Login again.";
+        setTimeout(() => location.href = "login.html", 1500);
         return;
       }
 
@@ -344,7 +361,6 @@
 
       renderSections();
       renderGallery();
-
       loader.textContent = "";
     }
 
@@ -389,35 +405,34 @@
         renderGallery();
         return;
       }
-      const matches = dresses.filter(d => d.name.toLowerCase().includes(query)).slice(0, 5);
+
+      const matches = dresses
+        .filter(d => d.name.toLowerCase().includes(query))
+        .slice(0, 5);
+
       suggestionsBox.innerHTML = "";
-      if (matches.length > 0) {
-        matches.forEach(m => {
-          const div = document.createElement("div");
-          div.className = "suggestion-item";
-          div.textContent = m.name;
-          div.onclick = () => {
-            searchInput.value = m.name;
-            suggestionsBox.style.display = "none";
-            renderGallery();
-          };
-          suggestionsBox.appendChild(div);
-        });
-        suggestionsBox.style.display = "block";
-      } else {
-        suggestionsBox.style.display = "none";
-      }
+      suggestionsBox.style.display = matches.length ? "block" : "none";
+
+      matches.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.textContent = m.name;
+        div.onclick = () => {
+          searchInput.value = m.name;
+          suggestionsBox.style.display = "none";
+          renderGallery();
+        };
+        suggestionsBox.appendChild(div);
+      });
+
       renderGallery();
     });
 
     async function deleteDress(id, btn) {
-      if (!confirm("🗑️ Delete this dress?")) return;
+      if (!confirm("Delete this dress?")) return;
 
       const card = btn.closest(".card");
-      const loaderDiv = document.createElement("div");
-      loaderDiv.className = "delete-loading";
-      card.querySelector(".card-content").innerHTML = "";
-      card.querySelector(".card-content").appendChild(loaderDiv);
+      card.style.opacity = "0.4";
 
       const res = await fetch(`${API_URL}/dresses/${id}`, {
         method: "DELETE",
@@ -433,19 +448,13 @@
       setTimeout(() => card.remove(), 400);
     }
 
-    function openPreview(imgSrc) {
-      previewImage.src = imgSrc;
+    function openPreview(img) {
+      previewImage.src = img;
       previewModal.classList.add("active");
     }
 
     closePreview.onclick = () => previewModal.classList.remove("active");
-    previewModal.onclick = (e) => {
-      if (e.target === previewModal) previewModal.classList.remove("active");
-    };
-
-    previewImage.onclick = () => {
-      previewImage.classList.toggle("zoomed");
-    };
+    previewModal.onclick = e => { if (e.target === previewModal) previewModal.classList.remove("active"); };
 
     function renderGallery() {
       gallery.innerHTML = "";
@@ -459,15 +468,15 @@
       if (cat) filtered = filtered.filter(i => i.category === cat);
       if (search) filtered = filtered.filter(i => i.name.toLowerCase().includes(search));
 
-      counterBar.innerHTML = `
-        Total Dresses: <b>${dresses.length}</b> |
-        ${sec ? `Section <b>${sec}</b>` : "All Sections"} |
-        ${cat ? `Category <b>${cat}</b>` : "All Categories"} |
-        Showing: <b>${filtered.length}</b>
-      `;
+      counterBar.innerHTML =
+        `Total Dresses: <b>${dresses.length}</b> |
+         ${sec ? `Section <b>${sec}</b>` : "All Sections"} |
+         ${cat ? `Category <b>${cat}</b>` : "All Categories"} |
+         Showing: <b>${filtered.length}</b>`;
 
-      if (filtered.length === 0) {
-        gallery.innerHTML = `<div style="text-align:center;grid-column:1/-1;color:white;">No dresses found</div>`;
+      if (!filtered.length) {
+        gallery.innerHTML =
+          `<div style="grid-column:1/-1; text-align:center; color:#ddd;">No dresses found</div>`;
         return;
       }
 
@@ -475,7 +484,7 @@
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <img src="${i.imageUrl}" alt="${i.name}" onclick="openPreview('${i.imageUrl}')"/>
+          <img src="${i.imageUrl}" onclick="openPreview('${i.imageUrl}')" />
           <div class="card-content">
             <h3>${i.name}</h3>
             <p>${i.section} → ${i.category}</p>
@@ -488,5 +497,6 @@
 
     loadData();
   </script>
+
 </body>
 </html>

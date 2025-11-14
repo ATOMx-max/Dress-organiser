@@ -5,362 +5,294 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profile | Dress Organizer</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Dashboard Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
       padding: 20px;
       color: white;
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .container {
-      max-width: 600px;
-      width: 100%;
-      background: rgba(255,255,255,0.98);
-      color: #333;
-      margin: 0 auto;
-      padding: 40px;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(10px);
-    }
-
-    @keyframes fadeInUp {
-      from { 
-        opacity: 0; 
-        transform: translateY(40px) scale(0.95);
-      }
-      to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .profile-header {
-      text-align: center;
-      margin-bottom: 35px;
+      overflow-x: hidden;
       position: relative;
     }
 
+    /*********** Glowing Orbs ***********/
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.18;
+      z-index: 0;
+      animation: float 22s infinite ease-in-out;
+    }
+
+    .orb-1 { background: linear-gradient(135deg, #818cf8, #c084fc); width: 480px; height: 480px; top: -180px; left: -120px; }
+    .orb-2 { background: linear-gradient(135deg, #f472b6, #fb923c); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: 6s; }
+    .orb-3 { background: linear-gradient(135deg, #06b6d4, #3b82f6); width: 360px; height: 360px; top: 40%; left: 50%; animation-delay: 10s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(40px,-40px) scale(1.08); }
+      66% { transform: translate(-30px,30px) scale(0.92); }
+    }
+
+    /*********** Profile Container ***********/
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      padding: 45px 35px;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.20);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      z-index: 10;
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /*********** Avatar ***********/
     .profile-avatar {
-      width: 90px;
-      height: 90px;
-      margin: 0 auto 20px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      width: 95px;
+      height: 95px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    @keyframes bounceIn {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      font-size: 42px;
+      margin: 0 auto 18px;
+      box-shadow: 0 12px 25px rgba(129,140,248,0.3);
     }
 
     h1 {
-      font-size: 32px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #e0e7ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 8px;
-      font-weight: 700;
+      margin-bottom: 6px;
     }
 
     .subtitle {
-      color: #6b7280;
-      font-size: 14px;
-      font-weight: 500;
+      text-align: center;
+      color: #c7d2fe;
+      font-size: 0.95rem;
+      margin-bottom: 35px;
     }
 
+    /*********** Info Card ***********/
     .info-card {
-      margin: 25px 0;
-      padding: 24px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-      border: 1px solid #e5e7eb;
-      transition: all 0.3s ease;
-    }
-
-    .info-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(15px);
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      margin-bottom: 30px;
     }
 
     .info-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #e5e7eb;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .info-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .info-row:first-child {
-      padding-top: 0;
-    }
+    .info-row:last-child { border-bottom: 0; }
 
     .info-label {
-      font-size: 15px;
-      color: #6b7280;
+      font-size: 0.95rem;
+      color: #c7d2fe;
       font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .info-value {
-      font-size: 15px;
-      color: #111827;
+      font-size: 1rem;
       font-weight: 600;
+      color: #fff;
     }
 
     .verified-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      background: #dcfce7;
-      color: #166534;
-      border-radius: 20px;
-      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 14px;
+      background: rgba(0,255,120,0.2);
+      border: 1px solid rgba(0,255,120,0.35);
+      color: #bbf7d0;
       font-weight: 600;
+      font-size: 0.8rem;
     }
 
     .unverified-badge {
-      background: #fee2e2;
-      color: #991b1b;
+      background: rgba(255,0,0,0.2);
+      border: 1px solid rgba(255,0,0,0.35);
+      color: #fecaca;
     }
 
+    /*********** Stats Grid ***********/
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin: 25px 0;
+      grid-template-columns: repeat(3,1fr);
+      gap: 18px;
+      margin-bottom: 30px;
     }
 
     .stat-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 20px;
-      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 24px 12px;
       text-align: center;
-      color: white;
-      transition: all 0.3s ease;
-      cursor: default;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28);
     }
 
     .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      transform: translateY(-8px);
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
     }
 
     .stat-icon {
-      font-size: 28px;
-      margin-bottom: 8px;
-      display: block;
+      font-size: 32px;
+      margin-bottom: 10px;
+      opacity: 0.9;
     }
 
     .stat-value {
-      font-size: 28px;
+      font-size: 1.8rem;
       font-weight: 700;
-      display: block;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       margin-bottom: 4px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .stat-label {
-      font-size: 12px;
-      opacity: 0.95;
-      font-weight: 500;
+      color: #c7d2fe;
+      font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
+    /*********** Buttons ***********/
     .btn {
-      display: block;
       width: 100%;
-      margin-top: 15px;
-      padding: 16px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
+      padding: 15px;
       border-radius: 14px;
+      margin-top: 12px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(14px);
       color: white;
-      text-align: center;
-      font-size: 16px;
+      border: 1px solid rgba(255,255,255,0.25);
       font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     .btn:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn:active {
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-      box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
-    }
-
-    .btn-secondary:hover {
-      box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+      background: rgba(255,255,255,0.2);
     }
 
     .logout {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+      background: rgba(255,0,0,0.2);
+      border: 1px solid rgba(255,0,0,0.35);
     }
 
     .logout:hover {
-      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+      background: rgba(255,0,0,0.3);
+      box-shadow: 0 6px 18px rgba(255,0,0,0.4);
     }
 
     .loading {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid #e5e7eb;
-      border-top-color: #667eea;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
       border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      animation: spin .7s linear infinite;
     }
 
     @keyframes spin {
       to { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 600px) {
-      .container {
-        padding: 30px 25px;
-      }
-
-      h1 {
-        font-size: 28px;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .stat-card {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        text-align: left;
-      }
-
-      .stat-icon {
-        font-size: 32px;
-        margin-bottom: 0;
-      }
-
-      .stat-content {
-        flex: 1;
-        text-align: right;
-      }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Glow Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
   <div class="container">
     <div class="profile-header">
       <div class="profile-avatar">👤</div>
       <h1>Your Profile</h1>
-      <p class="subtitle">Manage your account and view statistics</p>
+      <p class="subtitle">Manage your account & view statistics</p>
     </div>
 
+    <!-- Info Box -->
     <div class="info-card">
       <div class="info-row">
-        <span class="info-label">
-          📧 Email Address
-        </span>
+        <span class="info-label">📧 Email</span>
         <span class="info-value" id="email">
           <span class="loading"></span>
         </span>
       </div>
+
       <div class="info-row">
-        <span class="info-label">
-          🔐 Account Status
-        </span>
+        <span class="info-label">🔐 Status</span>
         <span id="verified">
           <span class="loading"></span>
         </span>
       </div>
     </div>
 
+    <!-- Stat Cards -->
     <div class="stats-grid">
       <div class="stat-card">
-        <span class="stat-icon">👗</span>
-        <div class="stat-content">
-          <span class="stat-value" id="dressCount">0</span>
-          <span class="stat-label">Dresses</span>
-        </div>
+        <div class="stat-icon">👗</div>
+        <div class="stat-value" id="dressCount">0</div>
+        <div class="stat-label">Dresses</div>
       </div>
+
       <div class="stat-card">
-        <span class="stat-icon">📂</span>
-        <div class="stat-content">
-          <span class="stat-value" id="sectionCount">0</span>
-          <span class="stat-label">Sections</span>
-        </div>
+        <div class="stat-icon">📂</div>
+        <div class="stat-value" id="sectionCount">0</div>
+        <div class="stat-label">Sections</div>
       </div>
+
       <div class="stat-card">
-        <span class="stat-icon">🏷️</span>
-        <div class="stat-content">
-          <span class="stat-value" id="categoryCount">0</span>
-          <span class="stat-label">Categories</span>
-        </div>
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-value" id="categoryCount">0</div>
+        <div class="stat-label">Categories</div>
       </div>
     </div>
 
-    <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+    <a href="dashboard.html">
+      <button class="btn">← Back to Dashboard</button>
+    </a>
+
     <button class="btn logout" id="logoutBtn">Logout</button>
   </div>
 
+  <!-- JS (unchanged) -->
   <script>
     const API_URL = window.location.origin.includes("localhost")
       ? "http://localhost:8080"
@@ -372,75 +304,54 @@
     const sectionCount = document.getElementById("sectionCount");
     const categoryCount = document.getElementById("categoryCount");
 
-    // Redirect if not logged in
     if (!localStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
     }
 
-    // Load user info
     async function loadUser() {
-      try {
-        const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
-        if (!res.ok) {
-          window.location.href = "login.html";
-          return;
-        }
-        const user = await res.json();
-        emailSpan.textContent = user.email;
-        
-        if (user.verified) {
-          verifiedSpan.innerHTML = '<span class="verified-badge">✓ Verified</span>';
-        } else {
-          verifiedSpan.innerHTML = '<span class="verified-badge unverified-badge">✕ Not Verified</span>';
-        }
-      } catch {
-        emailSpan.textContent = "Error loading data";
-        verifiedSpan.textContent = "—";
-      }
+      const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
+      if (!res.ok) return window.location.href = "login.html";
+
+      const user = await res.json();
+      emailSpan.textContent = user.email;
+
+      verifiedSpan.innerHTML =
+        user.verified
+          ? `<span class="verified-badge">✓ Verified</span>`
+          : `<span class="verified-badge unverified-badge">✕ Not Verified</span>`;
     }
 
-    // Load stats with animation
     async function loadStats() {
-      try {
-        const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
-        if (!res.ok) return;
+      const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
+      if (!res.ok) return;
 
-        const stats = await res.json();
-        
-        // Animate numbers
-        animateValue(dressCount, 0, stats.dresses, 800);
-        animateValue(sectionCount, 0, stats.sections, 800);
-        animateValue(categoryCount, 0, stats.categories, 800);
-      } catch (err) {
-        console.error('Error loading stats:', err);
-      }
+      const stats = await res.json();
+      animate(dressCount, stats.dresses);
+      animate(sectionCount, stats.sections);
+      animate(categoryCount, stats.categories);
     }
 
-    // Animate number counter
-    function animateValue(element, start, end, duration) {
-      const range = end - start;
-      const increment = range / (duration / 16);
-      let current = start;
-      
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= end) {
-          element.textContent = end;
-          clearInterval(timer);
-        } else {
-          element.textContent = Math.floor(current);
+    function animate(el, end) {
+      let start = 0;
+      const step = () => {
+        start += Math.ceil(end / 40);
+        if (start >= end) el.textContent = end;
+        else {
+          el.textContent = start;
+          requestAnimationFrame(step);
         }
-      }, 16);
+      };
+      step();
     }
 
     loadUser();
     loadStats();
 
-    // Logout
     document.getElementById("logoutBtn").onclick = () => {
       localStorage.removeItem("loggedInUser");
       window.location.href = "login.html";
     };
   </script>
+
 </body>
 </html>

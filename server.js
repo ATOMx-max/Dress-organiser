@@ -325,18 +325,45 @@ app.post("/logout", (req, res) => {
 });
 app.get("/api/stats", async (req, res) => {
   try {
-    if (!req.session || !req.session.user) return res.status(401).json({ message: "Unauthorized" });
+    if (!req.session || !req.session.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
     const userEmail = req.session.user.email;
+
+    // TOTAL DRESSES
     const dressCount = await Dress.countDocuments({ userEmail });
-    const sections = await Section.find({ $or:[{ userEmail:null }, { userEmail }]});
+
+    // ALL SECTIONS (default + user)
+    const sections = await Section.find({
+      $or: [{ userEmail: null }, { userEmail }],
+    });
+
+    // COUNT CATEGORIES
     let categoryTotal = 0;
-    sections.forEach(s => categoryTotal += (s.categories || []).length);
-    res.json({ dresses: dressCount, sections: sections.length, categories: categoryTotal });
+    sections.forEach((s) => {
+      if (Array.isArray(s.categories)) {
+        categoryTotal += s.categories.length;
+      }
+    });
+
+    // RECENT UPLOADS (latest 5)
+    const recentUploads = await Dress.find({ userEmail })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    // FINAL RESPONSE
+    res.json({
+      dresses: dressCount,
+      sections: sections.length,
+      categories: categoryTotal,
+      recent: recentUploads,
+    });
   } catch (err) {
-    console.error("Stats error", err);
+    console.error("❌ Stats Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 app.post("/api/reset-defaults", async (req, res) => {
   const user = req.session.user;
   if (!user) return res.status(401).json({ message: "Unauthorized" });
