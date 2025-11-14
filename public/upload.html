@@ -4,103 +4,531 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Upload Dress | Dress Organizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+      font-family: "Inter", sans-serif;
       min-height: 100vh;
-      padding: 15px;
-      overflow-x: hidden;
+      padding: 0;
+      color: #fff;
       position: relative;
+      overflow-x: hidden;
     }
 
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      max-width: 1200px; margin: 0 auto 30px; padding: 0 10px;
+    /* Animated Background Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      z-index: 0;
+      animation: float 20s infinite ease-in-out;
     }
-    header h1 { font-size: 1.8rem; font-weight: 700; }
+
+    .orb-1 {
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      width: 500px; height: 500px;
+      top: -200px; left: -150px;
+    }
+
+    .orb-2 {
+      background: linear-gradient(135deg, #f472b6, #fb923c);
+      width: 400px; height: 400px;
+      bottom: -150px; right: -100px;
+      animation-delay: 5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(50px, -50px) scale(1.1); }
+      66% { transform: translate(-30px, 30px) scale(0.9); }
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      animation: slideDown 0.6s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 8px 24px rgba(129, 140, 248, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff, #e0e7ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
 
     .btn {
-      background: linear-gradient(135deg,#4f46e5,#7c3aed);
-      border:none;color:white;font-weight:600;
-      border-radius:50px;padding:10px 20px;cursor:pointer;
-      transition:0.3s;
-    }
-    .btn:hover { transform: translateY(-2px); }
-    .logout { background: linear-gradient(135deg,#ef4444,#dc2626); }
-
-    .container {
-      background:white;color:#333;
-      max-width:650px;margin:0 auto;padding:25px;
-      border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,0.25);
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    h2 { text-align:center;color:#4f46e5;margin-bottom:20px; }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-    label { display:block;margin-top:20px;font-weight:600; }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      animation: fadeIn 0.8s ease 0.2s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-section, .preview-section {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
+      padding: 35px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, rgba(129, 140, 248, 0.2), rgba(192, 132, 252, 0.2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #e0e7ff;
+      font-size: 0.9rem;
+    }
+
     input[type="text"], select {
-      width:100%;padding:12px;border-radius:10px;border:2px solid #ddd;
-      font-size:15px;margin-top:5px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: "Inter", sans-serif;
+      transition: all 0.3s ease;
     }
 
-    input[type="file"] { display:none; }
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: #818cf8;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1);
+    }
+
+    input[type="text"]::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    select option {
+      background: #1e1b4b;
+      color: #fff;
+    }
+
+    /* File Upload Box */
+    input[type="file"] { display: none; }
+
     .upload-box {
-      padding:20px;border:2px dashed #888;text-align:center;
-      border-radius:12px;margin-top:10px;cursor:pointer;
+      padding: 40px 20px;
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.03);
+      position: relative;
+      overflow: hidden;
     }
 
-    .preview img {
-      width:100%;margin-top:15px;border-radius:15px;
+    .upload-box:hover {
+      border-color: #818cf8;
+      background: rgba(129, 140, 248, 0.05);
+      transform: translateY(-2px);
     }
 
-    .status { text-align:center;margin-top:15px;font-weight:600; }
-    .success { color:#16a34a; }
-    .error { color:#dc2626; }
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .upload-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e0e7ff;
+      margin-bottom: 5px;
+    }
+
+    .upload-hint {
+      font-size: 0.85rem;
+      color: #a5b4fc;
+    }
+
+    /* Preview Section */
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      min-height: 500px;
+    }
+
+    .preview-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: #a5b4fc;
+      text-align: center;
+    }
+
+    .preview-empty-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .preview-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-image {
+      width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      object-fit: cover;
+      max-height: 400px;
+    }
+
+    .preview-info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .preview-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .preview-info-item:last-child {
+      border-bottom: none;
+    }
+
+    .preview-label {
+      color: #a5b4fc;
+      font-size: 0.85rem;
+    }
+
+    .preview-value {
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 8px 24px rgba(129, 140, 248, 0.3);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(129, 140, 248, 0.4);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Status Messages */
+    .status {
+      margin-top: 20px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status.success {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 968px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-section {
+        min-height: 400px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .form-section, .preview-section {
+        padding: 25px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>👗 Upload Dress</h1>
-    <div style="display:flex; gap:10px;">
-      <button class="btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
-      <button class="btn logout" id="logoutBtn">Logout</button>
-    </div>
-  </header>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
 
   <div class="container">
-    <h2>📸 Add New Dress</h2>
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">📸</div>
+        <h1>Upload Dress</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
+          ← Dashboard
+        </button>
+        <button class="btn btn-danger" id="logoutBtn">Logout</button>
+      </div>
+    </div>
 
-    <form id="uploadForm" enctype="multipart/form-data">
-      <label>Dress Name:</label>
-      <input type="text" id="name" name="name" placeholder="Red Party Gown" required />
+    <div class="main-content">
+      <!-- Form Section -->
+      <div class="form-section">
+        <div class="section-title">
+          <div class="section-icon">✨</div>
+          Add New Dress
+        </div>
 
-      <label>Section:</label>
-      <select id="section" name="section" required>
-        <option value="">Select Section</option>
-      </select>
+        <form id="uploadForm" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="name">Dress Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Red Party Gown" required />
+          </div>
 
-      <label>Category:</label>
-      <select id="category" name="category" required>
-        <option value="">Select Category</option>
-      </select>
+          <div class="form-group">
+            <label for="section">Section</label>
+            <select id="section" name="section" required>
+              <option value="">Select Section</option>
+            </select>
+          </div>
 
-      <label>Upload Image:</label>
-      <label class="upload-box" for="image">📷 Click to select image</label>
-      <input type="file" id="image" name="image" accept="image/*" required />
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="">Select Category</option>
+            </select>
+          </div>
 
-      <div class="preview" id="preview"></div>
+          <div class="form-group">
+            <label>Upload Image</label>
+            <label class="upload-box" for="image">
+              <span class="upload-icon">📷</span>
+              <div class="upload-text">Click to select image</div>
+              <div class="upload-hint">PNG, JPG up to 10MB</div>
+            </label>
+            <input type="file" id="image" name="image" accept="image/*" required />
+          </div>
 
-      <button class="btn" type="submit" style="width:100%; margin-top:25px;">
-        ✨ Upload Dress
-      </button>
-    </form>
+          <button class="btn-submit" type="submit" id="submitBtn">
+            <span id="submitText">✨ Upload Dress</span>
+          </button>
+        </form>
 
-    <p id="status" class="status"></p>
+        <div id="status" class="status" style="display:none;"></div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="preview-section">
+        <div class="section-title">
+          <div class="section-icon">👁️</div>
+          Preview
+        </div>
+
+        <div id="previewEmpty" class="preview-empty">
+          <div class="preview-empty-icon">🖼️</div>
+          <div>No image selected</div>
+          <div style="font-size: 0.85rem; margin-top: 8px;">Upload an image to see preview</div>
+        </div>
+
+        <div id="previewContainer" class="preview-container" style="display:none;">
+          <img id="previewImage" class="preview-image" alt="Preview" />
+          <div class="preview-info">
+            <div class="preview-info-item">
+              <span class="preview-label">Name:</span>
+              <span class="preview-value" id="previewName">-</span>
+            </div>
+            <div class="preview-info-item">
+              <span class="preview-label">Section:</span>
+              <span class="preview-value" id="previewSection">-</span>
+            </div>
+            <div class="preview-info-item">
+              <span class="preview-label">Category:</span>
+              <span class="preview-value" id="previewCategory">-</span>
+            </div>
+            <div class="preview-info-item">
+              <span class="preview-label">File Size:</span>
+              <span class="preview-value" id="previewSize">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -110,8 +538,9 @@
 
     const sectionSelect = document.getElementById("section");
     const categorySelect = document.getElementById("category");
-    const preview = document.getElementById("preview");
-    const statusText = document.getElementById("status");
+    const statusDiv = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+    const submitText = document.getElementById("submitText");
 
     if (!localStorage.getItem("loggedInUser")) {
       window.location.href = "login.html";
@@ -119,44 +548,83 @@
 
     // Load sections from backend
     async function loadSections() {
-      const res = await fetch(`${API_URL}/api/sections`, { credentials: "include" });
-      if (!res.ok) return;
+      try {
+        const res = await fetch(`${API_URL}/api/sections`, { credentials: "include" });
+        if (!res.ok) return;
 
-      const data = await res.json();
-      sectionSelect.innerHTML = `<option value="">Select Section</option>`;
+        const data = await res.json();
+        sectionSelect.innerHTML = `<option value="">Select Section</option>`;
 
-      data.forEach(s => {
-        sectionSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
-      });
+        data.forEach(s => {
+          sectionSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`;
+        });
 
-      // Load categories when section changes
-      sectionSelect.onchange = () => {
-        const selected = data.find(x => x.name === sectionSelect.value);
-        categorySelect.innerHTML = `<option value="">Select Category</option>`;
-        if (selected) {
-          selected.categories.forEach(c => {
-            categorySelect.innerHTML += `<option value="${c}">${c}</option>`;
-          });
-        }
-      };
+        // Load categories when section changes
+        sectionSelect.onchange = () => {
+          const selected = data.find(x => x.name === sectionSelect.value);
+          categorySelect.innerHTML = `<option value="">Select Category</option>`;
+          if (selected) {
+            selected.categories.forEach(c => {
+              categorySelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+          }
+          updatePreview();
+        };
+      } catch (error) {
+        console.error('Failed to load sections:', error);
+      }
     }
 
     loadSections();
+
+    // Update preview
+    function updatePreview() {
+      const name = document.getElementById("name").value;
+      const section = sectionSelect.value;
+      const category = categorySelect.value;
+
+      if (name) document.getElementById("previewName").textContent = name;
+      if (section) document.getElementById("previewSection").textContent = section;
+      if (category) document.getElementById("previewCategory").textContent = category;
+    }
+
+    // Listen to input changes
+    document.getElementById("name").addEventListener("input", updatePreview);
+    categorySelect.addEventListener("change", updatePreview);
 
     // Preview photo
     document.getElementById("image").addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
-      reader.onload = () => (preview.innerHTML = `<img src="${reader.result}" />`);
+      reader.onload = () => {
+        document.getElementById("previewEmpty").style.display = "none";
+        document.getElementById("previewContainer").style.display = "flex";
+        document.getElementById("previewImage").src = reader.result;
+        
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+        document.getElementById("previewSize").textContent = `${sizeInMB} MB`;
+      };
       reader.readAsDataURL(file);
     });
+
+    // Show status message
+    function showStatus(message, isSuccess) {
+      statusDiv.textContent = message;
+      statusDiv.className = `status ${isSuccess ? 'success' : 'error'}`;
+      statusDiv.style.display = 'block';
+    }
 
     // Upload form
     document.getElementById("uploadForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const formData = new FormData(e.target);
+
+      // Disable button and show loading
+      submitBtn.disabled = true;
+      submitText.innerHTML = '<span class="spinner"></span>Uploading...';
 
       try {
         const res = await fetch(`${API_URL}/api/dresses`, {
@@ -168,16 +636,17 @@
         const data = await res.json();
 
         if (res.ok) {
-          statusText.textContent = "✅ Uploaded successfully!";
-          statusText.className = "status success";
-          setTimeout(() => location.reload(), 1200);
+          showStatus("✅ Uploaded successfully! Redirecting...", true);
+          setTimeout(() => window.location.href = 'dashboard.html', 1500);
         } else {
-          statusText.textContent = "❌ " + data.message;
-          statusText.className = "status error";
+          showStatus("❌ " + (data.message || "Upload failed"), false);
+          submitBtn.disabled = false;
+          submitText.textContent = "✨ Upload Dress";
         }
-      } catch {
-        statusText.textContent = "⚠ Network error!";
-        statusText.className = "status error";
+      } catch (error) {
+        showStatus("⚠️ Network error! Please try again.", false);
+        submitBtn.disabled = false;
+        submitText.textContent = "✨ Upload Dress";
       }
     });
 

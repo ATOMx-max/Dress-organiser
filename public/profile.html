@@ -5,88 +5,302 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profile | Dress Organizer</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 20px;
       color: white;
       min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .container {
-      max-width: 550px;
-      background: rgba(255,255,255,0.95);
+      max-width: 600px;
+      width: 100%;
+      background: rgba(255,255,255,0.98);
       color: #333;
       margin: 0 auto;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-      animation: fadeIn 0.5s ease;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to   { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(40px) scale(0.95);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 35px;
+      position: relative;
+    }
+
+    .profile-avatar {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     h1 {
-      text-align: center;
-      font-size: 27px;
-      color: #4f46e5;
-      margin-bottom: 20px;
+      font-size: 32px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      font-weight: 700;
     }
 
-    .info-box {
-      margin: 20px 0;
-      padding: 18px;
-      border-radius: 15px;
-      background: #f3f4f6;
-      font-size: 16px;
+    .subtitle {
+      color: #6b7280;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .info-card {
+      margin: 25px 0;
+      padding: 24px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-row:first-child {
+      padding-top: 0;
+    }
+
+    .info-label {
+      font-size: 15px;
+      color: #6b7280;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-value {
+      font-size: 15px;
+      color: #111827;
       font-weight: 600;
+    }
+
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .unverified-badge {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      color: white;
+      transition: all 0.3s ease;
+      cursor: default;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.95;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .btn {
       display: block;
       width: 100%;
       margin-top: 15px;
-      padding: 14px;
-      background: linear-gradient(135deg,#4f46e5,#7c3aed);
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       color: white;
       text-align: center;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
-      transition: 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .btn:hover {
       transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
     }
 
     .logout {
-      background: linear-gradient(135deg,#ef4444,#dc2626);
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
     }
 
-    .stats {
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 15px;
-      background: #eef2ff;
+    .logout:hover {
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
     }
 
-    .stats p {
-      margin: 8px 0;
-      font-size: 16px;
-      font-weight: 600;
-      color: #333;
+    .loading {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #e5e7eb;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 30px 25px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+      }
+
+      .stat-icon {
+        font-size: 32px;
+        margin-bottom: 0;
+      }
+
+      .stat-content {
+        flex: 1;
+        text-align: right;
+      }
     }
   </style>
 </head>
@@ -94,20 +308,56 @@
 <body>
 
   <div class="container">
-    <h1>👤 Your Profile</h1>
-
-    <div class="info-box">
-      <p><strong>Email:</strong> <span id="email">Loading...</span></p>
-      <p><strong>Status:</strong> <span id="verified">Loading...</span></p>
+    <div class="profile-header">
+      <div class="profile-avatar">👤</div>
+      <h1>Your Profile</h1>
+      <p class="subtitle">Manage your account and view statistics</p>
     </div>
 
-    <div class="stats">
-      <p>📌 Total Dresses: <span id="dressCount">0</span></p>
-      <p>📂 Sections: <span id="sectionCount">0</span></p>
-      <p>🏷️ Categories: <span id="categoryCount">0</span></p>
+    <div class="info-card">
+      <div class="info-row">
+        <span class="info-label">
+          📧 Email Address
+        </span>
+        <span class="info-value" id="email">
+          <span class="loading"></span>
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">
+          🔐 Account Status
+        </span>
+        <span id="verified">
+          <span class="loading"></span>
+        </span>
+      </div>
     </div>
 
-    <a href="dashboard.html" class="btn">← Back to Dashboard</a>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">👗</span>
+        <div class="stat-content">
+          <span class="stat-value" id="dressCount">0</span>
+          <span class="stat-label">Dresses</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📂</span>
+        <div class="stat-content">
+          <span class="stat-value" id="sectionCount">0</span>
+          <span class="stat-label">Sections</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🏷️</span>
+        <div class="stat-content">
+          <span class="stat-value" id="categoryCount">0</span>
+          <span class="stat-label">Categories</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
     <button class="btn logout" id="logoutBtn">Logout</button>
   </div>
 
@@ -137,21 +387,50 @@
         }
         const user = await res.json();
         emailSpan.textContent = user.email;
-        verifiedSpan.textContent = user.verified ? "✔ Verified" : "❌ Not Verified";
+        
+        if (user.verified) {
+          verifiedSpan.innerHTML = '<span class="verified-badge">✓ Verified</span>';
+        } else {
+          verifiedSpan.innerHTML = '<span class="verified-badge unverified-badge">✕ Not Verified</span>';
+        }
       } catch {
-        emailSpan.textContent = "Error";
+        emailSpan.textContent = "Error loading data";
+        verifiedSpan.textContent = "—";
       }
     }
 
-    // Load stats
+    // Load stats with animation
     async function loadStats() {
-      const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
-      if (!res.ok) return;
+      try {
+        const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
+        if (!res.ok) return;
 
-      const stats = await res.json();
-      dressCount.textContent = stats.dresses;
-      sectionCount.textContent = stats.sections;
-      categoryCount.textContent = stats.categories;
+        const stats = await res.json();
+        
+        // Animate numbers
+        animateValue(dressCount, 0, stats.dresses, 800);
+        animateValue(sectionCount, 0, stats.sections, 800);
+        animateValue(categoryCount, 0, stats.categories, 800);
+      } catch (err) {
+        console.error('Error loading stats:', err);
+      }
+    }
+
+    // Animate number counter
+    function animateValue(element, start, end, duration) {
+      const range = end - start;
+      const increment = range / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+          element.textContent = end;
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.floor(current);
+        }
+      }, 16);
     }
 
     loadUser();
