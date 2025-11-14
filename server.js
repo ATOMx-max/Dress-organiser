@@ -8,6 +8,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const multer = require("multer");
 const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
@@ -66,15 +67,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
   session({
+    name: "sid",
     secret: process.env.SESSION_SECRET || "supersecretkey",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI,
+      collectionName: "sessions",
+      ttl: 14 * 24 * 60 * 60, // 14 days
+      autoRemove: "native",
+    }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", 
+      secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    }
-
+      maxAge: 14 * 24 * 60 * 60 * 1000,
+    },
   })
 );
 
