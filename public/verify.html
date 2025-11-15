@@ -111,14 +111,15 @@
       actionBtn.style.display = "inline-block";
     }
 
-    // Case: This page is opened directly via ?status=
+    // Case 1: If verify.html?status=success
     if (status) {
       if (status === "success") {
         emoji.textContent = "🎉";
         title.textContent = "Email Verified!";
         title.className = "success-text";
         message.textContent = "Your account has been successfully verified.";
-        showButton(loggedIn ? "Go to Dashboard" : "Go to Login", loggedIn ? "dashboard.html" : "login.html");
+        showButton(loggedIn ? "Go to Dashboard" : "Go to Login",
+                   loggedIn ? "dashboard.html" : "login.html");
       }
       else if (status === "invalid") {
         emoji.textContent = "❌";
@@ -137,6 +138,10 @@
       return;
     }
 
+    // Case 2: If verify.html?token=xyz&id=abc → redirect to backend
+    if (token && id) {
+      window.location.href = `/verify?token=${token}&id=${id}`;
+    }
   </script>
 </body>
 </html>

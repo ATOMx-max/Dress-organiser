@@ -15,6 +15,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      padding: 20px;
     }
 
     .reset-container {
@@ -22,8 +23,8 @@
       padding: 45px 40px;
       border-radius: 25px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      width: 90%;
-      max-width: 400px;
+      width: 100%;
+      max-width: 420px;
       text-align: center;
       animation: fadeIn 0.8s ease;
     }
@@ -96,13 +97,13 @@
   <div class="reset-container">
     <h2>Reset Your Password</h2>
 
-    <form id="resetForm">
+    <form id="resetForm" style="display:none;">
       <input type="password" id="password" placeholder="New Password" required minlength="6" />
       <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6" />
       <button type="submit">Update Password</button>
     </form>
 
-    <p id="msg" class="message info"></p>
+    <p id="msg" class="message info">Checking reset link...</p>
     <a href="login.html">Back to Login</a>
   </div>
 
@@ -112,25 +113,52 @@
       : "https://dress-organiser.onrender.com";
 
     const msg = document.getElementById("msg");
+    const resetForm = document.getElementById("resetForm");
 
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
     const id = params.get("id");
 
-    // Invalid URL
+    // If URL is missing parameters
     if (!token || !id) {
       msg.textContent = "❌ Invalid or missing reset link.";
       msg.className = "message error";
-      document.getElementById("resetForm").style.display = "none";
     }
 
-    document.getElementById("resetForm").addEventListener("submit", async (e) => {
+    // -------------------------------------
+    // 1️⃣ VALIDATE TOKEN BEFORE SHOWING FORM
+    // -------------------------------------
+    async function validateToken() {
+      try {
+        const res = await fetch(`${API_URL}/validate-reset?token=${token}&id=${id}`);
+        const data = await res.json();
+
+        if (!data.valid) {
+          msg.textContent = "❌ Reset link is invalid or expired.";
+          msg.className = "message error";
+          resetForm.style.display = "none";
+        } else {
+          msg.textContent = "✔ Reset link verified. Enter new password.";
+          msg.className = "message success";
+          resetForm.style.display = "block";
+        }
+      } catch (e) {
+        msg.textContent = "⚠ Server error.";
+        msg.className = "message error";
+      }
+    }
+
+    validateToken();
+
+    // ----------------------------
+    // 2️⃣ HANDLE RESET SUBMISSION
+    // ----------------------------
+    resetForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const password = document.getElementById("password").value.trim();
       const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
-      // Password validation
       if (password.length < 6) {
         msg.textContent = "⚠️ Password must be at least 6 characters.";
         msg.className = "message error";
@@ -167,8 +195,8 @@
           msg.textContent = "❌ " + data.message;
           msg.className = "message error";
         }
-      } catch (err) {
-        msg.textContent = "⚠️ Server not reachable. Try again later.";
+      } catch {
+        msg.textContent = "⚠️ Server not reachable.";
         msg.className = "message error";
       }
     });
