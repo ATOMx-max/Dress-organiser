@@ -134,7 +134,12 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   verified: { type: Boolean, default: false },
+  name: { type: String, default: "" },
+  username: { type: String, default: "" },
+  profilePic: { type: String, default: "" },   // ⭐ ADDED
+  createdAt: { type: Date, default: Date.now }
 });
+
 
 const tokenSchema = new mongoose.Schema({
   userId: mongoose.Schema.Types.ObjectId,
@@ -231,13 +236,17 @@ async function sendEmail({ to, subject, html }) {
 // ---------- AUTH ROUTES ----------
 app.post("/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { name, username, email, password } = req.body;
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "User already exists." });
 
     const hashed = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashed });
-
+    const user = await User.create({
+      name: name?.trim() || "",
+      username: username?.trim() || "",
+      email,
+      password: hashed
+    });
     const token = crypto.randomBytes(32).toString("hex");
     await Token.create({ userId: user._id, token, purpose: "verify" });
 
@@ -309,7 +318,17 @@ app.post("/login", async (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ message: "Invalid password." });
 
-    req.session.user = user;
+    req.session.user = {
+      _id: user._id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      verified: user.verified,
+      profilePic: user.profilePic || "",
+      createdAt: user.createdAt
+    };
+
+
     res.json({ message: "✅ Login successful", user });
   } catch (err) {
     console.error("❌ Login error:", err);
@@ -321,8 +340,18 @@ app.get("/api/me", (req, res) => {
   try {
     if (!req.session || !req.session.user) return res.status(401).json({ message: "Unauthorized" });
     // Return safe user fields only
-    const { email, verified, _id } = req.session.user;
-    res.json({ email, verified, id: _id });
+    const { name, username, email, verified, _id, createdAt, profilePic } = req.session.user;
+    res.json({
+      name: name || "",
+      username: username || "",
+      email,
+      verified,
+      id: _id,
+      joined: createdAt,
+      profilePic: profilePic || ""
+    });
+
+
   } catch (err) {
     console.error("❌ /api/me error:", err);
     res.status(500).json({ message: "Server error" });
@@ -344,6 +373,174 @@ app.post("/logout", (req, res) => {
     res.status(500).json({ message: "Logout failed" });
   }
 });
+// ---------- UPDATE USER NAME ----------
+app.post("/api/update-name", async (req, res) => {
+  try {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const { name } = req.body;
+
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ message: "Name cannot be empty" });
+    }
+
+    await User.findByIdAndUpdate(req.session.user._id, { name: name.trim() });
+
+    req.session.user.name = name.trim();
+
+    res.json({ success: true, message: "Name updated successfully" });
+  } catch (err) {
+    console.error("❌ Update name error:", err);
+    res.status(500).json({ message: "Server error updating name." });
+  }
+});
+app.post("/api/update-username", async (req, res) => {
+  try {
+    if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
+
+    const { username } = req.body;
+    if (!username || username.trim() === "")
+      return res.status(400).json({ message: "Username cannot be empty" });
+
+    await User.findByIdAndUpdate(req.session.user._id, { username: username.trim() });
+
+    req.session.user.username = username.trim();
+
+    res.json({ success: true, message: "Username updated successfully" });
+  } catch (err) {
+    console.error("❌ Update username error:", err);
+    res.status(500).json({ message: "Server error updating username" });
+  }
+});
+app.post("/api/change-password", async (req, res) => {
+  try {
+    if (!req.session?.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.session.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) return res.status(400).json({ message: "Current password incorrect" });
+
+    const hashed = await bcrypt.hash(newPassword, 10);
+    user.password = hashed;
+    await user.save();
+
+    res.json({ success: true, message: "Password updated successfully" });
+  } catch (err) {
+    console.error("❌ Change password error:", err);
+    res.status(500).json({ message: "Server error updating password" });
+  }
+});
+app.post("/api/upload-profile-pic",
+  (req, res, next) => {
+    upload.single("image")(req, res, (err) => {
+      if (err) return res.status(400).json({ message: err.message });
+      next();
+    });
+  },
+  async (req, res) => {
+    try {
+      if (!req.session?.user)
+        return res.status(401).json({ message: "Unauthorized" });
+
+      if (!req.file)
+        return res.status(400).json({ message: "No image uploaded" });
+
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "dress_organizer/profile",
+        format: "jpg",
+      });
+
+      await User.findByIdAndUpdate(req.session.user._id, {
+        profilePic: result.secure_url,
+      });
+
+      req.session.user.profilePic = result.secure_url;
+
+      fs.unlinkSync(req.file.path);
+
+      res.json({
+        success: true,
+        message: "Profile picture updated",
+        url: result.secure_url,
+      });
+    } catch (error) {
+      console.error("❌ Profile Pic Upload Error:", error);
+      res.status(500).json({ message: "Server error uploading profile photo" });
+    }
+  }
+);
+app.post("/api/resend-verification", async (req, res) => {
+  try {
+    if (!req.session?.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
+    const user = await User.findById(req.session.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (user.verified)
+      return res.status(400).json({ message: "Already verified" });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    await Token.create({ userId: user._id, token, purpose: "verify" });
+
+    const verifyLink = `${process.env.CLIENT_URL}/verify?token=${token}&id=${user._id}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "🌟 Verify Your Email",
+      html: `Click the link to verify: <a href="${verifyLink}">Verify</a>`,
+    });
+
+    res.json({ success: true, message: "Verification email sent" });
+  } catch (err) {
+    console.error("❌ Verification resend error:", err);
+    res.status(500).json({ message: "Server error sending verification" });
+  }
+});
+app.delete("/api/delete-account", async (req, res) => {
+  try {
+    if (!req.session?.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
+    const user = req.session.user;
+
+    // Delete profile pic (optional)
+
+    // Delete dresses + Cloudinary images
+    const dresses = await Dress.find({ userEmail: user.email });
+    for (const d of dresses) {
+      const file = d.imageUrl.split("/").pop().split(".")[0];
+      const publicId = "dress_organizer/" + file;
+      await cloudinary.uploader.destroy(publicId).catch(() => {});
+    }
+    await Dress.deleteMany({ userEmail: user.email });
+
+    // Delete categories/sections created by user
+    await Section.deleteMany({ userEmail: user.email });
+
+    // Delete user account
+    await User.deleteOne({ _id: user._id });
+
+    // Delete session
+    req.session.destroy(() => {});
+
+    res.json({ success: true, message: "Account permanently deleted" });
+  } catch (err) {
+    console.error("❌ Delete account error:", err);
+    res.status(500).json({ message: "Server error deleting account" });
+  }
+});
+
+
+
+
+
 app.get("/api/stats", async (req, res) => {
   try {
     if (!req.session || !req.session.user)
@@ -351,15 +548,12 @@ app.get("/api/stats", async (req, res) => {
 
     const userEmail = req.session.user.email;
 
-    // TOTAL DRESSES
     const dressCount = await Dress.countDocuments({ userEmail });
 
-    // ALL SECTIONS (default + user)
     const sections = await Section.find({
       $or: [{ userEmail: null }, { userEmail }],
     });
 
-    // COUNT CATEGORIES
     let categoryTotal = 0;
     sections.forEach((s) => {
       if (Array.isArray(s.categories)) {
@@ -367,12 +561,10 @@ app.get("/api/stats", async (req, res) => {
       }
     });
 
-    // RECENT UPLOADS (latest 5)
     const recentUploads = await Dress.find({ userEmail })
       .sort({ createdAt: -1 })
       .limit(5);
 
-    // FINAL RESPONSE
     res.json({
       dresses: dressCount,
       sections: sections.length,
@@ -384,6 +576,7 @@ app.get("/api/stats", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 app.post("/api/reset-defaults", async (req, res) => {
   const user = req.session.user;

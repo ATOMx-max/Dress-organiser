@@ -3,355 +3,407 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile | Dress Organizer</title>
+  <title>Settings | Dress Organizer</title>
 
-  <!-- Dashboard Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
       font-family: "Inter", sans-serif;
-      min-height: 100vh;
-      padding: 20px;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
       color: white;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow-x: hidden;
-      position: relative;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    /*********** Glowing Orbs ***********/
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.18;
-      z-index: 0;
-      animation: float 22s infinite ease-in-out;
-    }
-
-    .orb-1 { background: linear-gradient(135deg, #818cf8, #c084fc); width: 480px; height: 480px; top: -180px; left: -120px; }
-    .orb-2 { background: linear-gradient(135deg, #f472b6, #fb923c); width: 400px; height: 400px; bottom: -150px; right: -100px; animation-delay: 6s; }
-    .orb-3 { background: linear-gradient(135deg, #06b6d4, #3b82f6); width: 360px; height: 360px; top: 40%; left: 50%; animation-delay: 10s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0,0) scale(1); }
-      33% { transform: translate(40px,-40px) scale(1.08); }
-      66% { transform: translate(-30px,30px) scale(0.92); }
-    }
-
-    /*********** Profile Container ***********/
-    .container {
-      width: 100%;
-      max-width: 600px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      padding: 45px 35px;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,0.20);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
-      z-index: 10;
-      animation: fadeIn 0.7s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /*********** Avatar ***********/
-    .profile-avatar {
-      width: 95px;
-      height: 95px;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      border-radius: 50%;
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid rgba(255,255,255,0.12);
+      padding: 25px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 42px;
-      margin: 0 auto 18px;
-      box-shadow: 0 12px 25px rgba(129,140,248,0.3);
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .nav-item {
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    .active {
+      background: rgba(255,255,255,0.25);
+      font-weight: 600;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 40px;
     }
 
     h1 {
-      text-align: center;
       font-size: 2rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #fff, #e0e7ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       margin-bottom: 6px;
     }
 
     .subtitle {
-      text-align: center;
       color: #c7d2fe;
-      font-size: 0.95rem;
-      margin-bottom: 35px;
-    }
-
-    /*********** Info Card ***********/
-    .info-card {
-      background: rgba(255,255,255,0.07);
-      backdrop-filter: blur(15px);
-      padding: 20px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
       margin-bottom: 30px;
     }
 
+    /* CARD */
+    .card {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px);
+      padding: 25px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.15);
+      margin-bottom: 30px;
+    }
+
+    /* Profile Pic */
+    .profile-pic-box {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,0.4);
+    }
+
+    .upload-btn {
+      margin-top: 12px;
+      padding: 8px 18px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* INFO ROW */
     .info-row {
       display: flex;
       justify-content: space-between;
       padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      align-items: center;
     }
 
-    .info-row:last-child { border-bottom: 0; }
+    .info-label { color: #c7d2fe; font-size: 0.95rem; }
+    .info-value { font-size: 1rem; font-weight: 600; }
 
-    .info-label {
-      font-size: 0.95rem;
-      color: #c7d2fe;
-      font-weight: 500;
+    .edit-btn {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.18);
+      cursor: pointer;
     }
 
-    .info-value {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .verified-badge {
-      padding: 6px 12px;
+    .badge {
+      padding: 6px 14px;
       border-radius: 14px;
-      background: rgba(0,255,120,0.2);
-      border: 1px solid rgba(0,255,120,0.35);
-      color: #bbf7d0;
-      font-weight: 600;
-      font-size: 0.8rem;
     }
 
-    .unverified-badge {
+    .badge.green {
+      background: rgba(0,255,120,0.2);
+      color: #bbf7d0;
+    }
+
+    .badge.red {
       background: rgba(255,0,0,0.2);
-      border: 1px solid rgba(255,0,0,0.35);
       color: #fecaca;
     }
 
-    /*********** Stats Grid ***********/
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 18px;
-      margin-bottom: 30px;
+    /* MODAL */
+    .modal-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(3px);
     }
 
-    .stat-card {
-      background: rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 24px 12px;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.28);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-8px);
-      background: rgba(255,255,255,0.13);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
-    }
-
-    .stat-icon {
-      font-size: 32px;
-      margin-bottom: 10px;
-      opacity: 0.9;
-    }
-
-    .stat-value {
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      color: #c7d2fe;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /*********** Buttons ***********/
-    .btn {
-      width: 100%;
-      padding: 15px;
-      border-radius: 14px;
-      margin-top: 12px;
+    .modal {
       background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(14px);
-      color: white;
+      padding: 25px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.25);
-      font-weight: 600;
+      background: rgba(255,255,255,0.12);
+      color: white;
+    }
+
+    .btn-danger {
+      background: rgba(255,0,0,0.25) !important;
+      border: 1px solid rgba(255,0,0,0.4) !important;
+    }
+
+    .close {
+      float: right;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      background: rgba(255,255,255,0.2);
-    }
-
-    .logout {
-      background: rgba(255,0,0,0.2);
-      border: 1px solid rgba(255,0,0,0.35);
-    }
-
-    .logout:hover {
-      background: rgba(255,0,0,0.3);
-      box-shadow: 0 6px 18px rgba(255,0,0,0.4);
-    }
-
-    .loading {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+      font-size: 20px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Glow Orbs -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Dress Organizer</h2>
 
-  <div class="container">
-    <div class="profile-header">
-      <div class="profile-avatar">👤</div>
-      <h1>Your Profile</h1>
-      <p class="subtitle">Manage your account & view statistics</p>
+  <div class="nav-item" onclick="location.href='dashboard.html'">🏠 Dashboard</div>
+  <div class="nav-item" onclick="location.href='all-dresses.html'">👗 All Dresses</div>
+  <div class="nav-item" onclick="location.href='upload.html'">⬆️ Upload Dress</div>
+  <div class="nav-item" onclick="location.href='manage.html'">📂 Manage</div>
+  <div class="nav-item" onclick="location.href='search.html'">🔍 Search</div>
+  <div class="nav-item" onclick="location.href='favourites.html'">❤️ Favourites</div>
+
+  <div class="nav-item active">⚙️ Settings</div>
+
+  <div class="nav-item" onclick="logout()">🚪 Logout</div>
+</div>
+
+<!-- MAIN AREA -->
+<div class="main">
+  <h1>Account Settings</h1>
+  <p class="subtitle">Manage your profile, password, and preferences</p>
+
+  <!-- Profile picture -->
+  <div class="card">
+    <div class="profile-pic-box">
+      <img id="profilePic" class="profile-pic" src="default.jpg" />
+      <br />
+      <label class="upload-btn">
+        Upload New Photo
+        <input type="file" id="picInput" accept="image/*" hidden>
+      </label>
     </div>
-
-    <!-- Info Box -->
-    <div class="info-card">
-      <div class="info-row">
-        <span class="info-label">📧 Email</span>
-        <span class="info-value" id="email">
-          <span class="loading"></span>
-        </span>
-      </div>
-
-      <div class="info-row">
-        <span class="info-label">🔐 Status</span>
-        <span id="verified">
-          <span class="loading"></span>
-        </span>
-      </div>
-    </div>
-
-    <!-- Stat Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">👗</div>
-        <div class="stat-value" id="dressCount">0</div>
-        <div class="stat-label">Dresses</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">📂</div>
-        <div class="stat-value" id="sectionCount">0</div>
-        <div class="stat-label">Sections</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon">🏷️</div>
-        <div class="stat-value" id="categoryCount">0</div>
-        <div class="stat-label">Categories</div>
-      </div>
-    </div>
-
-    <a href="dashboard.html">
-      <button class="btn">← Back to Dashboard</button>
-    </a>
-
-    <button class="btn logout" id="logoutBtn">Logout</button>
   </div>
 
-  <!-- JS (unchanged) -->
-  <script>
-    const API_URL = window.location.origin.includes("localhost")
-      ? "http://localhost:8080"
-      : "https://dress-organiser.onrender.com";
+  <!-- INFO -->
+  <div class="card">
 
-    const emailSpan = document.getElementById("email");
-    const verifiedSpan = document.getElementById("verified");
-    const dressCount = document.getElementById("dressCount");
-    const sectionCount = document.getElementById("sectionCount");
-    const categoryCount = document.getElementById("categoryCount");
+    <div class="info-row">
+      <span class="info-label">🧍 Name</span>
+      <span class="info-value" id="name"></span>
+      <button class="edit-btn" onclick="editName()">Edit</button>
+    </div>
 
-    if (!localStorage.getItem("loggedInUser")) {
-      window.location.href = "login.html";
-    }
+    <div class="info-row">
+      <span class="info-label">🆔 Username</span>
+      <span class="info-value" id="username"></span>
+      <button class="edit-btn" onclick="editUsername()">Edit</button>
+    </div>
 
-    async function loadUser() {
-      const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
-      if (!res.ok) return window.location.href = "login.html";
+    <div class="info-row">
+      <span class="info-label">📧 Email</span>
+      <span class="info-value" id="email"></span>
+    </div>
 
-      const user = await res.json();
-      emailSpan.textContent = user.email;
+    <div class="info-row">
+      <span class="info-label">✔ Status</span>
+      <span id="verifyBadge"></span>
+      <button class="edit-btn" onclick="resendVerification()">Resend</button>
+    </div>
 
-      verifiedSpan.innerHTML =
-        user.verified
-          ? `<span class="verified-badge">✓ Verified</span>`
-          : `<span class="verified-badge unverified-badge">✕ Not Verified</span>`;
-    }
+    <div class="info-row">
+      <span class="info-label">📅 Joined</span>
+      <span class="info-value" id="joined"></span>
+    </div>
+  </div>
 
-    async function loadStats() {
-      const res = await fetch(`${API_URL}/api/stats`, { credentials: "include" });
-      if (!res.ok) return;
+  <!-- ACTION BUTTONS -->
+  <button onclick="openPasswordModal()">🔐 Change Password</button>
+  <button class="btn-danger" onclick="openDeleteModal()">🗑 Delete Account</button>
 
-      const stats = await res.json();
-      animate(dressCount, stats.dresses);
-      animate(sectionCount, stats.sections);
-      animate(categoryCount, stats.categories);
-    }
+</div>
 
-    function animate(el, end) {
-      let start = 0;
-      const step = () => {
-        start += Math.ceil(end / 40);
-        if (start >= end) el.textContent = end;
-        else {
-          el.textContent = start;
-          requestAnimationFrame(step);
-        }
-      };
-      step();
-    }
+<!-- PASSWORD MODAL -->
+<div id="passwordModal" class="modal-bg">
+  <div class="modal">
+    <span class="close" onclick="closePasswordModal()">✖</span>
+    <h2>Change Password</h2>
 
-    loadUser();
-    loadStats();
+    <input id="curPass" class="input" type="password" placeholder="Current Password">
+    <input id="newPass" class="input" type="password" placeholder="New Password">
 
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("loggedInUser");
-      window.location.href = "login.html";
-    };
-  </script>
+    <button onclick="changePassword()">Update Password</button>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal-bg">
+  <div class="modal">
+    <span class="close" onclick="closeDeleteModal()">✖</span>
+    <h2>Delete Account</h2>
+    <p>This action is permanent.</p>
+    <button class="btn-danger" onclick="deleteAccount()">DELETE</button>
+  </div>
+</div>
+
+<script>
+  const API_URL = window.location.origin.includes("localhost")
+    ? "http://localhost:8080"
+    : "https://dress-organiser.onrender.com";
+
+  /* LOAD USER DETAILS */
+  async function loadUser() {
+    const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
+    if (!res.ok) return location.href = "login.html";
+
+    const user = await res.json();
+
+    name.textContent = user.name || "Not set";
+    username.textContent = user.username || "Not set";
+    email.textContent = user.email;
+
+    joined.textContent = new Date(user.joined).toLocaleDateString("en-IN");
+
+    profilePic.src = user.profilePic || "default.jpg";
+
+    verifyBadge.innerHTML = user.verified
+      ? `<span class='badge green'>Verified</span>`
+      : `<span class='badge red'>Not Verified</span>`;
+  }
+
+  /* NAME EDIT */
+  function editName() {
+    const newName = prompt("Enter new name:");
+    if (!newName) return;
+
+    fetch(`${API_URL}/api/update-name`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newName })
+    }).then(() => loadUser());
+  }
+
+  /* USERNAME EDIT */
+  function editUsername() {
+    const newUsername = prompt("Enter new username:");
+    if (!newUsername) return;
+
+    fetch(`${API_URL}/api/update-username`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: newUsername })
+    }).then(() => loadUser());
+  }
+
+  /* UPLOAD PROFILE PIC */
+  picInput.addEventListener("change", async (e) => {
+    const form = new FormData();
+    form.append("image", e.target.files[0]);
+
+    const res = await fetch(`${API_URL}/api/upload-profile-pic`, {
+      method: "POST",
+      credentials: "include",
+      body: form
+    });
+
+    const data = await res.json();
+    if (data.success) loadUser();
+  });
+
+  /* PASSWORD MODAL */
+  function openPasswordModal() {
+    passwordModal.style.display = "flex";
+  }
+  function closePasswordModal() {
+    passwordModal.style.display = "none";
+  }
+
+  function changePassword() {
+    const currentPassword = curPass.value;
+    const newPassword = newPass.value;
+
+    fetch(`${API_URL}/api/change-password`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword, newPassword })
+    }).then(() => {
+      alert("Password Updated!");
+      closePasswordModal();
+    });
+  }
+
+  /* RESEND VERIFICATION */
+  function resendVerification() {
+    fetch(`${API_URL}/api/resend-verification`, {
+      method: "POST",
+      credentials: "include"
+    });
+    alert("Verification email sent!");
+  }
+
+  /* DELETE MODAL */
+  function openDeleteModal() {
+    deleteModal.style.display = "flex";
+  }
+  function closeDeleteModal() {
+    deleteModal.style.display = "none";
+  }
+
+  function deleteAccount() {
+    fetch(`${API_URL}/api/delete-account`, {
+      method: "DELETE",
+      credentials: "include"
+    }).then(() => {
+      localStorage.clear();
+      alert("Account deleted");
+      location.href = "login.html";
+    });
+  }
+
+  /* LOGOUT */
+  function logout() {
+    localStorage.clear();
+    location.href = "login.html";
+  }
+
+  loadUser();
+</script>
 
 </body>
 </html>
