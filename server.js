@@ -67,7 +67,7 @@ if (process.env.NODE_ENV === "production") {
 }
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+
 
 // Create a session store instance and keep a reference so we can manipulate session documents
 const sessionStore = MongoStore.create({
@@ -297,6 +297,8 @@ app.get("/verify", async (req, res) => {
     res.redirect("/verify.html?status=error");
   }
 });
+app.use(express.static("public"));
+
 
 // API verify for client apps (returns JSON)
 app.get("/verify-email", async (req, res) => {
