@@ -43,9 +43,9 @@
     }
 
     h2 {
-      color: #4f46e5;
       margin-bottom: 12px;
       font-weight: 700;
+      color: #4f46e5;
     }
 
     p {
@@ -80,9 +80,9 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    .error-text { color: #dc2626; }
-    .success-text { color: #16a34a; }
-    .warning-text { color: #f59e0b; }
+    .error-text { color: #dc2626 !important; }
+    .success-text { color: #16a34a !important; }
+    .warning-text { color: #f59e0b !important; }
   </style>
 </head>
 
@@ -96,7 +96,6 @@
   </div>
 
   <script>
-    const API_URL = "https://dress-organiser.onrender.com";
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
     const token = params.get("token");
@@ -115,12 +114,12 @@
       actionBtn.style.display = "inline-block";
     }
 
-    // Case 1: If verify.html?status=success
-    if (status) {
+    // CASE 1: status=success / invalid / error
+    if (status !== null) {
       if (status === "success") {
         emoji.textContent = "🎉";
         title.textContent = "Email Verified!";
-        title.className = "success-text";
+        title.classList.add("success-text");
         message.textContent = "Your account has been successfully verified.";
         showButton(loggedIn ? "Go to Dashboard" : "Go to Login",
                    loggedIn ? "dashboard.html" : "login.html");
@@ -128,21 +127,21 @@
       else if (status === "invalid") {
         emoji.textContent = "❌";
         title.textContent = "Invalid or Expired Link";
-        title.className = "error-text";
+        title.classList.add("error-text");
         message.textContent = "The verification link is invalid or expired.";
         showButton("Go to Login", "login.html");
       }
       else if (status === "error") {
         emoji.textContent = "⚠️";
         title.textContent = "Verification Failed";
-        title.className = "warning-text";
+        title.classList.add("warning-text");
         message.textContent = "An error occurred while verifying your email.";
         showButton("Go to Login", "login.html");
       }
       return;
     }
 
-    // Case 2: If verify.html?token=xyz&id=abc → redirect to backend
+    // CASE 2: verify.html?token=xyz&id=123
     if (token && id) {
       window.location.replace(`https://dress-organiser.onrender.com/verify?token=${token}&id=${id}`);
     }
