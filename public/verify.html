@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Email Verification | Dress Organizer</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -24,21 +26,22 @@
       background: rgba(255, 255, 255, 0.95);
       padding: 40px 30px;
       border-radius: 25px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.25);
       max-width: 420px;
-      width: 90%;
+      width: 100%;
       color: #333;
-      animation: fadeIn 1s ease;
+      animation: fadeIn 0.9s ease;
+      backdrop-filter: blur(5px);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
+      from { opacity: 0; transform: translateY(40px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
       color: #4f46e5;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       font-weight: 700;
     }
 
@@ -46,26 +49,27 @@
       color: #444;
       margin-bottom: 25px;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
     .btn {
       display: inline-block;
-      padding: 12px 25px;
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
       color: white;
       border-radius: 25px;
       text-decoration: none;
       font-weight: 600;
-      transition: 0.3s;
+      transition: 0.25s;
+      letter-spacing: .3px;
     }
 
-    .btn:hover { transform: scale(1.05); }
+    .btn:hover { transform: translateY(-2px) scale(1.04); }
 
     .emoji {
-      font-size: 40px;
+      font-size: 42px;
       margin-bottom: 10px;
-      animation: pop 0.8s ease;
+      animation: pop 0.6s ease;
     }
 
     @keyframes pop {
@@ -85,13 +89,14 @@
     <h2 id="title">Verifying Email...</h2>
     <p id="message">Please wait while we confirm your email verification.</p>
 
-    <!-- Dynamic button: Login or Dashboard -->
-    <a href="login.html" class="btn" id="actionBtn" style="display:none;"></a>
+    <a href="#" class="btn" id="actionBtn" style="display:none;"></a>
   </div>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
+    const token = params.get("token");
+    const id = params.get("id");
 
     const emoji = document.getElementById("emoji");
     const title = document.getElementById("title");
@@ -106,29 +111,32 @@
       actionBtn.style.display = "inline-block";
     }
 
-    if (status === "success") {
-      emoji.textContent = "🎉";
-      title.textContent = "Email Verified!";
-      title.className = "success-text";
-      message.textContent = "Your account has been successfully verified.";
+    // Case: This page is opened directly via ?status=
+    if (status) {
+      if (status === "success") {
+        emoji.textContent = "🎉";
+        title.textContent = "Email Verified!";
+        title.className = "success-text";
+        message.textContent = "Your account has been successfully verified.";
+        showButton(loggedIn ? "Go to Dashboard" : "Go to Login", loggedIn ? "dashboard.html" : "login.html");
+      }
+      else if (status === "invalid") {
+        emoji.textContent = "❌";
+        title.textContent = "Invalid or Expired Link";
+        title.className = "error-text";
+        message.textContent = "The verification link is invalid or expired.";
+        showButton("Go to Login", "login.html");
+      }
+      else if (status === "error") {
+        emoji.textContent = "⚠️";
+        title.textContent = "Verification Failed";
+        title.className = "warning-text";
+        message.textContent = "An error occurred while verifying your email.";
+        showButton("Go to Login", "login.html");
+      }
+      return;
+    }
 
-      if (loggedIn) showButton("Go to Dashboard", "dashboard.html");
-      else showButton("Go to Login", "login.html");
-    } 
-    else if (status === "invalid") {
-      emoji.textContent = "❌";
-      title.textContent = "Invalid or Expired Link";
-      title.className = "error-text";
-      message.textContent = "The verification link is invalid or expired.";
-      showButton("Go to Login", "login.html");
-    } 
-    else if (status === "error") {
-      emoji.textContent = "⚠️";
-      title.textContent = "Verification Failed";
-      title.className = "warning-text";
-      message.textContent = "An error occurred while verifying your email.";
-      showButton("Go to Login", "login.html");
-    } 
   </script>
 </body>
 </html>

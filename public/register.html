@@ -5,190 +5,200 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Register | Dress Organizer</title>
 
-  <!-- Dashboard font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *{margin:0;padding:0;box-sizing:border-box;}
 
     :root{
-      --bg-1: #1e1b4b;
-      --bg-2: #312e81;
-      --bg-3: #4c1d95;
-      --glass: rgba(255,255,255,0.08);
-      --glass-2: rgba(255,255,255,0.06);
-      --accent-1: #818cf8;
-      --accent-2: #c084fc;
-      --muted: #c7d2fe;
+      --bg1:#1e1b4b;
+      --bg2:#312e81;
+      --bg3:#4c1d95;
+      --accent1:#818cf8;
+      --accent2:#c084fc;
+      --muted:#c7d2fe;
     }
 
     body{
-      font-family:"Inter",system-ui;
-      background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: white;
-      position: relative;
-      overflow-x: hidden;
+      font-family:"Inter",sans-serif;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:white;
+      position:relative;
+      overflow:hidden;
     }
 
-    /* Orbs */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(88px);
-      opacity: 0.18;
-      z-index: 0;
-      animation: float 22s infinite ease-in-out;
+    /* Floating Orbs */
+    .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(90px);
+      opacity:0.18;
+      animation:float 20s infinite ease-in-out;
+      z-index:0;
     }
-    .orb-1 { width: 520px; height: 520px; background: linear-gradient(135deg,#818cf8,#c084fc); top:-200px; left:-160px; }
-    .orb-2 { width:420px;height:420px;background:linear-gradient(135deg,#f472b6,#fb923c);bottom:-160px;right:-160px;animation-delay:6s; }
-    .orb-3 { width:380px;height:380px;background:linear-gradient(135deg,#06b6d4,#3b82f6);top:40%; left:50%; transform:translate(-40%,-20%);animation-delay:10s; }
+    .orb-1{width:500px;height:500px;top:-180px;left:-160px;background:linear-gradient(135deg,#818cf8,#c084fc);}
+    .orb-2{width:400px;height:400px;bottom:-160px;right:-140px;background:linear-gradient(135deg,#f472b6,#fb923c);animation-delay:4s;}
+    .orb-3{width:360px;height:360px;top:40%;left:50%;transform:translate(-50%, -50%);background:linear-gradient(135deg,#06b6d4,#3b82f6);animation-delay:8s;}
 
-    @keyframes float {
-      0%,100% { transform:translate(0,0) scale(1); }
-      33% { transform:translate(44px,-44px) scale(1.08); }
-      66% { transform:translate(-30px,30px) scale(0.92); }
+    @keyframes float{
+      0%,100%{transform:translate(0,0) scale(1);}
+      40%{transform:translate(40px,-40px) scale(1.1);}
+      70%{transform:translate(-30px,30px) scale(.9);}
     }
 
     /* Main Card */
-    .register-card {
+    .card{
       width:100%;
-      max-width:480px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      max-width:460px;
+      padding:35px;
       border-radius:26px;
-      padding:34px;
+      backdrop-filter:blur(22px);
+      background:rgba(255,255,255,0.06);
       border:1px solid rgba(255,255,255,0.14);
-      backdrop-filter:blur(18px);
       box-shadow:0 20px 60px rgba(0,0,0,0.45);
       z-index:10;
       text-align:center;
-      animation: popIn .65s cubic-bezier(0.16,1,0.3,1);
+      animation:popIn .65s cubic-bezier(0.16,1,0.3,1);
     }
 
-    @keyframes popIn {
-      from { opacity:0; transform:translateY(30px) scale(.98); }
-      to { opacity:1; transform:translateY(0) scale(1); }
+    @keyframes popIn{
+      from{opacity:0;transform:translateY(30px) scale(.96);}
+      to{opacity:1;transform:translateY(0) scale(1);}
     }
 
-    .logo {
-      width:80px;height:80px;border-radius:18px;
-      display:flex;align-items:center;justify-content:center;
-      margin:0 auto 16px; font-size:36px;
-      background:linear-gradient(135deg,var(--accent-1),var(--accent-2));
-      box-shadow:0 10px 28px rgba(129,140,248,0.22);
-      animation: logoFloat 3.2s ease-in-out infinite;
+    /* Logo */
+    .logo{
+      width:80px;height:80px;
+      display:flex;justify-content:center;align-items:center;
+      font-size:38px;
+      background:linear-gradient(135deg,#818cf8,#c084fc);
+      margin:0 auto 18px;
+      border-radius:20px;
+      box-shadow:0 10px 30px rgba(129,140,248,0.2);
+      animation:floatLogo 3s infinite ease-in-out;
     }
 
-    @keyframes logoFloat {
-      0%,100% { transform:translateY(0) rotate(-4deg); }
-      50% { transform:translateY(-10px) rotate(4deg); }
+    @keyframes floatLogo{
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-10px);}
     }
 
-    h2 {
-      font-size:24px;font-weight:700;margin-bottom:6px;
-      background:linear-gradient(135deg,#fff,#e0e7ff);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    /* Inputs */
+    .input-group{margin-bottom:18px;}
+
+    input{
+      width:100%;
+      padding:14px 16px;
+      background:rgba(0,0,0,0.35);
+      border:1px solid rgba(255,255,255,0.18);
+      border-radius:12px;
+      color:white;
+      font-size:15px;
+      outline:none;
+      transition:.25s;
     }
 
-    .subtitle { color:var(--muted); margin-bottom:20px; font-weight:500; }
-
-    .input-group { margin-bottom:16px; }
-
-    input {
-      width:100%;padding:14px 16px;border-radius:12px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(0,0,0,0.35);color:white;
-      font-size:15px; outline:none; transition:all .22s;
-    }
-
-    input:focus {
-      border-color:#c084fc; box-shadow:0 0 0 6px rgba(192,132,252,0.1);
+    input:focus{
+      border-color:var(--accent2);
+      box-shadow:0 0 0 6px rgba(192,132,252,0.25);
       transform:translateY(-2px);
     }
 
-    .toggle-password {
-      position:absolute; right:12px; top:50%; transform:translateY(-50%);
-      cursor:pointer; font-size:18px; color:rgba(255,255,255,0.7);
+    .toggle{
+      position:absolute;right:12px;top:50%;transform:translateY(-50%);
+      cursor:pointer;font-size:18px;color:rgba(255,255,255,0.8);
     }
 
-    button[type="submit"] {
-      width:100%; padding:14px; border-radius:12px;
-      border:none; font-weight:700; font-size:15px;
-      background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
-      color:white; cursor:pointer;
-      margin-top:12px; transition:.2s;
-      box-shadow:0 10px 28px rgba(129,140,248,0.28);
+    /* Submit Button */
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      margin-top:10px;
+      font-size:15px;
+      font-weight:700;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      color:white;
+      cursor:pointer;
+      transition:.2s;
+      box-shadow:0 10px 26px rgba(129,140,248,0.3);
     }
-    button:hover { transform:translateY(-3px); }
+    button:hover{transform:translateY(-3px);}
 
-    .spinner {
+    .spinner{
       width:18px;height:18px;border:3px solid rgba(255,255,255,0.4);
       border-top-color:transparent;border-radius:50%;
-      display:none; animation:spin .7s linear infinite;
+      display:none;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* Message Box */
+    .msg{
+      margin-top:16px;
+      padding:12px;
+      border-radius:10px;
+      font-weight:600;
+      display:none;
     }
 
-    @keyframes spin { to { transform:rotate(360deg); } }
+    .msg.show{display:block;}
+    .msg.error{background:#fee2e2;color:#991b1b;}
+    .msg.info{background:#e0e7ff;color:#1e3a8a;}
+    .msg.success{background:#dcfce7;color:#166534;}
 
-    .message { margin-top:14px; padding:10px 12px; border-radius:10px; display:none; font-weight:600; }
-    .message.show { display:block; }
-    .message.error { background:#fee2e2; color:#991b1b; }
-    .message.info { background:#e0e7ff; color:#3730a3; }
-    .message.success { background:#dcfce7; color:#166534; }
-
-    .links a { color:var(--muted); font-weight:600; text-decoration:none; display:inline-block; margin-top:10px; }
-    .links a:hover { color:var(--accent-2); }
-
+    .links a{
+      color:var(--muted);
+      text-decoration:none;
+      font-weight:600;
+      display:inline-block;
+      margin-top:14px;
+    }
+    .links a:hover{color:var(--accent2);}
   </style>
 </head>
+
 <body>
 
-  <!-- Orbs -->
+  <!-- Background Orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
-  <!-- Register Card -->
-  <div class="register-card">
+  <div class="card">
     <div class="logo">👗</div>
 
-    <h2>Create Account</h2>
-    <div class="subtitle">Join to organize your wardrobe</div>
+    <h2 style="margin-bottom:8px;">Create Account</h2>
+    <p style="color:var(--muted);margin-bottom:20px;">Start organizing your wardrobe</p>
 
     <form id="registerForm" novalidate>
 
-      <!-- ⭐ NEW: FULL NAME -->
       <div class="input-group">
         <input id="name" type="text" placeholder="Full Name" autocomplete="name" />
       </div>
 
-      <!-- ⭐ NEW: USERNAME -->
       <div class="input-group">
         <input id="username" type="text" placeholder="Username (optional)" autocomplete="username" />
       </div>
 
       <div class="input-group">
-        <input id="email" type="email" placeholder="Email Address" required autocomplete="email" />
+        <input id="email" type="email" placeholder="Email Address" required />
       </div>
 
-      <!-- PASSWORD -->
-      <div class="input-group">
-        <div style="position:relative;">
-          <input id="password" type="password" placeholder="Password" required />
-          <span class="toggle-password" data-target="password">👁️</span>
-        </div>
+      <div class="input-group" style="position:relative;">
+        <input id="password" type="password" placeholder="Password" required />
+        <span class="toggle" data-target="password">👁️</span>
       </div>
 
-      <!-- CONFIRM PASSWORD -->
-      <div class="input-group">
-        <div style="position:relative;">
-          <input id="confirmPassword" type="password" placeholder="Confirm Password" required />
-          <span class="toggle-password" data-target="confirmPassword">👁️</span>
-        </div>
+      <div class="input-group" style="position:relative;">
+        <input id="confirmPassword" type="password" placeholder="Confirm Password" required />
+        <span class="toggle" data-target="confirmPassword">👁️</span>
       </div>
 
       <button type="submit" id="registerBtn">
@@ -197,101 +207,101 @@
       </button>
     </form>
 
-    <p id="msg" class="message"></p>
+    <p id="msg" class="msg"></p>
 
     <div class="links">
       <a href="login.html">Already have an account? Login</a>
     </div>
   </div>
 
-  <!-- JS -->
-  <script>
-    const API_URL = window.location.origin.includes("localhost")
-      ? "http://localhost:8080"
-      : "https://dress-organiser.onrender.com";
+<script>
+const API_URL = window.location.origin.includes("localhost")
+  ? "http://localhost:8080"
+  : "https://dress-organiser.onrender.com";
 
-    const form = document.getElementById("registerForm");
-    const msg = document.getElementById("msg");
-    const registerBtn = document.getElementById("registerBtn");
-    const spinner = registerBtn.querySelector(".spinner");
-    const btnText = registerBtn.querySelector(".btn-text");
+document.querySelectorAll(".toggle").forEach(icon => {
+  icon.addEventListener("click", () => {
+    const input = document.getElementById(icon.dataset.target);
+    input.type = input.type === "password" ? "text" : "password";
+    icon.textContent = input.type === "password" ? "👁️" : "🙈";
+  });
+});
 
-    document.querySelectorAll(".toggle-password").forEach(el => {
-      el.addEventListener("click", () => {
-        const input = document.getElementById(el.dataset.target);
-        input.type = input.type === "password" ? "text" : "password";
-        el.textContent = input.type === "password" ? "👁️" : "🙈";
-      });
+const form = document.getElementById("registerForm");
+const msg = document.getElementById("msg");
+const registerBtn = document.getElementById("registerBtn");
+const spinner = registerBtn.querySelector(".spinner");
+const btnText = registerBtn.querySelector(".btn-text");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    showMessage("⚠ Enter a valid email address.", "error");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showMessage("⚠ Passwords do not match.", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    showMessage("⚠ Password must be at least 6 characters long.", "error");
+    return;
+  }
+
+  loading(true, "Creating your account...");
+
+  try {
+    const res = await fetch(`${API_URL}/register`, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ name, username, email, password })
     });
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const data = await res.json();
 
-      // Fields
-      const name = document.getElementById("name").value.trim();
-      const username = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const confirmPassword = document.getElementById("confirmPassword").value.trim();
+    if (!res.ok) {
+      showMessage("❌ " + (data.message || "Registration failed."), "error");
+      loading(false);
+      return;
+    }
 
-      // Validation
-      if (!/\S+@\S+\.\S+/.test(email)) {
-        msg.textContent = "⚠ Enter a valid email.";
-        msg.className = "message error show";
-        return;
-      }
+    showMessage("✅ Account created! Please verify your email.", "success");
 
-      if (password !== confirmPassword) {
-        msg.textContent = "⚠ Passwords do not match!";
-        msg.className = "message error show";
-        return;
-      }
+  } catch (err) {
+    showMessage("⚠ Server error. Please try again.", "error");
+  }
 
-      if (password.length < 6) {
-        msg.textContent = "⚠ Password must be at least 6 characters.";
-        msg.className = "message error show";
-        return;
-      }
+  loading(false);
+});
 
-      // UI loading
-      btnText.style.display = "none";
-      spinner.style.display = "inline-block";
-      registerBtn.disabled = true;
-      msg.textContent = "⏳ Creating your account...";
-      msg.className = "message info show";
+function loading(isLoading, text="") {
+  if (isLoading) {
+    msg.className = "msg info show";
+    msg.textContent = text;
+    spinner.style.display = "inline-block";
+    btnText.style.display = "none";
+    registerBtn.disabled = true;
+  } else {
+    spinner.style.display = "none";
+    btnText.style.display = "inline";
+    registerBtn.disabled = false;
+  }
+}
 
-      // Send to backend
-      try {
-        const res = await fetch(`${API_URL}/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, username, email, password })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-          msg.textContent = "❌ " + (data.message || "Registration failed.");
-          msg.className = "message error show";
-          spinner.style.display = "none";
-          btnText.style.display = "inline";
-          registerBtn.disabled = false;
-          return;
-        }
-
-        msg.textContent = "✅ Registration successful! Verify your email.";
-        msg.className = "message success show";
-
-      } catch (err) {
-        msg.textContent = "⚠ Server error. Try again.";
-        msg.className = "message error show";
-      }
-
-      spinner.style.display = "none";
-      btnText.style.display = "inline";
-      registerBtn.disabled = false;
-    });
-  </script>
+function showMessage(text, type="info") {
+  msg.textContent = text;
+  msg.className = `msg ${type} show`;
+}
+</script>
 
 </body>
 </html>
