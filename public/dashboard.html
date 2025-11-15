@@ -14,7 +14,7 @@
       font-family: "Inter", sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
-      padding-bottom: 90px; /* space for bottom nav */
+      padding-bottom: 90px;
     }
 
     /* ------------------------- Orbs ---------------------------- */
@@ -22,7 +22,12 @@
     .orb-1{ background:linear-gradient(135deg,#818cf8,#c084fc); width:500px;height:500px; top:-200px; left:-150px;}
     .orb-2{ background:linear-gradient(135deg,#f472b6,#fb923c); width:400px;height:400px; bottom:-150px; right:-100px; animation-delay:5s;}
     .orb-3{ background:linear-gradient(135deg,#06b6d4,#3b82f6); width:350px;height:350px; top:40%; left:50%; animation-delay:10s;}
-    @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(50px,-50px) scale(1.1);} 66%{transform:translate(-30px,30px) scale(0.9);} }
+
+    @keyframes float { 
+      0%,100%{transform:translate(0,0) scale(1);} 
+      33%{transform:translate(50px,-50px) scale(1.1);} 
+      66%{transform:translate(-30px,30px) scale(0.9);} 
+    }
 
     .container { max-width:1400px; margin:0 auto; padding:30px 20px; position:relative; z-index:10; }
 
@@ -52,41 +57,30 @@
       -webkit-text-fill-color:transparent; 
     }
 
-    .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; }
+    .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; flex-wrap:wrap; }
 
-    /* Avatar */
     .avatar {
       width:54px;height:54px;border-radius:50%;
       background:#2b1f5f; display:flex;align-items:center; justify-content:center;
       font-size:24px; color:white;
       border:3px solid rgba(255,255,255,0.12);
-      overflow:hidden;
-      transition:.3s;
+      overflow:hidden; transition:.3s;
     }
     .avatar:hover { transform:scale(1.06); }
 
-    /* Small Button */
     .btn-ghost {
-      padding:10px 14px; 
-      border-radius:12px; 
+      padding:10px 14px; border-radius:12px; 
       border:1px solid rgba(255,255,255,0.12);
       background:rgba(255,255,255,0.06);
-      color:white;
-      font-weight:600;
-      cursor:pointer;
-      transition:.2s;
+      color:white; font-weight:600;
+      cursor:pointer; transition:.2s;
     }
     .btn-ghost:hover { background:rgba(255,255,255,0.12); transform:translateY(-2px); }
 
-    /* Feedback button */
     .feedback-btn {
-      padding:10px 14px;
-      border-radius:12px;
+      padding:10px 14px;border-radius:12px;
       background: linear-gradient(135deg,#f472b6,#fb923c);
-      border:none;
-      color:white;
-      font-weight:700;
-      cursor:pointer;
+      border:none; color:white; font-weight:700; cursor:pointer;
     }
 
     /* ---------------- Typing Animation -------------------- */
@@ -100,23 +94,19 @@
     .stats {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:18px;
-      margin-bottom:24px;
+      gap:18px; margin-bottom:24px;
     }
     .stat-card {
-      padding:20px;
-      border-radius:18px;
+      padding:20px;border-radius:18px;
       background:rgba(255,255,255,0.08);
       text-align:center;
       border:1px solid rgba(255,255,255,0.15);
       backdrop-filter:blur(16px);
     }
     .stat-number { 
-      font-size:1.8rem; 
-      font-weight:800;
+      font-size:1.8rem; font-weight:800;
       background:linear-gradient(135deg,#818cf8,#c084fc); 
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
     .stat-label { color:#c7d2fe; margin-top:6px; }
 
@@ -124,18 +114,14 @@
     .grid {
       display:grid;
       grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
-      gap:24px;
-      margin-top:30px;
+      gap:24px; margin-top:30px;
     }
     .card {
-      padding:32px 26px;
-      border-radius:20px;
+      padding:32px 26px;border-radius:20px;
       background:rgba(255,255,255,0.08);
       border:1px solid rgba(255,255,255,0.15);
       backdrop-filter:blur(16px);
-      cursor:pointer;
-      transition:.3s;
-      position:relative;
+      cursor:pointer; transition:.3s; position:relative;
       overflow:hidden;
     }
     .card:hover {
@@ -143,48 +129,54 @@
       box-shadow:0 14px 32px rgba(0,0,0,0.3);
       border-color:rgba(255,255,255,0.25);
     }
+
     .card-icon { font-size:2rem; margin-bottom:10px; }
-    .card-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; color:white; }
+    .card-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; }
     .card-description { font-size:0.9rem; color:#c7d2fe; }
 
     /* ---------------- Mobile Bottom Navigation ---------------- */
+
+    /* Desktop: ALWAYS hidden */
     .bottom-nav {
+      display: none !important;
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 70px;
+      bottom: 0; left: 0;
+      width: 100%; height: 70px;
       background: rgba(20,20,40,0.75);
       border-top: 1px solid rgba(255,255,255,0.15);
       backdrop-filter: blur(12px);
-      display: none;
-      z-index: 9999;
-      padding: 0 8px;
+      z-index: 9999; padding: 0 8px;
+    }
+
+    /* Mobile only */
+    @media (max-width: 850px) {
+      .bottom-nav {
+        display: flex !important;
+      }
     }
 
     .nav-item {
-      flex: 1;
-      text-align: center;
-      color: #e0e7ff;
-      font-size: 0.78rem;
-      cursor: pointer;
-      padding-top: 6px;
+      flex: 1; text-align: center;
+      color: #e0e7ff; font-size: 0.78rem;
+      cursor: pointer; padding-top: 6px;
     }
-
     .nav-item span {
-      display: block;
-      font-size: 1.5rem;
-      margin-bottom: 2px;
+      display:block; font-size:1.5rem; margin-bottom:2px;
     }
 
-    @media (max-width: 850px) {
-      .bottom-nav { display: flex; }
+    @media (max-width: 550px) {
+      .user-section {
+        flex-wrap: wrap; justify-content: flex-end;
+      }
+      .user-section button {
+        flex: 1 1 auto;
+      }
     }
-
   </style>
 </head>
 
 <body>
+
   <!-- Background Orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -209,6 +201,9 @@
         </div>
 
         <button class="btn-ghost" onclick="go('profile.html')">Profile</button>
+
+        <button class="btn-ghost" onclick="go('favourites.html')">Favourites ⭐</button>
+
         <button class="feedback-btn" onclick="openFeedbackModal()">Feedback</button>
         <button class="btn-ghost" onclick="logout()">Logout</button>
       </div>
@@ -248,7 +243,7 @@
       <div class="card" onclick="go('manage.html')">
         <div class="card-icon">⚙️</div>
         <div class="card-title">Manage Sections</div>
-        <div class="card-description">Organize all categories</div>
+        <div class="card-description">Organize categories</div>
       </div>
 
       <div class="card" onclick="go('profile.html')">
@@ -256,11 +251,17 @@
         <div class="card-title">Profile</div>
         <div class="card-description">Update your preferences</div>
       </div>
+
+      <div class="card" onclick="go('favourites.html')">
+        <div class="card-icon">⭐</div>
+        <div class="card-title">Favourites</div>
+        <div class="card-description">Your saved dresses</div>
+      </div>
     </div>
 
   </div>
 
-  <!-- ---------------- Bottom Navigation (Mobile) ---------------- -->
+  <!-- ---------------- Bottom Navigation (Mobile Only) ---------------- -->
   <div class="bottom-nav">
     <div class="nav-item" onclick="go('dashboard.html')">
       <span>🏠</span> Home
@@ -279,15 +280,20 @@
     </div>
   </div>
 
-  <!-- JS Scripts (same as your existing ones, kept unchanged) -->
+  <!-- ---------------- JS ---------------- -->
   <script>
     function go(p){ window.location.href=p; }
-    function logout(){ fetch('/logout',{method:'POST',credentials:'include'}).finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); }
 
-    // Typing animation
+    function logout(){ 
+      fetch('/logout',{method:'POST',credentials:'include'})
+      .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
+    }
+
     function typeText(el, text){
       el.textContent=""; let i=0;
-      function t(){ if(i<text.length){ el.textContent += text[i++]; setTimeout(t,50); } }
+      function t(){ 
+        if(i<text.length){ el.textContent += text[i++]; setTimeout(t,50); } 
+      }
       t();
     }
 
@@ -296,6 +302,7 @@
       if(!r.ok){go('login.html');return;}
       const u=await r.json();
       const name=u.name || u.email.split('@')[0];
+
       typeText(document.getElementById('typingLine1'), `Hello, ${name} 👋`);
       typeText(document.getElementById('typingLine2'), `Here’s your wardrobe overview…`);
     }
@@ -304,6 +311,7 @@
       const r=await fetch('/api/stats',{credentials:'include'});
       if(!r.ok) return;
       const s=await r.json();
+
       document.getElementById('dressCount').textContent=s.dresses;
       document.getElementById('sectionCount').textContent=s.sections;
       document.getElementById('recentUploads').textContent=s.recent.length;
@@ -312,110 +320,107 @@
     loadUser();
     loadStats();
   </script>
+
   <!-- FEEDBACK MODAL -->
-<div id="feedbackModal" 
-  style="
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-  ">
-  
-  <div style="
-      width: 90%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 18px;
-      backdrop-filter: blur(18px);
-      padding: 24px;
-      color: white;
+  <div id="feedbackModal" 
+    style="
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
     ">
-      
-    <h2 style="margin-bottom: 12px; font-size: 1.4rem;">Send Feedback</h2>
 
-    <textarea id="feedbackText" 
-      style="
-        width: 100%;
-        height: 120px;
-        padding: 12px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.08);
+    <div style="
+        width: 90%;
+        max-width: 420px;
+        background: rgba(255,255,255,0.12);
         border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 18px;
+        backdrop-filter: blur(18px);
+        padding: 24px;
         color: white;
-        resize: none;
-        font-size: 1rem;
-      "
-      placeholder="Write your feedback here..."
-    ></textarea>
+      ">
 
-    <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px;">
-      <button onclick="closeFeedbackModal()"
+      <h2 style="margin-bottom: 12px; font-size: 1.4rem;">Send Feedback</h2>
+
+      <textarea id="feedbackText" 
         style="
-          padding: 10px 14px;
-          border-radius: 10px;
+          width: 100%;
+          height: 120px;
+          padding: 12px;
+          border-radius: 12px;
+          background: rgba(255,255,255,0.08);
           border: 1px solid rgba(255,255,255,0.2);
-          background: rgba(255,255,255,0.1);
           color: white;
-          cursor: pointer;
+          resize: none;
+          font-size: 1rem;
         "
-      >Cancel</button>
+        placeholder="Write your feedback here..."
+      ></textarea>
 
-      <button onclick="submitFeedback()"
-        style="
-          padding: 10px 14px;
-          border-radius: 10px;
-          background: linear-gradient(135deg,#f472b6,#fb923c);
-          border: none;
-          color: white;
-          font-weight: 700;
-          cursor: pointer;
-        "
-      >Submit</button>
+      <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px;">
+        <button onclick="closeFeedbackModal()"
+          style="
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+          "
+        >Cancel</button>
+
+        <button onclick="submitFeedback()"
+          style="
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: linear-gradient(135deg,#f472b6,#fb923c);
+            border: none;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+          "
+        >Submit</button>
+      </div>
+
     </div>
-
   </div>
-</div>
 
-<script>
-  function openFeedbackModal() {
-    document.getElementById("feedbackModal").style.display = "flex";
-  }
-
-  function closeFeedbackModal() {
-    document.getElementById("feedbackModal").style.display = "none";
-  }
-
-  async function submitFeedback() {
-    const text = document.getElementById("feedbackText").value.trim();
-    if (!text) {
-      alert("Please write some feedback!");
-      return;
+  <script>
+    function openFeedbackModal() {
+      document.getElementById("feedbackModal").style.display = "flex";
     }
 
-    try {
-      const res = await fetch("/api/feedback", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ message: text })
-      });
-
-      if (res.ok) {
-        alert("Thank you! Your feedback has been submitted.");
-        document.getElementById("feedbackText").value = "";
-        closeFeedbackModal();
-      } else {
-        alert("Error submitting feedback.");
-      }
-    } catch (e) {
-      alert("Network error.");
+    function closeFeedbackModal() {
+      document.getElementById("feedbackModal").style.display = "none";
     }
-  }
-</script>
+
+    async function submitFeedback() {
+      const text = document.getElementById("feedbackText").value.trim();
+      if (!text) return alert("Please write some feedback!");
+
+      try {
+        const res = await fetch("/api/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ message: text })
+        });
+
+        if (res.ok) {
+          alert("Your feedback has been submitted!");
+          document.getElementById("feedbackText").value = "";
+          closeFeedbackModal();
+        } else {
+          alert("Error submitting feedback.");
+        }
+
+      } catch (e) { alert("Network error."); }
+    }
+  </script>
 
 </body>
 </html>
