@@ -3,406 +3,591 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings | Dress Organizer</title>
+  <title>Profile | Dress Organizer</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
+    :root {
+      --bg1: #1e1b4b;
+      --bg2: #312e81;
+      --bg3: #4c1d95;
+      --muted: rgba(255,255,255,0.12);
+      --card-bg: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.15);
+      --accent: #6366f1;
+      --success: #4ade80;
+      --danger: #f87171;
+      --toast-z: 99999;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
       color: white;
+      height: 100vh;
+      overflow: hidden;
+      animation: fadeIn .5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Sidebar + Main Layout */
+    .container {
       display: flex;
       height: 100vh;
       overflow: hidden;
     }
 
-    /* SIDEBAR */
     .sidebar {
       width: 260px;
-      background: rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.08);
       backdrop-filter: blur(12px);
-      border-right: 1px solid rgba(255,255,255,0.12);
-      padding: 25px;
+      border-right: 1px solid rgba(255,255,255,0.15);
+      padding: 24px;
       display: flex;
       flex-direction: column;
+      animation: slideLeft .4s ease;
     }
 
-    .sidebar h2 {
-      font-size: 1.4rem;
-      margin-bottom: 20px;
-      font-weight: 700;
+    @keyframes slideLeft {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     .nav-item {
-      padding: 12px 14px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
       border-radius: 12px;
       cursor: pointer;
-      transition: 0.25s;
+      transition: .2s;
+      font-size: 1rem;
     }
+    .nav-item:hover { background: rgba(255,255,255,0.14); }
+    .nav-item.active { background: rgba(255,255,255,0.25); font-weight: 600; }
 
-    .nav-item:hover {
-      background: rgba(255,255,255,0.18);
-    }
-
-    .active {
-      background: rgba(255,255,255,0.25);
-      font-weight: 600;
-    }
-
-    /* MAIN CONTENT */
     .main {
       flex: 1;
-      overflow-y: auto;
       padding: 40px;
+      overflow-y: auto;
     }
 
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
+    h1 { font-size: 1.8rem; margin-bottom: 10px; }
+    .subtitle { opacity: .8; margin-bottom: 24px; }
 
-    .subtitle {
-      color: #c7d2fe;
-      margin-bottom: 30px;
-    }
-
-    /* CARD */
     .card {
       background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px);
-      padding: 25px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.15);
-      margin-bottom: 30px;
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      animation: fadePop .4s ease;
+    }
+
+    @keyframes fadePop {
+      from { opacity: 0; transform: scale(.97); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     /* Profile Pic */
-    .profile-pic-box {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .profile-pic {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid rgba(255,255,255,0.4);
-    }
+    .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
 
     .upload-btn {
       margin-top: 12px;
-      padding: 8px 18px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
-      color: white;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.12);
       border-radius: 10px;
       cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* INFO ROW */
     .info-row {
       display: flex;
       justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .info-label { color: #c7d2fe; font-size: 0.95rem; }
-    .info-value { font-size: 1rem; font-weight: 600; }
-
     .edit-btn {
-      padding: 6px 14px;
-      background: rgba(255,255,255,0.12);
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.18);
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
       cursor: pointer;
     }
 
-    .badge {
-      padding: 6px 14px;
-      border-radius: 14px;
+    /* Action Buttons */
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .action-btn {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: .2s;
     }
+    .action-btn:hover { transform: translateY(-2px); }
+    .action-danger { background: rgba(255,50,50,0.2); }
 
-    .badge.green {
-      background: rgba(0,255,120,0.2);
-      color: #bbf7d0;
+    /* Backup/Restore Buttons */
+    .backup-box { 
+      margin-top: 20px; 
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap; 
     }
-
-    .badge.red {
-      background: rgba(255,0,0,0.2);
-      color: #fecaca;
+    .backup-btn {
+      padding: 12px 20px;
+      background: rgba(99,102,241,0.2);
+      border: 1px solid rgba(99,102,241,0.4);
+      color: #e0e7ff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: .2s;
+      font-weight: 600;
     }
+    .backup-btn:hover { transform: translateY(-2px); }
 
-    /* MODAL */
+    /* Toast */
+    #toastBox { position: fixed; top: 20px; right: 20px; z-index: var(--toast-z); display: flex; flex-direction: column; gap: 10px; }
+    .toast {
+      padding: 12px 18px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      font-weight: 600;
+      animation: toastIn .4s ease;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .toast.success { background: rgba(50,255,120,0.2); border-left: 4px solid var(--success); }
+    .toast.error { background: rgba(255,80,80,0.2); border-left: 4px solid var(--danger); }
+
+    /* Modal */
     .modal-bg {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: rgba(0,0,0,0.55);
       display: none;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(3px);
+      z-index: 5000;
     }
-
     .modal {
-      background: rgba(255,255,255,0.1);
-      padding: 25px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 400px;
-      border: 1px solid rgba(255,255,255,0.2);
+      width: 92%;
+      max-width: 450px;
+      background: rgba(255,255,255,0.08);
+      padding: 22px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      animation: popIn .4s ease;
     }
-
+    @keyframes popIn {
+      from { transform: scale(.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
     .input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 12px;
+      margin-top: 10px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
       color: white;
     }
 
-    .btn-danger {
-      background: rgba(255,0,0,0.25) !important;
-      border: 1px solid rgba(255,0,0,0.4) !important;
+    /* Preview Restore modal */
+    .restore-preview-list {
+      margin-top: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
     }
 
-    .close {
-      float: right;
-      cursor: pointer;
-      font-size: 20px;
-    }
   </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <h2>Dress Organizer</h2>
+<div class="container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo" style="font-size:1.3rem; font-weight:700; margin-bottom:16px;">Dress Organizer</div>
 
-  <div class="nav-item" onclick="location.href='dashboard.html'">🏠 Dashboard</div>
-  <div class="nav-item" onclick="location.href='all-dresses.html'">👗 All Dresses</div>
-  <div class="nav-item" onclick="location.href='upload.html'">⬆️ Upload Dress</div>
-  <div class="nav-item" onclick="location.href='manage.html'">📂 Manage</div>
-  <div class="nav-item" onclick="location.href='search.html'">🔍 Search</div>
-  <div class="nav-item" onclick="location.href='favourites.html'">❤️ Favourites</div>
+    <div class="nav-item" onclick="location.href='dashboard.html'">🏠 Dashboard</div>
+    <div class="nav-item" onclick="location.href='all-dresses.html'">👗 All Dresses</div>
+    <div class="nav-item" onclick="location.href='upload.html'">⬆️ Upload Dress</div>
+    <div class="nav-item" onclick="location.href='manage.html'">📂 Manage</div>
+    <div class="nav-item" onclick="location.href='search.html'">🔍 Search</div>
+    <div class="nav-item" onclick="location.href='favourites.html'">❤️ Favourites</div>
 
-  <div class="nav-item active">⚙️ Settings</div>
+    <div class="nav-item active">⚙️ Profile</div>
 
-  <div class="nav-item" onclick="logout()">🚪 Logout</div>
-</div>
+    <div style="flex:1"></div>
 
-<!-- MAIN AREA -->
-<div class="main">
-  <h1>Account Settings</h1>
-  <p class="subtitle">Manage your profile, password, and preferences</p>
+    <div class="nav-item" onclick="logout()">🚪 Logout</div>
+  </aside>
 
-  <!-- Profile picture -->
-  <div class="card">
-    <div class="profile-pic-box">
-      <img id="profilePic" class="profile-pic" src="default.jpg" />
-      <br />
-      <label class="upload-btn">
-        Upload New Photo
-        <input type="file" id="picInput" accept="image/*" hidden>
-      </label>
-    </div>
-  </div>
+  <!-- Main Content -->
+  <main class="main">
+    <h1>Your Profile</h1>
+    <p class="subtitle">Manage your account, backup, restore & preferences</p>
 
-  <!-- INFO -->
-  <div class="card">
-
-    <div class="info-row">
-      <span class="info-label">🧍 Name</span>
-      <span class="info-value" id="name"></span>
-      <button class="edit-btn" onclick="editName()">Edit</button>
+    <!-- PROFILE PIC -->
+    <div class="card">
+      <center>
+        <img id="profilePic" src="default.jpg" class="profile-pic" />
+        <br>
+        <label class="upload-btn">
+          Upload New Photo
+          <input type="file" id="picInput" hidden accept="image/*">
+        </label>
+      </center>
     </div>
 
-    <div class="info-row">
-      <span class="info-label">🆔 Username</span>
-      <span class="info-value" id="username"></span>
-      <button class="edit-btn" onclick="editUsername()">Edit</button>
+    <!-- INFO CARD -->
+    <div class="card">
+      <div class="info-row">
+        <span>Name</span>
+        <div>
+          <span id="name">—</span>
+          <button class="edit-btn" onclick="editName()">Edit</button>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <span>Username</span>
+        <div>
+          <span id="username">—</span>
+          <button class="edit-btn" onclick="editUsername()">Edit</button>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <span>Email</span>
+        <span id="email">—</span>
+      </div>
+
+      <div class="info-row">
+        <span>Status</span>
+        <span id="verifyBadge"></span>
+      </div>
+
+      <div class="info-row">
+        <span>Joined</span>
+        <span id="joined">—</span>
+      </div>
+
+      <div class="actions">
+        <button class="action-btn" onclick="openPasswordModal()">🔐 Change Password</button>
+        <button class="action-btn action-danger" onclick="openDeleteModal()">🗑 Delete Account</button>
+      </div>
     </div>
 
-    <div class="info-row">
-      <span class="info-label">📧 Email</span>
-      <span class="info-value" id="email"></span>
+    <!-- BACKUP & RESTORE -->
+    <div class="card">
+      <h2 style="margin-bottom:10px;">📦 Backup & Restore</h2>
+      <p style="opacity:.8;">Export your data or restore from a backup.</p>
+
+      <div class="backup-box">
+        <button class="backup-btn" onclick="downloadBackup()">📤 Export Backup</button>
+        <button class="backup-btn" onclick="document.getElementById('importInput').click()">📥 Import Backup</button>
+      </div>
+
+      <input type="file" id="importInput" accept=".json" hidden onchange="handleImport(event)">
+    </div>
+    <!-- PASSWORD MODAL -->
+    <div id="passwordModal" class="modal-bg">
+      <div class="modal">
+        <h2>Change Password</h2>
+        <input id="curPass" class="input" type="password" placeholder="Current Password">
+        <input id="newPass" class="input" type="password" placeholder="New Password (min 6 chars)">
+        <br>
+        <button class="action-btn" onclick="changePassword()">Update</button>
+        <button class="action-btn action-danger" onclick="closePasswordModal()">Cancel</button>
+      </div>
     </div>
 
-    <div class="info-row">
-      <span class="info-label">✔ Status</span>
-      <span id="verifyBadge"></span>
-      <button class="edit-btn" onclick="resendVerification()">Resend</button>
+    <!-- DELETE MODAL -->
+    <div id="deleteModal" class="modal-bg">
+      <div class="modal">
+        <h2>Delete Account</h2>
+        <p style="opacity:.8;">Type <b>DELETE</b> to confirm.</p>
+        <input id="confirmDeleteInput" class="input" placeholder="DELETE">
+        <br>
+        <button class="action-btn action-danger" onclick="deleteAccount()">Delete</button>
+        <button class="action-btn" onclick="closeDeleteModal()">Cancel</button>
+      </div>
     </div>
 
-    <div class="info-row">
-      <span class="info-label">📅 Joined</span>
-      <span class="info-value" id="joined"></span>
+    <!-- RESTORE PREVIEW MODAL -->
+    <div id="restoreModal" class="modal-bg">
+      <div class="modal">
+        <h2>Restore Preview</h2>
+        <p style="opacity:.8;">Choose what you want to restore:</p>
+
+        <label><input type="checkbox" id="restoreSections" checked> Sections</label><br>
+        <label><input type="checkbox" id="restoreDresses" checked> Dresses</label>
+
+        <div class="restore-preview-list" id="previewList"></div>
+
+        <br>
+        <button class="action-btn" onclick="confirmRestore()">Restore Selected</button>
+        <button class="action-btn action-danger" onclick="closeRestoreModal()">Cancel</button>
+      </div>
     </div>
-  </div>
 
-  <!-- ACTION BUTTONS -->
-  <button onclick="openPasswordModal()">🔐 Change Password</button>
-  <button class="btn-danger" onclick="openDeleteModal()">🗑 Delete Account</button>
+    <!-- Toast Box -->
+    <div id="toastBox"></div>
 
-</div>
-
-<!-- PASSWORD MODAL -->
-<div id="passwordModal" class="modal-bg">
-  <div class="modal">
-    <span class="close" onclick="closePasswordModal()">✖</span>
-    <h2>Change Password</h2>
-
-    <input id="curPass" class="input" type="password" placeholder="Current Password">
-    <input id="newPass" class="input" type="password" placeholder="New Password">
-
-    <button onclick="changePassword()">Update Password</button>
-  </div>
-</div>
-
-<!-- DELETE MODAL -->
-<div id="deleteModal" class="modal-bg">
-  <div class="modal">
-    <span class="close" onclick="closeDeleteModal()">✖</span>
-    <h2>Delete Account</h2>
-    <p>This action is permanent.</p>
-    <button class="btn-danger" onclick="deleteAccount()">DELETE</button>
-  </div>
+  </main>
 </div>
 
 <script>
-  const API_URL = window.location.origin.includes("localhost")
-    ? "http://localhost:8080"
-    : "https://dress-organiser.onrender.com";
+/* ---------------------------
+   CONFIG
+--------------------------- */
+const API_URL = window.location.origin.includes("localhost")
+  ? "http://localhost:8080"
+  : "https://dress-organiser.onrender.com";
 
-  /* LOAD USER DETAILS */
-  async function loadUser() {
-    const res = await fetch(`${API_URL}/api/me`, { credentials: "include" });
-    if (!res.ok) return location.href = "login.html";
+/* ---------------------------
+   TOASTS
+--------------------------- */
+function showToast(msg, type="success") {
+  const box = document.getElementById("toastBox");
+  const t = document.createElement("div");
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.opacity="0"; t.style.transform="translateX(20px)"; },2500);
+  setTimeout(()=> t.remove(), 3100);
+}
 
+/* ---------------------------
+   LOAD USER DATA
+--------------------------- */
+async function loadUser() {
+  try {
+    const res = await fetch(`${API_URL}/api/me`, { credentials:"include" });
+    if (!res.ok) return location.href="login.html";
     const user = await res.json();
 
-    name.textContent = user.name || "Not set";
-    username.textContent = user.username || "Not set";
-    email.textContent = user.email;
+    document.getElementById("name").textContent = user.name || "Not set";
+    document.getElementById("username").textContent = user.username || "Not set";
+    document.getElementById("email").textContent = user.email;
+    document.getElementById("joined").textContent = new Date(user.joined).toLocaleDateString();
 
-    joined.textContent = new Date(user.joined).toLocaleDateString("en-IN");
+    document.getElementById("profilePic").src = user.profilePic || "default.jpg";
 
-    profilePic.src = user.profilePic || "default.jpg";
-
-    verifyBadge.innerHTML = user.verified
-      ? `<span class='badge green'>Verified</span>`
-      : `<span class='badge red'>Not Verified</span>`;
+    document.getElementById("verifyBadge").innerHTML =
+      user.verified ?
+      `<span style="color:#4ade80;">Verified</span>` :
+      `<span style="color:#f87171;">Not Verified</span>`;
+  } catch {
+    showToast("Failed to load user","error");
   }
+}
+loadUser();
 
-  /* NAME EDIT */
-  function editName() {
-    const newName = prompt("Enter new name:");
-    if (!newName) return;
+/* ---------------------------
+   EDIT NAME / USERNAME
+--------------------------- */
+function editName() {
+  let newName = prompt("Enter new name:");
+  if (!newName) return showToast("Name unchanged","error");
 
-    fetch(`${API_URL}/api/update-name`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName })
-    }).then(() => loadUser());
-  }
+  fetch(`${API_URL}/api/update-name`,{
+    method:"POST",
+    credentials:"include",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ name:newName })
+  })
+  .then(async r => {
+    if (r.ok) { loadUser(); showToast("Name updated"); }
+    else showToast("Failed","error");
+  });
+}
 
-  /* USERNAME EDIT */
-  function editUsername() {
-    const newUsername = prompt("Enter new username:");
-    if (!newUsername) return;
+function editUsername() {
+  let u = prompt("Enter new username:");
+  if (!u) return showToast("Username unchanged","error");
 
-    fetch(`${API_URL}/api/update-username`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: newUsername })
-    }).then(() => loadUser());
-  }
+  fetch(`${API_URL}/api/update-username`,{
+    method:"POST",
+    credentials:"include",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ username:u })
+  })
+  .then(async r => {
+    if (r.ok) { loadUser(); showToast("Username updated"); }
+    else showToast("Failed","error");
+  });
+}
 
-  /* UPLOAD PROFILE PIC */
-  picInput.addEventListener("change", async (e) => {
-    const form = new FormData();
-    form.append("image", e.target.files[0]);
+/* ---------------------------
+   UPLOAD PROFILE PHOTO
+--------------------------- */
+document.getElementById("picInput").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const res = await fetch(`${API_URL}/api/upload-profile-pic`, {
-      method: "POST",
-      credentials: "include",
-      body: form
-    });
+  const form = new FormData();
+  form.append("image", file);
 
-    const data = await res.json();
-    if (data.success) loadUser();
+  const res = await fetch(`${API_URL}/api/upload-profile-pic`,{
+    method:"POST",
+    credentials:"include",
+    body: form
   });
 
-  /* PASSWORD MODAL */
-  function openPasswordModal() {
-    passwordModal.style.display = "flex";
-  }
-  function closePasswordModal() {
-    passwordModal.style.display = "none";
+  if (res.ok) {
+    showToast("Photo updated");
+    loadUser();
+  } else showToast("Upload failed","error");
+});
+
+/* ---------------------------
+   PASSWORD MODAL
+--------------------------- */
+function openPasswordModal(){ document.getElementById("passwordModal").style.display="flex"; }
+function closePasswordModal(){ document.getElementById("passwordModal").style.display="none"; }
+
+async function changePassword() {
+  const currentPassword = curPass.value;
+  const newPassword = newPass.value;
+
+  if (!currentPassword || !newPassword)
+    return showToast("All fields required","error");
+
+  const res = await fetch(`${API_URL}/api/change-password`,{
+    method:"POST",
+    credentials:"include",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ currentPassword,newPassword })
+  });
+
+  if (res.ok) {
+    showToast("Password updated");
+    closePasswordModal();
+  } else showToast("Failed","error");
+}
+
+/* ---------------------------
+   DELETE ACCOUNT MODAL
+--------------------------- */
+function openDeleteModal(){ document.getElementById("deleteModal").style.display="flex"; }
+function closeDeleteModal(){ document.getElementById("deleteModal").style.display="none"; }
+
+async function deleteAccount() {
+  if (confirmDeleteInput.value !== "DELETE")
+    return showToast("Type DELETE to confirm","error");
+
+  const res = await fetch(`${API_URL}/api/delete-account`,{
+    method:"DELETE",
+    credentials:"include"
+  });
+
+  if (res.ok) {
+    showToast("Account deleted","error");
+    setTimeout(()=> location.href="login.html", 1000);
+  } else showToast("Failed","error");
+}
+
+/* ---------------------------
+   EXPORT BACKUP
+--------------------------- */
+function downloadBackup() {
+  window.location.href = `${API_URL}/api/backup`;
+}
+
+/* ---------------------------
+   IMPORT BACKUP + PREVIEW
+--------------------------- */
+let importData = null;
+
+async function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const text = await file.text();
+  try {
+    importData = JSON.parse(text);
+  } catch {
+    return showToast("Invalid JSON","error");
   }
 
-  function changePassword() {
-    const currentPassword = curPass.value;
-    const newPassword = newPass.value;
+  // Show Preview
+  const list = document.getElementById("previewList");
+  list.innerHTML = "";
 
-    fetch(`${API_URL}/api/change-password`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ currentPassword, newPassword })
-    }).then(() => {
-      alert("Password Updated!");
-      closePasswordModal();
-    });
-  }
+  list.innerHTML += `<p><b>Sections:</b> ${importData.sections.length}</p>`;
+  list.innerHTML += `<p><b>Dresses:</b> ${importData.dresses.length}</p>`;
 
-  /* RESEND VERIFICATION */
-  function resendVerification() {
-    fetch(`${API_URL}/api/resend-verification`, {
-      method: "POST",
-      credentials: "include"
-    });
-    alert("Verification email sent!");
-  }
+  importData.dresses.slice(0,5).forEach(d => {
+    list.innerHTML += `<div style="opacity:.8;">👗 ${d.name}</div>`;
+  });
 
-  /* DELETE MODAL */
-  function openDeleteModal() {
-    deleteModal.style.display = "flex";
-  }
-  function closeDeleteModal() {
-    deleteModal.style.display = "none";
-  }
+  openRestoreModal();
+}
 
-  function deleteAccount() {
-    fetch(`${API_URL}/api/delete-account`, {
-      method: "DELETE",
-      credentials: "include"
-    }).then(() => {
-      localStorage.clear();
-      alert("Account deleted");
-      location.href = "login.html";
-    });
-  }
+/* ---------------------------
+   RESTORE MODAL
+--------------------------- */
+function openRestoreModal() {
+  document.getElementById("restoreModal").style.display="flex";
+}
+function closeRestoreModal() {
+  document.getElementById("restoreModal").style.display="none";
+}
 
-  /* LOGOUT */
-  function logout() {
-    localStorage.clear();
-    location.href = "login.html";
-  }
+/* ---------------------------
+   CONFIRM RESTORE
+--------------------------- */
+async function confirmRestore() {
+  if (!importData) return showToast("Nothing to import","error");
 
-  loadUser();
+  const restoreSections = document.getElementById("restoreSections").checked;
+  const restoreDresses = document.getElementById("restoreDresses").checked;
+
+  if (!restoreSections && !restoreDresses)
+    return showToast("Select at least one option","error");
+
+  const payload = {
+    sections: restoreSections ? importData.sections : [],
+    dresses: restoreDresses ? importData.dresses : []
+  };
+
+  const res = await fetch(`${API_URL}/api/import`,{
+    method:"POST",
+    credentials:"include",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  if (res.ok) {
+    showToast("Restore complete!");
+    closeRestoreModal();
+  } else showToast("Restore failed","error");
+}
+
+/* ---------------------------
+   LOGOUT
+--------------------------- */
+function logout() {
+  fetch(`${API_URL}/logout`, { method:"POST", credentials:"include" });
+  localStorage.clear();
+  location.href="login.html";
+}
 </script>
 
 </body>

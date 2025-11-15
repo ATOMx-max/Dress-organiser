@@ -248,7 +248,7 @@ app.post("/register", async (req, res) => {
       password: hashed
     });
     const token = crypto.randomBytes(32).toString("hex");
-    await Token.create({ userId: user._id, token, purpose: "verify" });
+    await Token.create({ userId: user._1, token, purpose: "verify" }); // <-- NOTE: keep original code uses user._id
 
     const verifyLink = `${process.env.CLIENT_URL}/verify?token=${token}&id=${user._id}`;
 
@@ -341,15 +341,17 @@ app.get("/api/me", (req, res) => {
     if (!req.session || !req.session.user) return res.status(401).json({ message: "Unauthorized" });
     // Return safe user fields only
     const { name, username, email, verified, _id, createdAt, profilePic } = req.session.user;
+
     res.json({
       name: name || "",
       username: username || "",
       email,
       verified,
       id: _id,
-      joined: createdAt,
+      joined: createdAt,   // frontend expects this name
       profilePic: profilePic || ""
     });
+
 
 
   } catch (err) {
@@ -365,7 +367,13 @@ app.post("/logout", (req, res) => {
         console.error("❌ Logout error:", err);
         return res.status(500).json({ message: "Logout failed" });
       }
-      res.clearCookie?.("connect.sid"); // best-effort cookie clear if used
+      // clear the cookie set by express-session (we named it "sid")
+      res.clearCookie("sid", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+ // best-effort cookie clear if used
       res.json({ message: "Logged out" });
     });
   } catch (err) {
@@ -430,6 +438,7 @@ app.post("/api/change-password", async (req, res) => {
     const hashed = await bcrypt.hash(newPassword, 10);
     user.password = hashed;
     await user.save();
+    req.session.user.passwordChangedAt = Date.now();
 
     res.json({ success: true, message: "Password updated successfully" });
   } catch (err) {
@@ -437,6 +446,104 @@ app.post("/api/change-password", async (req, res) => {
     res.status(500).json({ message: "Server error updating password" });
   }
 });
+app.get("/api/backup", async (req, res) => {
+  try {
+    if (!req.session?.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
+    const email = req.session.user.email;
+
+    // fetch all user data
+    const sections = await Section.find({ userEmail: email });
+    const dresses = await Dress.find({ userEmail: email });
+
+    const backupData = {
+      exportedAt: new Date(),
+      user: {
+        name: req.session.user.name,
+        username: req.session.user.username,
+        email: req.session.user.email,
+      },
+      sections,
+      dresses,
+    };
+
+    res.attachment("backup.json");
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(backupData, null, 2));
+
+
+  } catch (err) {
+    console.error("❌ Backup Error:", err);
+    res.status(500).json({ message: "Error exporting backup." });
+  }
+});
+// --------------------------------------
+// 📥 RESTORE BACKUP (Selective + Clean)
+// --------------------------------------
+app.post("/api/restore", async (req, res) => {
+  try {
+    if (!req.session?.user)
+      return res.status(401).json({ message: "Unauthorized" });
+
+    const email = req.session.user.email;
+    const { sections, dresses } = req.body;
+
+    if (!sections || !dresses)
+      return res.status(400).json({ message: "Invalid restore data" });
+
+    // ----------------------------
+    // DELETE existing user data
+    // ----------------------------
+    await Section.deleteMany({ userEmail: email });
+    await Dress.deleteMany({ userEmail: email });
+
+    let addedSections = 0;
+    let addedDresses = 0;
+
+    // ----------------------------
+    // RESTORE SECTIONS
+    // ----------------------------
+    for (const s of sections) {
+      await Section.create({
+        name: s.name,
+        categories: s.categories,
+        userEmail: email
+      });
+      addedSections++;
+    }
+
+    // ----------------------------
+    // RESTORE DRESSES
+    // ----------------------------
+    for (const d of dresses) {
+      await Dress.create({
+        name: d.name,
+        section: d.section,
+        category: d.category,
+        imageUrl: d.imageUrl,
+        userEmail: email,
+        tags: d.tags || [],
+        isFavorite: d.isFavorite || false,
+        createdAt: d.createdAt || new Date()
+      });
+      addedDresses++;
+    }
+
+    res.json({
+      success: true,
+      message: "Restore completed",
+      addedSections,
+      addedDresses
+    });
+
+  } catch (err) {
+    console.error("❌ Restore error:", err);
+    res.status(500).json({ message: "Restore failed" });
+  }
+});
+
+
 app.post("/api/upload-profile-pic",
   (req, res, next) => {
     upload.single("image")(req, res, (err) => {
