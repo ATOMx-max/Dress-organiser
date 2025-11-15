@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Email Verification | Dress Organizer</title>
 
@@ -93,6 +96,7 @@
   </div>
 
   <script>
+    const API_URL = "https://dress-organiser.onrender.com";
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
     const token = params.get("token");
@@ -140,7 +144,7 @@
 
     // Case 2: If verify.html?token=xyz&id=abc → redirect to backend
     if (token && id) {
-      window.location.href = `/verify?token=${token}&id=${id}`;
+      window.location.replace(`https://dress-organiser.onrender.com/verify?token=${token}&id=${id}`);
     }
   </script>
 </body>
