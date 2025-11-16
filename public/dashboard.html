@@ -1,4 +1,4 @@
-<!-- FULL UPDATED DASHBOARD CODE BELOW -->
+<!-- FULL UPDATED DASHBOARD CODE (FINAL) - NO VIDEO, MUSIC + CARD + HEARTS + SPARKLES + BALLOONS -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +15,7 @@
       min-height: 100vh;
       overflow-x: hidden;
       padding-bottom: 90px;
+      color: white;
     }
 
     /* ------------------------- Orbs ---------------------------- */
@@ -172,6 +173,156 @@
         flex: 1 1 auto;
       }
     }
+
+    /* ---------------- Birthday Screen styles ---------------- */
+    .bday-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      backdrop-filter: blur(12px);
+      display: none;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 6vh;
+      z-index: 99999;
+      overflow: hidden;
+      animation: bfadeIn 0.45s ease forwards;
+    }
+    @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+    /* Balloons container (only shown during birthday) */
+    .balloons {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 99990;
+    }
+    .balloon {
+      position: absolute;
+      bottom: -120px;
+      width: 48px;
+      height: 64px;
+      border-radius: 50% 50% 45% 45%;
+      opacity: 0.95;
+      transform-origin: center;
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
+    }
+    .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #f472b6 30%, #fb6d8a 100%); left:6%; animation-duration:9s; animation-delay:0.2s; }
+    .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:20%; animation-duration:10s; animation-delay:1s; width:56px;height:72px;}
+    .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbe68a 30%, #f59e0b 100%); left:34%; animation-duration:11s; animation-delay:0.6s;}
+    .b4 { background: radial-gradient(circle at 30% 25%, #fff 8%, #f472b6 30%, #fb923c 100%); left:48%; animation-duration:10.5s; animation-delay:0.8s; width:56px;height:72px;}
+    .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:62%; animation-duration:12s; animation-delay:0.4s;}
+    .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:76%; animation-duration:10.7s; animation-delay:0.3s;}
+    .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:86%; animation-duration:9.8s; animation-delay:0.7s;}
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(-6deg) scale(0.95); opacity: 0; }
+      5% { opacity: 1; }
+      50% { transform: translateY(-55vh) rotate(4deg) scale(1); }
+      100% { transform: translateY(-120vh) rotate(10deg) scale(1.05); opacity: 0; }
+    }
+
+    /* Birthday card */
+    .bday-card {
+      width: 92%;
+      max-width: 520px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 20px;
+      padding: 0;
+      text-align: center;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      z-index: 99995;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      overflow: visible;
+    }
+
+    .animated-card { position: relative; }
+    .card-face {
+      padding: 28px;
+      backface-visibility: hidden;
+      transition: transform 0.9s cubic-bezier(.18,.89,.32,1.28), opacity 0.6s ease;
+      border-radius: 20px;
+      position: relative;
+      min-height: 240px;
+    }
+
+    .card-front { transform: rotateY(0deg); background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03)); }
+    .card-inside { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); opacity: 0; }
+
+    .animated-card.opened .card-front { transform: rotateY(-180deg); opacity: 0; }
+    .animated-card.opened .card-inside { transform: rotateY(0deg); opacity: 1; }
+
+    .bday-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+    .bday-sub { color: #dbeafe; margin-bottom: 14px; }
+
+    /* sparkles inside card */
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 2;
+    }
+    .sparkle {
+      position: absolute;
+      width: 8px; height: 8px;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.9) 20%, rgba(99,102,241,0.9) 50%);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.6);
+      animation: sparklePop 1.6s infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes sparklePop {
+      0% { opacity: 0; transform: scale(0.2) translateY(6px); }
+      10% { opacity: 1; transform: scale(1.1) translateY(0); }
+      60% { opacity: 0.6; transform: scale(0.8) translateY(-6px); }
+      100% { opacity: 0; transform: scale(0.4) translateY(-10px); }
+    }
+
+    /* hearts animation */
+    .heart {
+      position: absolute;
+      color: #ff6fb5;
+      font-size: 20px;
+      opacity: 0.9;
+      animation: floatHeart 4s ease-in-out forwards;
+      will-change: transform, opacity;
+      text-shadow: 0 6px 20px rgba(255,111,181,0.12);
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(20px) scale(0.8); opacity:0; }
+      20% { opacity:1; }
+      100% { transform: translateY(-140px) scale(1.25); opacity:0; }
+    }
+
+    .bday-cta {
+      margin-top: 12px;
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg,#818cf8,#c084fc);
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+    }
+
+    .muted { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+
+    /* responsive tweaks */
+    @media (max-width:520px){
+      .bday-card{ max-width: 92%; }
+      .bday-title{ font-size:1.1rem; }
+    }
   </style>
 </head>
 
@@ -201,9 +352,7 @@
         </div>
 
         <button class="btn-ghost" onclick="go('profile.html')">Profile</button>
-
         <button class="btn-ghost" onclick="go('favourites.html')">Favourites ⭐</button>
-
         <button class="feedback-btn" onclick="openFeedbackModal()">Feedback</button>
         <button class="btn-ghost" onclick="logout()">Logout</button>
       </div>
@@ -280,48 +429,7 @@
     </div>
   </div>
 
-  <!-- ---------------- JS ---------------- -->
-  <script>
-    function go(p){ window.location.href=p; }
-
-    function logout(){ 
-      fetch('/logout',{method:'POST',credentials:'include'})
-      .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
-    }
-
-    function typeText(el, text){
-      el.textContent=""; let i=0;
-      function t(){ 
-        if(i<text.length){ el.textContent += text[i++]; setTimeout(t,50); } 
-      }
-      t();
-    }
-
-    async function loadUser(){
-      const r=await fetch('/api/me',{credentials:'include'}); 
-      if(!r.ok){go('login.html');return;}
-      const u=await r.json();
-      const name=u.name || u.email.split('@')[0];
-
-      typeText(document.getElementById('typingLine1'), `Hello, ${name} 👋`);
-      typeText(document.getElementById('typingLine2'), `Here’s your wardrobe overview…`);
-    }
-
-    async function loadStats(){
-      const r=await fetch('/api/stats',{credentials:'include'});
-      if(!r.ok) return;
-      const s=await r.json();
-
-      document.getElementById('dressCount').textContent=s.dresses;
-      document.getElementById('sectionCount').textContent=s.sections;
-      document.getElementById('recentUploads').textContent=s.recent.length;
-    }
-
-    loadUser();
-    loadStats();
-  </script>
-
-  <!-- FEEDBACK MODAL -->
+  <!-- ---------------- FEEDBACK MODAL ---------------- -->
   <div id="feedbackModal" 
     style="
       position: fixed;
@@ -389,19 +497,331 @@
     </div>
   </div>
 
+  <!-- ---------------- Birthday Surprise (HTML) ---------------- -->
+  <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
+    <!-- Balloons (appear only during birthday) -->
+    <div class="balloons" aria-hidden="true">
+      <div class="balloon b1"></div>
+      <div class="balloon b2"></div>
+      <div class="balloon b3"></div>
+      <div class="balloon b4"></div>
+      <div class="balloon b5"></div>
+      <div class="balloon b6"></div>
+      <div class="balloon b7"></div>
+    </div>
+
+    <!-- Hearts container -->
+    <div id="heartsContainer" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:99996;"></div>
+
+    <!-- Background music (played on open interaction) -->
+    <audio id="bdayMusic" loop preload="auto">
+      <!-- Replace the src with your actual uploaded filename if needed -->
+      <source src="birthday-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0" aria-pressed="false">
+      <div class="card-face card-front">
+        <div style="position:relative; padding: 8px 28px 28px;">
+          <div class="bday-title" id="greetingLine">A Special Message for My Love</div>
+          <div class="bday-sub" id="subGreeting">Tap to open, my heartbeat… ❤️🎁</div>
+          <!-- sparkles container (we'll generate sparkles via JS) -->
+          <div class="sparkles" id="sparklesContainer" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="card-face card-inside">
+        <div style="padding: 18px 22px; position:relative;">
+          <div class="bday-title" id="insideGreeting">🎉 Happy Birthday, My Love! 🎉</div>
+
+          <!-- Primary romantic message -->
+          <div class="bday-sub muted" id="personalMsg" style="text-align:left; line-height:1.35;">
+            My Love… on your special day, I want to remind you of something simple but true:
+            <strong>You are the most beautiful chapter of my life.</strong>
+
+            Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete.
+            Thank you for loving me, supporting me, and choosing me every single day. I’m endlessly grateful for you.
+
+            <strong>Happy Birthday, My Love ❤️🎉</strong>
+          </div>
+
+          <!-- second message (fades in later) -->
+          <div id="secondMsg" class="muted" 
+               style="opacity:0; margin-top:18px; font-size:1rem; transition:1.5s; text-align:left;">
+            On this day… I just want one thing:
+            For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗
+          </div>
+
+          <!-- I love you fade-in -->
+          <div id="loveFade" 
+               style="opacity:0; font-size:1.3rem; font-weight:700; margin-top:22px; 
+                      color:#ffb3d9; transition:2s; text-align:center;">
+            I Love You, My Love ❤️
+          </div>
+
+          <div style="margin-top:14px; text-align:center;">
+            <button class="bday-cta" id="continueBtn">Continue to Dashboard</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- ---------------- JS ---------------- -->
   <script>
+    function go(p){ window.location.href=p; }
+
+    function logout(){ 
+      fetch('/logout',{method:'POST',credentials:'include'})
+      .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
+    }
+
+    function typeText(el, text){
+      el.textContent=""; let i=0;
+      function t(){ 
+        if(i<text.length){ el.textContent += text[i++]; setTimeout(t,40); } 
+      }
+      t();
+    }
+
+    async function loadUser(){
+      const r=await fetch('/api/me',{credentials:'include'}); 
+      if(!r.ok){go('login.html');return;}
+      const u=await r.json();
+      const name=u.name || u.email.split('@')[0];
+
+      // set avatar initial
+      document.getElementById('avatar').textContent = (name[0] || '👤').toUpperCase();
+
+      // Personalized greetings based on time
+      const now = new Date();
+      const hour = now.getHours();
+      let timeGreeting = "Hello";
+      if(hour < 12) timeGreeting = "Good morning";
+      else if(hour < 17) timeGreeting = "Good afternoon";
+      else timeGreeting = "Good evening";
+
+      typeText(document.getElementById('typingLine1'), `${timeGreeting}, ${name} 👋`);
+      typeText(document.getElementById('typingLine2'), `Here’s your wardrobe overview…`);
+
+      // store user for birthday checks
+      window.__CURRENT_USER = u;
+    }
+
+    async function loadStats(){
+      const r=await fetch('/api/stats',{credentials:'include'});
+      if(!r.ok) return;
+      const s=await r.json();
+
+      document.getElementById('dressCount').textContent=s.dresses;
+      document.getElementById('sectionCount').textContent=s.sections;
+      document.getElementById('recentUploads').textContent=(s.recent || []).length;
+    }
+
+    loadUser();
+    loadStats();
+
+    /* ----------------------------------------------------------
+       🎉 BIRTHDAY SURPRISE CHECK (Mixed mode: balloons only in bday screen; sparkles inside card)
+       Email: sjs36931@gmail.com
+       Date: 16-11 (testing date)
+    ---------------------------------------------------------- */
+    async function checkBirthday() {
+      try {
+        // Use existing user if already fetched
+        let user = window.__CURRENT_USER;
+        if (!user) {
+          const res = await fetch('/api/me', { credentials: 'include' });
+          if (!res.ok) return;
+          user = await res.json();
+        }
+
+        const targetEmail = "sjs36931@gmail.com"; 
+        const birthday = "16-11";  // testing date dd-mm
+
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const todayStr = `${dd}-${mm}`;
+
+        if (user.email === targetEmail && todayStr === birthday) {
+          // small delay so page finishes rendering nicely
+          setTimeout(() => showBirthdayScreen(user), 450);
+        }
+      } catch (err) {
+        console.error("Birthday check error:", err);
+      }
+    }
+
+    // call check after a short delay (let loadUser finish)
+    setTimeout(checkBirthday, 800);
+
+    /* ---------------- Birthday UI & Animations (NO VIDEO) ---------------- */
+    function showBirthdayScreen(user) {
+      // only once per day
+      if (localStorage.getItem("bdayShown") === new Date().toDateString()) return;
+
+      const screen = document.getElementById("birthdayScreen");
+      const balloons = document.querySelector(".balloons");
+      const card = document.getElementById("animatedCard");
+      const music = document.getElementById("bdayMusic");
+
+      // Personalized messages (front & inside)
+      const name = user.name || user.email.split('@')[0];
+      const hour = new Date().getHours();
+
+      // Update front and inside headings
+      document.getElementById("greetingLine").textContent = `A Special Message for ${name}`;
+      document.getElementById("subGreeting").textContent = `Tap to open, my heartbeat… ❤️🎁`;
+      document.getElementById("insideGreeting").textContent = `🎉 Happy Birthday, ${name}! 🎉`;
+
+      // Fill primary romantic message (keeps HTML formatting for line breaks)
+      document.getElementById("personalMsg").innerHTML = `
+        My Love… on your special day, I want to remind you of something simple but true:<br><br>
+        <strong>You are the most beautiful chapter of my life.</strong><br><br>
+        Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete.<br><br>
+        Thank you for loving me, supporting me, and choosing me every single day. I’m endlessly grateful for you.<br><br>
+        <strong>Happy Birthday, My Love ❤️🎉</strong>
+      `;
+
+      // second message + love fade initial state (hidden)
+      document.getElementById("secondMsg").style.opacity = 0;
+      document.getElementById("loveFade").style.opacity = 0;
+
+      // show screen and balloons
+      screen.style.display = "flex";
+
+      // create sparkles inside card
+      populateSparkles();
+
+      // start hearts generator (only while screen visible)
+      createHearts();
+
+      // slight staggered confetti for initial excitement
+      setTimeout(() => confetti({ particleCount: 120, spread: 100, origin: { y: 0.6 } }), 300);
+      setTimeout(() => confetti({ particleCount: 200, spread: 140, origin: { y: 0.65 } }), 900);
+
+      // ensure balloons are visible
+      if (balloons) balloons.style.display = "block";
+
+      // Card open interaction (click or keyboard)
+      function openCardInteraction() {
+        // guard: if already opened
+        if (card.classList.contains("opened")) return;
+
+        // Flip the card
+        card.classList.add("opened");
+        card.setAttribute("aria-pressed","true");
+
+        // play music (unmuted since user interacted)
+        try {
+          music.volume = 0.6;
+          music.play().catch(()=>{ /* autoplay error ignored */ });
+        } catch (e) {}
+
+        // small burst of confetti after flip
+        setTimeout(() => {
+          confetti({ particleCount: 260, spread: 170, origin: { y: 0.5 } });
+        }, 600);
+
+        // reveal second message after 2s
+        setTimeout(() => {
+          document.getElementById("secondMsg").style.opacity = 1;
+        }, 2000);
+
+        // reveal "I Love You" after 3.5s
+        setTimeout(() => {
+          document.getElementById("loveFade").style.opacity = 1;
+        }, 3500);
+      }
+
+      // attach event listeners for accessibility
+      card.addEventListener('click', openCardInteraction);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openCardInteraction(); });
+
+      // continue button closes screen
+      document.getElementById('continueBtn').onclick = () => closeBirthday();
+
+      // mark shown for today
+      localStorage.setItem("bdayShown", new Date().toDateString());
+    }
+
+    function closeBirthday() {
+      const screen = document.getElementById("birthdayScreen");
+      const music = document.getElementById("bdayMusic");
+
+      // pause music
+      try { music.pause(); } catch(e){}
+
+      // hide screen
+      screen.style.display = "none";
+    }
+
+    /* ---------------- Sparkles generation ---------------- */
+    function populateSparkles() {
+      const container = document.getElementById('sparklesContainer');
+      container.innerHTML = ''; // clear
+      const count = 12;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const left = Math.random() * 86 + 6; // 6% - 92%
+        s.style.left = left + '%';
+        s.style.top = (Math.random() * 140 + 12) + 'px';
+        s.style.animationDelay = (Math.random() * 1.2) + 's';
+        s.style.width = (6 + Math.random() * 8) + 'px';
+        s.style.height = s.style.width;
+        container.appendChild(s);
+      }
+    }
+
+    /* ---------------- Floating hearts generator ---------------- */
+    let heartsInterval = null;
+    function createHearts() {
+      const container = document.getElementById("heartsContainer");
+      if (!container) return;
+
+      // clear existing interval if any
+      if (heartsInterval) { clearInterval(heartsInterval); heartsInterval = null; }
+
+      heartsInterval = setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "❤️";
+        h.style.left = (8 + Math.random() * 84) + "%";
+        const size = (14 + Math.random() * 28);
+        h.style.fontSize = size + "px";
+        h.style.opacity = (0.7 + Math.random() * 0.3);
+        h.style.animationDuration = (3 + Math.random() * 2) + "s";
+        h.style.zIndex = 99997;
+        container.appendChild(h);
+
+        // remove after animation
+        setTimeout(() => {
+          try { container.removeChild(h); } catch(e) {}
+        }, 4200);
+      }, 550);
+    }
+
+    /* ---------------- Make sure balloon container is hidden by default (safety) ---------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      const balloons = document.querySelector('.balloons');
+      if (balloons) balloons.style.display = 'none';
+    });
+
+    /* ---------------- Feedback modal logic ---------------- */
     function openFeedbackModal() {
       document.getElementById("feedbackModal").style.display = "flex";
     }
-
     function closeFeedbackModal() {
       document.getElementById("feedbackModal").style.display = "none";
     }
-
     async function submitFeedback() {
       const text = document.getElementById("feedbackText").value.trim();
       if (!text) return alert("Please write some feedback!");
-
       try {
         const res = await fetch("/api/feedback", {
           method: "POST",
@@ -409,17 +829,18 @@
           credentials: "include",
           body: JSON.stringify({ message: text })
         });
-
         if (res.ok) {
           alert("Your feedback has been submitted!");
           document.getElementById("feedbackText").value = "";
           closeFeedbackModal();
-        } else {
-          alert("Error submitting feedback.");
-        }
-
+        } else alert("Error submitting feedback.");
       } catch (e) { alert("Network error."); }
     }
+
+    /* ---------------- Stats & User load refresher (optional) ---------------- */
+    // refresh stats every 60s while user stays on dashboard
+    setInterval(loadStats, 60_000);
+
   </script>
 
 </body>
