@@ -359,6 +359,42 @@
           </div>
         </div>
       </div>
+      <!-- Restore Loading Overlay -->
+      <div id="restoreLoading" style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.65);
+        backdrop-filter:blur(6px);
+        z-index:999999;
+        align-items:center;
+        justify-content:center;
+        flex-direction:column;
+        color:white;
+        font-family:Inter,sans-serif;
+        text-align:center;
+      ">
+        <div class="loader" style="
+          width:48px;
+          height:48px;
+          border:5px solid rgba(255,255,255,0.25);
+          border-top-color:#a78bfa;
+          border-radius:50%;
+          animation:spin 0.9s linear infinite;
+          margin-bottom:14px;
+        "></div>
+
+        <div style="font-size:1.2rem; font-weight:700;">Restoring your data…</div>
+        <div style="font-size:0.9rem; opacity:.8; margin-top:6px;">Please wait</div>
+      </div>
+
+      <style>
+      @keyframes spin {
+        from { transform:rotate(0deg); }
+        to { transform:rotate(360deg); }
+      }
+      </style>
+
 
       <div id="toastBox"></div>
     </main>
@@ -554,23 +590,47 @@ async function handleImport(e){
 function closeRestoreModal(){ restoreModal.style.display="none"; }
 
 async function confirmRestore(){
+  // show loading screen
+  document.getElementById("restoreLoading").style.display = "flex";
+
   const payload = {
     sections: restoreSections.checked ? importData.sections : [],
     dresses: restoreDresses.checked ? importData.dresses : []
   };
 
-  const res = await fetch(`${API_URL}/api/import`,{
-    method:"POST",
-    credentials:"include",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify(payload)
-  });
+  try {
+    const res = await fetch(`${API_URL}/api/import`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-  if(res.ok){
-    showToast("Restored");
-    closeRestoreModal();
+    await new Promise(resolve => setTimeout(resolve, 1000)); // smooth wait
+
+    // hide loading
+    document.getElementById("restoreLoading").style.display = "none";
+
+    if (res.ok) {
+      // confetti burst
+      confetti({
+        particleCount: 260,
+        spread: 120,
+        origin: { y: 0.65 }
+      });
+
+      showToast("Restore successful 🎉");
+      closeRestoreModal();
+    } else {
+      showToast("Restore failed","error");
+    }
+
+  } catch (e) {
+    document.getElementById("restoreLoading").style.display = "none";
+    showToast("Restore failed","error");
   }
 }
+
 
 /* Logout */
 function logout(){
@@ -578,6 +638,7 @@ function logout(){
     .finally(()=> location.href="login.html");
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 </body>
 </html>

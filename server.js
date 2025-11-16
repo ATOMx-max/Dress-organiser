@@ -743,20 +743,36 @@ app.post("/reset-password", async (req, res) => {
 });
 
 // Feedback
-app.post("/feedback", async (req, res) => {
+// FEEDBACK (fixed route)
+app.post("/api/feedback", async (req, res) => {
   try {
-    const { user, message } = req.body;
-    if (!message) return res.status(400).json({ message: "Feedback message required." });
+    const user = req.session?.user?.email || "Anonymous";
+    const { message } = req.body;
 
-    await Feedback.create({ user: user || "Anonymous", message });
+    if (!message || message.trim() === "") {
+      return res.status(400).json({ message: "Feedback message required." });
+    }
 
+    // Save to DB
+    await Feedback.create({
+      user,
+      message,
+    });
+
+    // Send email using Brevo
     await sendEmail({
       to: process.env.FEEDBACK_EMAIL || "dressorganizer.team@gmail.com",
       subject: "💬 New Feedback Received - Dress Organizer",
-      html: `<div style="font-family:Poppins,sans-serif;padding:20px;"><h3 style="color:#4f46e5;">💌 New Feedback from ${user || "Anonymous"}</h3><p style="color:#333;white-space:pre-line;">${message}</p></div>`,
+      html: `
+        <div style="font-family:Poppins,sans-serif;padding:20px;">
+          <h3 style="color:#4f46e5;">💌 New Feedback from ${user}</h3>
+          <p style="white-space:pre-line;color:#333;">${message}</p>
+        </div>
+      `,
     });
 
-    res.json({ message: "✅ Feedback received and emailed to admin!" });
+    res.json({ message: "✅ Feedback sent & stored successfully!" });
+
   } catch (err) {
     console.error("❌ Feedback error:", err);
     res.status(500).json({ message: "Error sending feedback." });

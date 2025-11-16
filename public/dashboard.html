@@ -1,4 +1,4 @@
-<!-- FULL UPDATED DASHBOARD CODE (FINAL) - NO VIDEO, MUSIC + CARD + HEARTS + SPARKLES + BALLOONS -->
+<!-- FULL FINAL DASHBOARD HTML — IMPROVED (testing date 16-11) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,161 +18,50 @@
       color: white;
     }
 
-    /* ------------------------- Orbs ---------------------------- */
+    /* Orbs */
     .orb { position: absolute; border-radius:50%; filter: blur(80px); opacity:0.15; z-index:0; animation: float 20s infinite ease-in-out; }
     .orb-1{ background:linear-gradient(135deg,#818cf8,#c084fc); width:500px;height:500px; top:-200px; left:-150px;}
     .orb-2{ background:linear-gradient(135deg,#f472b6,#fb923c); width:400px;height:400px; bottom:-150px; right:-100px; animation-delay:5s;}
     .orb-3{ background:linear-gradient(135deg,#06b6d4,#3b82f6); width:350px;height:350px; top:40%; left:50%; animation-delay:10s;}
-
-    @keyframes float { 
-      0%,100%{transform:translate(0,0) scale(1);} 
-      33%{transform:translate(50px,-50px) scale(1.1);} 
-      66%{transform:translate(-30px,30px) scale(0.9);} 
-    }
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(50px,-50px) scale(1.1);} 66%{transform:translate(-30px,30px) scale(0.9);} }
 
     .container { max-width:1400px; margin:0 auto; padding:30px 20px; position:relative; z-index:10; }
 
-    /* ---------------------- Header --------------------- */
-    .header { 
-      display:flex; 
-      justify-content:space-between; 
-      align-items:center; 
-      margin-bottom:40px; 
-      gap:16px; 
-      flex-wrap:wrap;
-    }
-
+    /* Header */
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; gap:16px; flex-wrap:wrap; }
     .brand { display:flex; align-items:center; gap:12px; }
-    .brand-icon {
-      width:48px;height:48px;border-radius:12px;
-      background:linear-gradient(135deg,#818cf8,#c084fc); 
-      display:flex;align-items:center;justify-content:center; 
-      font-size:24px;color:white;
-      box-shadow:0 8px 24px rgba(129,140,248,0.3);
-    }
-    .brand h1 { 
-      font-size:1.6rem; 
-      font-weight:700; 
-      background:linear-gradient(135deg,#fff,#e0e7ff); 
-      -webkit-background-clip:text; 
-      -webkit-text-fill-color:transparent; 
-    }
+    .brand-icon { width:48px;height:48px;border-radius:12px; background:linear-gradient(135deg,#818cf8,#c084fc); display:flex;align-items:center;justify-content:center; font-size:24px;color:white; box-shadow:0 8px 24px rgba(129,140,248,0.3); }
+    .brand h1 { font-size:1.6rem; font-weight:700; background:linear-gradient(135deg,#fff,#e0e7ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
     .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; flex-wrap:wrap; }
-
-    .avatar {
-      width:54px;height:54px;border-radius:50%;
-      background:#2b1f5f; display:flex;align-items:center; justify-content:center;
-      font-size:24px; color:white;
-      border:3px solid rgba(255,255,255,0.12);
-      overflow:hidden; transition:.3s;
-    }
+    .avatar { width:54px;height:54px;border-radius:50%; background:#2b1f5f; display:flex;align-items:center; justify-content:center; font-size:24px; color:white; border:3px solid rgba(255,255,255,0.12); overflow:hidden; transition:.3s; }
     .avatar:hover { transform:scale(1.06); }
 
-    .btn-ghost {
-      padding:10px 14px; border-radius:12px; 
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.06);
-      color:white; font-weight:600;
-      cursor:pointer; transition:.2s;
-    }
+    .btn-ghost { padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:white; font-weight:600; cursor:pointer; transition:.2s; }
     .btn-ghost:hover { background:rgba(255,255,255,0.12); transform:translateY(-2px); }
+    .feedback-btn { padding:10px 14px;border-radius:12px; background: linear-gradient(135deg,#f472b6,#fb923c); border:none; color:white; font-weight:700; cursor:pointer; }
 
-    .feedback-btn {
-      padding:10px 14px;border-radius:12px;
-      background: linear-gradient(135deg,#f472b6,#fb923c);
-      border:none; color:white; font-weight:700; cursor:pointer;
-    }
-
-    /* ---------------- Typing Animation -------------------- */
-    .typing::after {
-      content:""; width:2px;height:1.2em;background:white;display:inline-block;margin-left:4px;
-      animation: blink 1s infinite;
-    }
+    .typing::after { content:""; width:2px;height:1.2em;background:white;display:inline-block;margin-left:4px; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity:0; } }
 
-    /* ---------------- Stats ---------------- */
-    .stats {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:18px; margin-bottom:24px;
-    }
-    .stat-card {
-      padding:20px;border-radius:18px;
-      background:rgba(255,255,255,0.08);
-      text-align:center;
-      border:1px solid rgba(255,255,255,0.15);
-      backdrop-filter:blur(16px);
-    }
-    .stat-number { 
-      font-size:1.8rem; font-weight:800;
-      background:linear-gradient(135deg,#818cf8,#c084fc); 
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    }
+    /* Stats + cards (same as before) */
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:18px; margin-bottom:24px; }
+    .stat-card { padding:20px;border-radius:18px; background:rgba(255,255,255,0.08); text-align:center; border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); }
+    .stat-number { font-size:1.8rem; font-weight:800; background:linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text;-webkit-text-fill-color:transparent; }
     .stat-label { color:#c7d2fe; margin-top:6px; }
 
-    /* --------------- Animated Cards ---------------- */
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
-      gap:24px; margin-top:30px;
-    }
-    .card {
-      padding:32px 26px;border-radius:20px;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.15);
-      backdrop-filter:blur(16px);
-      cursor:pointer; transition:.3s; position:relative;
-      overflow:hidden;
-    }
-    .card:hover {
-      transform:translateY(-8px) scale(1.03);
-      box-shadow:0 14px 32px rgba(0,0,0,0.3);
-      border-color:rgba(255,255,255,0.25);
-    }
-
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:24px; margin-top:30px; }
+    .card { padding:32px 26px;border-radius:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
+    .card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 14px 32px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.25); }
     .card-icon { font-size:2rem; margin-bottom:10px; }
     .card-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; }
     .card-description { font-size:0.9rem; color:#c7d2fe; }
 
-    /* ---------------- Mobile Bottom Navigation ---------------- */
-
-    /* Desktop: ALWAYS hidden */
-    .bottom-nav {
-      display: none !important;
-      position: fixed;
-      bottom: 0; left: 0;
-      width: 100%; height: 70px;
-      background: rgba(20,20,40,0.75);
-      border-top: 1px solid rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
-      z-index: 9999; padding: 0 8px;
-    }
-
-    /* Mobile only */
-    @media (max-width: 850px) {
-      .bottom-nav {
-        display: flex !important;
-      }
-    }
-
-    .nav-item {
-      flex: 1; text-align: center;
-      color: #e0e7ff; font-size: 0.78rem;
-      cursor: pointer; padding-top: 6px;
-    }
-    .nav-item span {
-      display:block; font-size:1.5rem; margin-bottom:2px;
-    }
-
-    @media (max-width: 550px) {
-      .user-section {
-        flex-wrap: wrap; justify-content: flex-end;
-      }
-      .user-section button {
-        flex: 1 1 auto;
-      }
-    }
+    /* Mobile bottom nav */
+    .bottom-nav { display: none !important; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(20,20,40,0.75); border-top: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); z-index: 9999; padding: 0 8px; }
+    @media (max-width: 850px) { .bottom-nav { display: flex !important; } }
+    .nav-item { flex: 1; text-align: center; color: #e0e7ff; font-size: 0.78rem; cursor: pointer; padding-top: 6px; }
+    .nav-item span { display:block; font-size:1.5rem; margin-bottom:2px; }
 
     /* ---------------- Birthday Screen styles ---------------- */
     .bday-bg {
@@ -186,29 +75,31 @@
       padding-top: 6vh;
       z-index: 99999;
       overflow: hidden;
-      animation: bfadeIn 0.45s ease forwards;
+      animation: bfadeIn 0.45s ease forwards, gradientMove 8s infinite alternate;
     }
     @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
 
-    /* Balloons container (only shown during birthday) */
-    .balloons {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 99990;
+    /* animated bg gradient subtle move */
+    @keyframes gradientMove {
+      0% { background: rgba(0,0,0,0.80); }
+      100% { background: rgba(18,2,30,0.88); }
     }
-    .balloon {
-      position: absolute;
-      bottom: -120px;
-      width: 48px;
-      height: 64px;
-      border-radius: 50% 50% 45% 45%;
-      opacity: 0.95;
-      transform-origin: center;
-      animation: floatUp linear infinite;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
+
+    /* fadeOut (smooth close) */
+    .bday-bg.fadeOut { animation: fadeOut 0.5s ease forwards; }
+    @keyframes fadeOut { to { opacity:0; } }
+
+    /* Close button (minimal white cross) */
+    #closeBday {
+      position:absolute; top:14px; right:16px; font-size:28px; cursor:pointer; color:#fff; opacity:0.9; z-index:100000;
+      transition: transform .18s ease, opacity .18s ease;
+      user-select:none;
     }
+    #closeBday:hover { transform:scale(1.06); opacity:1; }
+
+    /* Balloons */
+    .balloons { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 99990; }
+    .balloon { position: absolute; bottom: -120px; width: 48px; height: 64px; border-radius: 50% 50% 45% 45%; opacity: 0.95; transform-origin: center; animation: floatUp linear infinite; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35)); }
     .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #f472b6 30%, #fb6d8a 100%); left:6%; animation-duration:9s; animation-delay:0.2s; }
     .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:20%; animation-duration:10s; animation-delay:1s; width:56px;height:72px;}
     .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbe68a 30%, #f59e0b 100%); left:34%; animation-duration:11s; animation-delay:0.6s;}
@@ -216,15 +107,9 @@
     .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:62%; animation-duration:12s; animation-delay:0.4s;}
     .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:76%; animation-duration:10.7s; animation-delay:0.3s;}
     .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:86%; animation-duration:9.8s; animation-delay:0.7s;}
+    @keyframes floatUp { 0% { transform: translateY(0) rotate(-6deg) scale(0.95); opacity: 0; } 5% { opacity: 1; } 50% { transform: translateY(-55vh) rotate(4deg) scale(1); } 100% { transform: translateY(-120vh) rotate(10deg) scale(1.05); opacity: 0; } }
 
-    @keyframes floatUp {
-      0% { transform: translateY(0) rotate(-6deg) scale(0.95); opacity: 0; }
-      5% { opacity: 1; }
-      50% { transform: translateY(-55vh) rotate(4deg) scale(1); }
-      100% { transform: translateY(-120vh) rotate(10deg) scale(1.05); opacity: 0; }
-    }
-
-    /* Birthday card */
+    /* Birthday card - glow pulse and drop */
     .bday-card {
       width: 92%;
       max-width: 520px;
@@ -239,105 +124,67 @@
       z-index: 99995;
       box-shadow: 0 20px 60px rgba(0,0,0,0.6);
       overflow: visible;
+      animation: cardDrop 0.6s ease forwards, glowPulse 3.2s infinite ease-in-out;
+    }
+    @keyframes cardDrop {
+      0% { transform: translateY(-18px) scale(.98) rotate(1deg); opacity: 0; }
+      60% { transform: translateY(6px) scale(1.02); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    @keyframes glowPulse {
+      0% { box-shadow:0 0 16px rgba(255,140,200,0.28); }
+      50% { box-shadow:0 0 34px rgba(255,160,220,0.6); }
+      100% { box-shadow:0 0 16px rgba(255,140,200,0.28); }
     }
 
     .animated-card { position: relative; }
-    .card-face {
-      padding: 28px;
-      backface-visibility: hidden;
-      transition: transform 0.9s cubic-bezier(.18,.89,.32,1.28), opacity 0.6s ease;
-      border-radius: 20px;
-      position: relative;
-      min-height: 240px;
-    }
-
+    .card-face { padding: 28px; backface-visibility: hidden; transition: transform 0.9s cubic-bezier(.18,.89,.32,1.28), opacity 0.6s ease; border-radius: 20px; position: relative; min-height: 240px; }
     .card-front { transform: rotateY(0deg); background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03)); }
     .card-inside { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); opacity: 0; }
-
     .animated-card.opened .card-front { transform: rotateY(-180deg); opacity: 0; }
     .animated-card.opened .card-inside { transform: rotateY(0deg); opacity: 1; }
 
     .bday-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-    .bday-sub { color: #dbeafe; margin-bottom: 14px; }
+    .bday-sub { color: #dbeafe; margin-bottom: 14px; text-align:left; line-height:1.4; }
 
-    /* sparkles inside card */
-    .sparkles {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: visible;
-      z-index: 2;
-    }
-    .sparkle {
-      position: absolute;
-      width: 8px; height: 8px;
-      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.9) 20%, rgba(99,102,241,0.9) 50%);
-      border-radius: 50%;
-      opacity: 0;
-      transform: scale(0.6);
-      animation: sparklePop 1.6s infinite;
-      will-change: transform, opacity;
-    }
-    @keyframes sparklePop {
-      0% { opacity: 0; transform: scale(0.2) translateY(6px); }
-      10% { opacity: 1; transform: scale(1.1) translateY(0); }
-      60% { opacity: 0.6; transform: scale(0.8) translateY(-6px); }
-      100% { opacity: 0; transform: scale(0.4) translateY(-10px); }
-    }
+    /* sparkles */
+    .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
+    .sparkle { position: absolute; width: 8px; height: 8px; background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.9) 20%, rgba(99,102,241,0.9) 50%); border-radius: 50%; opacity: 0; transform: scale(0.6); animation: sparklePop 1.6s infinite; will-change: transform, opacity; }
+    @keyframes sparklePop { 0% { opacity: 0; transform: scale(0.2) translateY(6px); } 10% { opacity: 1; transform: scale(1.1) translateY(0); } 60% { opacity: 0.6; transform: scale(0.8) translateY(-6px); } 100% { opacity: 0; transform: scale(0.4) translateY(-10px); } }
 
-    /* hearts animation */
-    .heart {
-      position: absolute;
-      color: #ff6fb5;
-      font-size: 20px;
-      opacity: 0.9;
-      animation: floatHeart 4s ease-in-out forwards;
-      will-change: transform, opacity;
-      text-shadow: 0 6px 20px rgba(255,111,181,0.12);
-    }
-    @keyframes floatHeart {
-      0% { transform: translateY(20px) scale(0.8); opacity:0; }
-      20% { opacity:1; }
-      100% { transform: translateY(-140px) scale(1.25); opacity:0; }
-    }
+    /* hearts animation (multi-color) */
+    .heart { position: absolute; font-size: 20px; opacity: 0.9; animation: floatHeart 4s ease-in-out forwards; will-change: transform, opacity; text-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    @keyframes floatHeart { 0% { transform: translateY(20px) scale(0.8); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(-140px) scale(1.25); opacity:0; } }
 
-    .bday-cta {
-      margin-top: 12px;
-      display: inline-flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: linear-gradient(135deg,#818cf8,#c084fc);
-      color: white;
-      font-weight: 800;
-      cursor: pointer;
-      border: none;
+    /* bday CTA and misc */
+    .bday-cta { margin-top: 12px; display: inline-flex; gap: 10px; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 12px; background: linear-gradient(135deg,#818cf8,#c084fc); color: white; font-weight: 800; cursor: pointer; border: none; }
+
+    /* shimmer for love text */
+    #loveFade {
+      background: linear-gradient(90deg,#ff9bd0,#ffd6ea,#ff9bd0);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: opacity 1.8s;
     }
+    @keyframes shimmer { 0% { background-position: 0% 0%; } 100% { background-position: 100% 0%; } }
 
     .muted { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
 
-    /* responsive tweaks */
-    @media (max-width:520px){
-      .bday-card{ max-width: 92%; }
-      .bday-title{ font-size:1.1rem; }
-    }
+    @media (max-width:520px){ .bday-card{ max-width: 92%; } .bday-title{ font-size:1.1rem; } }
+
   </style>
 </head>
 
 <body>
 
-  <!-- Background Orbs -->
+  <!-- Orbs -->
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 
   <div class="container">
-
-    <!-- ---------------- Header ---------------- -->
     <div class="header">
-
       <div class="brand">
         <div class="brand-icon">👗</div>
         <h1>Dress Organizer</h1>
@@ -356,10 +203,9 @@
         <button class="feedback-btn" onclick="openFeedbackModal()">Feedback</button>
         <button class="btn-ghost" onclick="logout()">Logout</button>
       </div>
-
     </div>
 
-    <!-- ---------------- Stats ---------------- -->
+    <!-- Stats -->
     <div class="stats">
       <div class="stat-card">
         <div id="dressCount" class="stat-number">0</div>
@@ -375,7 +221,7 @@
       </div>
     </div>
 
-    <!-- ---------------- Cards ---------------- -->
+    <!-- Cards -->
     <div class="grid">
       <div class="card" onclick="go('upload.html')">
         <div class="card-icon">📸</div>
@@ -407,99 +253,35 @@
         <div class="card-description">Your saved dresses</div>
       </div>
     </div>
-
   </div>
 
-  <!-- ---------------- Bottom Navigation (Mobile Only) ---------------- -->
+  <!-- Bottom nav (mobile) -->
   <div class="bottom-nav">
-    <div class="nav-item" onclick="go('dashboard.html')">
-      <span>🏠</span> Home
-    </div>
-    <div class="nav-item" onclick="go('upload.html')">
-      <span>📸</span> Upload
-    </div>
-    <div class="nav-item" onclick="go('search.html')">
-      <span>🔍</span> Search
-    </div>
-    <div class="nav-item" onclick="go('favourites.html')">
-      <span>⭐</span> Favs
-    </div>
-    <div class="nav-item" onclick="go('profile.html')">
-      <span>👤</span> You
-    </div>
+    <div class="nav-item" onclick="go('dashboard.html')"><span>🏠</span> Home</div>
+    <div class="nav-item" onclick="go('upload.html')"><span>📸</span> Upload</div>
+    <div class="nav-item" onclick="go('search.html')"><span>🔍</span> Search</div>
+    <div class="nav-item" onclick="go('favourites.html')"><span>⭐</span> Favs</div>
+    <div class="nav-item" onclick="go('profile.html')"><span>👤</span> You</div>
   </div>
 
-  <!-- ---------------- FEEDBACK MODAL ---------------- -->
-  <div id="feedbackModal" 
-    style="
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-    ">
-
-    <div style="
-        width: 90%;
-        max-width: 420px;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 18px;
-        backdrop-filter: blur(18px);
-        padding: 24px;
-        color: white;
-      ">
-
+  <!-- Feedback modal -->
+  <div id="feedbackModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999;">
+    <div style="width: 90%; max-width: 420px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 18px; backdrop-filter: blur(18px); padding: 24px; color: white;">
       <h2 style="margin-bottom: 12px; font-size: 1.4rem;">Send Feedback</h2>
-
-      <textarea id="feedbackText" 
-        style="
-          width: 100%;
-          height: 120px;
-          padding: 12px;
-          border-radius: 12px;
-          background: rgba(255,255,255,0.08);
-          border: 1px solid rgba(255,255,255,0.2);
-          color: white;
-          resize: none;
-          font-size: 1rem;
-        "
-        placeholder="Write your feedback here..."
-      ></textarea>
-
+      <textarea id="feedbackText" style="width: 100%; height: 120px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; resize: none; font-size: 1rem;" placeholder="Write your feedback here..."></textarea>
       <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px;">
-        <button onclick="closeFeedbackModal()"
-          style="
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            cursor: pointer;
-          "
-        >Cancel</button>
-
-        <button onclick="submitFeedback()"
-          style="
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: linear-gradient(135deg,#f472b6,#fb923c);
-            border: none;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-          "
-        >Submit</button>
+        <button onclick="closeFeedbackModal()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; cursor: pointer;">Cancel</button>
+        <button onclick="submitFeedback()" style="padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg,#f472b6,#fb923c); border: none; color: white; font-weight: 700; cursor: pointer;">Submit</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ---------------- Birthday Surprise (HTML) ---------------- -->
+  <!-- Birthday Surprise -->
   <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
-    <!-- Balloons (appear only during birthday) -->
+    <!-- close -->
+    <div id="closeBday" title="Close">✕</div>
+
+    <!-- Balloons -->
     <div class="balloons" aria-hidden="true">
       <div class="balloon b1"></div>
       <div class="balloon b2"></div>
@@ -513,10 +295,10 @@
     <!-- Hearts container -->
     <div id="heartsContainer" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:99996;"></div>
 
-    <!-- Background music (played on open interaction) -->
+    <!-- Background music -->
     <audio id="bdayMusic" loop preload="auto">
-      <!-- Replace the src with your actual uploaded filename if needed -->
       <source src="birthday-song.mp3" type="audio/mpeg">
+      <!-- replace src with your uploaded file if different -->
     </audio>
 
     <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0" aria-pressed="false">
@@ -524,7 +306,6 @@
         <div style="position:relative; padding: 8px 28px 28px;">
           <div class="bday-title" id="greetingLine">A Special Message for My Love</div>
           <div class="bday-sub" id="subGreeting">Tap to open, my heartbeat… ❤️🎁</div>
-          <!-- sparkles container (we'll generate sparkles via JS) -->
           <div class="sparkles" id="sparklesContainer" aria-hidden="true"></div>
         </div>
       </div>
@@ -544,33 +325,27 @@
             <strong>Happy Birthday, My Love ❤️🎉</strong>
           </div>
 
-          <!-- second message (fades in later) -->
-          <div id="secondMsg" class="muted" 
-               style="opacity:0; margin-top:18px; font-size:1rem; transition:1.5s; text-align:left;">
-            On this day… I just want one thing:
-            For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗
+          <!-- second message (typed in) -->
+          <div id="secondMsg" class="muted" style="opacity:1; margin-top:18px; font-size:1rem; transition:1.5s; text-align:left;">
+            <!-- content will be typed by JS -->
           </div>
 
           <!-- I love you fade-in -->
-          <div id="loveFade" 
-               style="opacity:0; font-size:1.3rem; font-weight:700; margin-top:22px; 
-                      color:#ffb3d9; transition:2s; text-align:center;">
+          <div id="loveFade" style="opacity:0; font-size:1.3rem; font-weight:700; margin-top:22px; color:#ffb3d9; transition:2s; text-align:center;">
             I Love You, My Love ❤️
           </div>
 
           <div style="margin-top:14px; text-align:center;">
             <button class="bday-cta" id="continueBtn">Continue to Dashboard</button>
           </div>
-
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Include Confetti library -->
+  <!-- confetti lib -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- ---------------- JS ---------------- -->
   <script>
     function go(p){ window.location.href=p; }
 
@@ -579,12 +354,26 @@
       .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
     }
 
-    function typeText(el, text){
-      el.textContent=""; let i=0;
-      function t(){ 
-        if(i<text.length){ el.textContent += text[i++]; setTimeout(t,40); } 
-      }
-      t();
+    function typeText(el, text, delay=40){
+      el.textContent = "";
+      let i = 0;
+      const timer = setInterval(() => {
+        if (i >= text.length) { clearInterval(timer); return; }
+        el.textContent += text[i++];
+      }, delay);
+    }
+
+    // optional typed effect with promise
+    function typeEffectPromise(el, text, speed=30){
+      return new Promise((resolve)=>{
+        el.textContent = "";
+        let i=0;
+        const t = () => {
+          if(i<text.length){ el.textContent += text[i++]; setTimeout(t, speed); }
+          else resolve();
+        };
+        t();
+      });
     }
 
     async function loadUser(){
@@ -592,13 +381,9 @@
       if(!r.ok){go('login.html');return;}
       const u=await r.json();
       const name=u.name || u.email.split('@')[0];
-
-      // set avatar initial
       document.getElementById('avatar').textContent = (name[0] || '👤').toUpperCase();
 
-      // Personalized greetings based on time
-      const now = new Date();
-      const hour = now.getHours();
+      const now = new Date(); const hour = now.getHours();
       let timeGreeting = "Hello";
       if(hour < 12) timeGreeting = "Good morning";
       else if(hour < 17) timeGreeting = "Good afternoon";
@@ -607,7 +392,6 @@
       typeText(document.getElementById('typingLine1'), `${timeGreeting}, ${name} 👋`);
       typeText(document.getElementById('typingLine2'), `Here’s your wardrobe overview…`);
 
-      // store user for birthday checks
       window.__CURRENT_USER = u;
     }
 
@@ -615,7 +399,6 @@
       const r=await fetch('/api/stats',{credentials:'include'});
       if(!r.ok) return;
       const s=await r.json();
-
       document.getElementById('dressCount').textContent=s.dresses;
       document.getElementById('sectionCount').textContent=s.sections;
       document.getElementById('recentUploads').textContent=(s.recent || []).length;
@@ -625,13 +408,12 @@
     loadStats();
 
     /* ----------------------------------------------------------
-       🎉 BIRTHDAY SURPRISE CHECK (Mixed mode: balloons only in bday screen; sparkles inside card)
+       Birthday trigger currently:
        Email: sjs36931@gmail.com
-       Date: 16-11 (testing date)
+       Date: 16-11 (dd-mm) - TEST MODE
     ---------------------------------------------------------- */
     async function checkBirthday() {
       try {
-        // Use existing user if already fetched
         let user = window.__CURRENT_USER;
         if (!user) {
           const res = await fetch('/api/me', { credentials: 'include' });
@@ -639,8 +421,8 @@
           user = await res.json();
         }
 
-        const targetEmail = "sjs36931@gmail.com"; 
-        const birthday = "16-11";  // testing date dd-mm
+        const targetEmail = "sjs36931@gmail.com";
+        const birthday = "16-11"; // testing dd-mm
 
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -648,199 +430,197 @@
         const todayStr = `${dd}-${mm}`;
 
         if (user.email === targetEmail && todayStr === birthday) {
-          // small delay so page finishes rendering nicely
           setTimeout(() => showBirthdayScreen(user), 450);
         }
       } catch (err) {
         console.error("Birthday check error:", err);
       }
     }
-
-    // call check after a short delay (let loadUser finish)
     setTimeout(checkBirthday, 800);
 
-    /* ---------------- Birthday UI & Animations (NO VIDEO) ---------------- */
+    /* ---------------- Birthday UI & Animations (IMPROVED) ---------------- */
     function showBirthdayScreen(user) {
-      // only once per day
+      // only once per day (testing)
       if (localStorage.getItem("bdayShown") === new Date().toDateString()) return;
 
       const screen = document.getElementById("birthdayScreen");
       const balloons = document.querySelector(".balloons");
       const card = document.getElementById("animatedCard");
       const music = document.getElementById("bdayMusic");
+      const heartsContainer = document.getElementById("heartsContainer");
 
-      // Personalized messages (front & inside)
       const name = user.name || user.email.split('@')[0];
-      const hour = new Date().getHours();
-
-      // Update front and inside headings
       document.getElementById("greetingLine").textContent = `A Special Message for ${name}`;
       document.getElementById("subGreeting").textContent = `Tap to open, my heartbeat… ❤️🎁`;
       document.getElementById("insideGreeting").textContent = `🎉 Happy Birthday, ${name}! 🎉`;
 
-      // Fill primary romantic message (keeps HTML formatting for line breaks)
-      document.getElementById("personalMsg").innerHTML = `
-        My Love… on your special day, I want to remind you of something simple but true:<br><br>
-        <strong>You are the most beautiful chapter of my life.</strong><br><br>
-        Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete.<br><br>
-        Thank you for loving me, supporting me, and choosing me every single day. I’m endlessly grateful for you.<br><br>
-        <strong>Happy Birthday, My Love ❤️🎉</strong>
-      `;
+      // Fill primary message (already in HTML; keep it)
+      // Clear second message (typed later)
+      const secondMsgEl = document.getElementById("secondMsg");
+      secondMsgEl.textContent = "";
 
-      // second message + love fade initial state (hidden)
-      document.getElementById("secondMsg").style.opacity = 0;
-      document.getElementById("loveFade").style.opacity = 0;
+      // hide loveFade initially
+      const loveEl = document.getElementById("loveFade");
+      loveEl.style.opacity = 0;
 
-      // show screen and balloons
+      // show screen
       screen.style.display = "flex";
 
-      // create sparkles inside card
+      // sparkles
       populateSparkles();
 
-      // start hearts generator (only while screen visible)
+      // hearts
       createHearts();
 
-      // slight staggered confetti for initial excitement
-      setTimeout(() => confetti({ particleCount: 120, spread: 100, origin: { y: 0.6 } }), 300);
-      setTimeout(() => confetti({ particleCount: 200, spread: 140, origin: { y: 0.65 } }), 900);
+      // small confetti pops for entrance
+      setTimeout(()=> confetti({ particleCount: 110, spread: 90, origin: { y: 0.62 } }), 300);
+      setTimeout(()=> confetti({ particleCount: 180, spread: 120, origin: { y: 0.66 } }), 900);
 
-      // ensure balloons are visible
       if (balloons) balloons.style.display = "block";
 
-      // Card open interaction (click or keyboard)
-      function openCardInteraction() {
-        // guard: if already opened
-        if (card.classList.contains("opened")) return;
+      // close button handler
+      const closeBtn = document.getElementById("closeBday");
+      closeBtn.onclick = () => closeBirthday();
 
-        // Flip the card
+      // card interaction (flip & reveal)
+      async function openCardInteraction() {
+        if (card.classList.contains("opened")) return;
         card.classList.add("opened");
         card.setAttribute("aria-pressed","true");
 
-        // play music (unmuted since user interacted)
+        // music fade-in
         try {
-          music.volume = 0.6;
-          music.play().catch(()=>{ /* autoplay error ignored */ });
-        } catch (e) {}
+          music.volume = 0;
+          const playPromise = music.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(()=>{}); // ignore autoplay rejection; will still try once user interacts
+          }
+          // fade to volume 0.6
+          let v = 0;
+          const target = 0.6;
+          const step = 0.04;
+          const fade = setInterval(()=> {
+            v = Math.min(v + step, target);
+            music.volume = v;
+            if (v >= target) clearInterval(fade);
+          }, 120);
+        } catch(e){ /* ignore */ }
 
-        // small burst of confetti after flip
-        setTimeout(() => {
-          confetti({ particleCount: 260, spread: 170, origin: { y: 0.5 } });
-        }, 600);
+        // confetti burst after flip
+        setTimeout(()=> confetti({ particleCount: 260, spread:170, origin:{ y:0.5 } }), 600);
 
-        // reveal second message after 2s
-        setTimeout(() => {
-          document.getElementById("secondMsg").style.opacity = 1;
-        }, 2000);
-
-        // reveal "I Love You" after 3.5s
-        setTimeout(() => {
-          document.getElementById("loveFade").style.opacity = 1;
-        }, 3500);
+        // type second message after 1.6s
+        const secondText = "On this day… I just want one thing: For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗";
+        setTimeout(()=> {
+          // typed effect
+          typeEffectPromise(secondMsgEl, secondText, 28).then(()=>{
+            // after typing completes, reveal "I Love You"
+            setTimeout(()=>{
+              loveEl.style.opacity = 1;
+              // start shimmer animation
+              loveEl.style.animation = "shimmer 2.6s linear infinite";
+            }, 450);
+          });
+        }, 1600);
       }
 
-      // attach event listeners for accessibility
+      // attach event listeners
       card.addEventListener('click', openCardInteraction);
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openCardInteraction(); });
 
-      // continue button closes screen
+      // continue closes
       document.getElementById('continueBtn').onclick = () => closeBirthday();
 
       // mark shown for today
       localStorage.setItem("bdayShown", new Date().toDateString());
     }
 
+    // close (fade-out)
     function closeBirthday() {
       const screen = document.getElementById("birthdayScreen");
       const music = document.getElementById("bdayMusic");
 
-      // pause music
-      try { music.pause(); } catch(e){}
+      // fade music out quickly
+      try {
+        let v = music.volume;
+        const fadeOutInterval = setInterval(()=>{
+          v = Math.max(0, v - 0.06);
+          music.volume = v;
+          if (v <= 0.02) { clearInterval(fadeOutInterval); try{ music.pause(); }catch(e){} }
+        }, 80);
+      } catch(e){}
 
-      // hide screen
-      screen.style.display = "none";
+      // fade out screen
+      screen.classList.add("fadeOut");
+      setTimeout(()=>{
+        screen.style.display = "none";
+        screen.classList.remove("fadeOut");
+      }, 520);
     }
 
-    /* ---------------- Sparkles generation ---------------- */
-    function populateSparkles() {
+    /* Sparkles */
+    function populateSparkles(){
       const container = document.getElementById('sparklesContainer');
-      container.innerHTML = ''; // clear
+      container.innerHTML = '';
       const count = 12;
-      for (let i = 0; i < count; i++) {
+      for(let i=0;i<count;i++){
         const s = document.createElement('div');
         s.className = 'sparkle';
-        const left = Math.random() * 86 + 6; // 6% - 92%
+        const left = Math.random()*86 + 6;
         s.style.left = left + '%';
-        s.style.top = (Math.random() * 140 + 12) + 'px';
-        s.style.animationDelay = (Math.random() * 1.2) + 's';
-        s.style.width = (6 + Math.random() * 8) + 'px';
-        s.style.height = s.style.width;
+        s.style.top = (Math.random()*140 + 12) + 'px';
+        s.style.animationDelay = (Math.random()*1.2) + 's';
+        const size = 6 + Math.random()*8;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
         container.appendChild(s);
       }
     }
 
-    /* ---------------- Floating hearts generator ---------------- */
+    /* Hearts generator (multicolor) */
     let heartsInterval = null;
-    function createHearts() {
+    function createHearts(){
       const container = document.getElementById("heartsContainer");
-      if (!container) return;
+      if(!container) return;
 
-      // clear existing interval if any
-      if (heartsInterval) { clearInterval(heartsInterval); heartsInterval = null; }
+      if(heartsInterval){ clearInterval(heartsInterval); heartsInterval = null; }
 
-      heartsInterval = setInterval(() => {
+      const colors = ["#ff6fb5","#ff9bd0","#ffc0d9","#ff7fb0","#ffd6ea","#ffb3d9"];
+      heartsInterval = setInterval(()=> {
         const h = document.createElement("div");
         h.className = "heart";
         h.innerHTML = "❤️";
-        h.style.left = (8 + Math.random() * 84) + "%";
-        const size = (14 + Math.random() * 28);
+        h.style.left = (8 + Math.random()*84) + "%";
+        const size = (14 + Math.random()*28);
         h.style.fontSize = size + "px";
-        h.style.opacity = (0.7 + Math.random() * 0.3);
-        h.style.animationDuration = (3 + Math.random() * 2) + "s";
+        h.style.opacity = (0.7 + Math.random()*0.3);
+        h.style.animationDuration = (3 + Math.random()*2) + "s";
         h.style.zIndex = 99997;
+        h.style.color = colors[Math.floor(Math.random()*colors.length)];
         container.appendChild(h);
-
-        // remove after animation
-        setTimeout(() => {
-          try { container.removeChild(h); } catch(e) {}
+        setTimeout(()=> {
+          try { container.removeChild(h); } catch(e){}
         }, 4200);
-      }, 550);
+      }, 500);
     }
 
-    /* ---------------- Make sure balloon container is hidden by default (safety) ---------------- */
-    document.addEventListener('DOMContentLoaded', () => {
-      const balloons = document.querySelector('.balloons');
-      if (balloons) balloons.style.display = 'none';
-    });
-
-    /* ---------------- Feedback modal logic ---------------- */
-    function openFeedbackModal() {
-      document.getElementById("feedbackModal").style.display = "flex";
-    }
-    function closeFeedbackModal() {
-      document.getElementById("feedbackModal").style.display = "none";
-    }
-    async function submitFeedback() {
+    /* Feedback modal control */
+    function openFeedbackModal(){ document.getElementById("feedbackModal").style.display = "flex"; }
+    function closeFeedbackModal(){ document.getElementById("feedbackModal").style.display = "none"; }
+    async function submitFeedback(){
       const text = document.getElementById("feedbackText").value.trim();
-      if (!text) return alert("Please write some feedback!");
-      try {
+      if(!text) return alert("Please write some feedback!");
+      try{
         const res = await fetch("/api/feedback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ message: text })
+          method:"POST", headers:{"Content-Type":"application/json"}, credentials:"include", body:JSON.stringify({message:text})
         });
-        if (res.ok) {
-          alert("Your feedback has been submitted!");
-          document.getElementById("feedbackText").value = "";
-          closeFeedbackModal();
-        } else alert("Error submitting feedback.");
-      } catch (e) { alert("Network error."); }
+        if(res.ok){ alert("Your feedback has been submitted!"); document.getElementById("feedbackText").value=""; closeFeedbackModal(); }
+        else alert("Error submitting feedback.");
+      }catch(e){ alert("Network error."); }
     }
 
-    /* ---------------- Stats & User load refresher (optional) ---------------- */
-    // refresh stats every 60s while user stays on dashboard
+    // refresh stats periodically
     setInterval(loadStats, 60_000);
-
   </script>
 
 </body>
