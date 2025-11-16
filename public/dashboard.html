@@ -1,4 +1,3 @@
-<!-- FULL FINAL DASHBOARD HTML — UPDATED WITH BUTTON NOTIFICATION -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +9,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: linear-gradient(135deg, #1e1b4b, #312e81, #4c1d95);
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
       font-family: "Inter", sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
@@ -18,7 +17,7 @@
       color: white;
     }
 
-    /* ORBS */
+    /* Orbs */
     .orb { position: absolute; border-radius:50%; filter: blur(80px); opacity:0.15; z-index:0; animation: float 20s infinite ease-in-out; }
     .orb-1{ background:linear-gradient(135deg,#818cf8,#c084fc); width:500px;height:500px; top:-200px; left:-150px;}
     .orb-2{ background:linear-gradient(135deg,#f472b6,#fb923c); width:400px;height:400px; bottom:-150px; right:-100px; animation-delay:5s;}
@@ -27,16 +26,29 @@
 
     .container { max-width:1400px; margin:0 auto; padding:30px 20px; position:relative; z-index:10; }
 
-    /* HEADER */
+    /* Header */
     .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; gap:16px; flex-wrap:wrap; }
     .brand { display:flex; align-items:center; gap:12px; }
     .brand-icon { width:48px;height:48px;border-radius:12px; background:linear-gradient(135deg,#818cf8,#c084fc); display:flex;align-items:center;justify-content:center; font-size:24px;color:white; box-shadow:0 8px 24px rgba(129,140,248,0.3); }
     .brand h1 { font-size:1.6rem; font-weight:700; background:linear-gradient(135deg,#fff,#e0e7ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
-    /* USER SECTION */
     .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; flex-wrap:wrap; }
-    .avatar { width:54px;height:54px;border-radius:50%; background:#2b1f5f; display:flex;align-items:center; justify-content:center; font-size:24px; color:white; border:3px solid rgba(255,255,255,0.12); overflow:hidden; transition:.3s; }
-    .avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .avatar { 
+      width:54px;
+      height:54px;
+      border-radius:50%; 
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      display:flex;
+      align-items:center; 
+      justify-content:center; 
+      font-size:24px;
+      font-weight: 700;
+      color:white; 
+      border:3px solid rgba(255,255,255,0.12); 
+      overflow:hidden; 
+      transition:.3s;
+      text-transform: uppercase;
+    }
     .avatar:hover { transform:scale(1.06); }
 
     .btn-ghost { padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:white; font-weight:600; cursor:pointer; transition:.2s; }
@@ -46,13 +58,46 @@
     .typing::after { content:""; width:2px;height:1.2em;background:white;display:inline-block;margin-left:4px; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity:0; } }
 
-    /* STATS */
+    /* Birthday notification button (fixed) */
+    #bdayNotification {
+      position: fixed;
+      top: 80px;
+      right: 22px;
+      padding: 14px 22px;
+      background: linear-gradient(135deg, #ff6fb5, #ff9bd0);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: none;
+      z-index: 999999;
+      box-shadow: 0 8px 28px rgba(255,111,181,0.5);
+      transition: all .3s ease;
+      animation: bounceIn 0.6s ease, pulseGlow 2s infinite;
+    }
+    #bdayNotification:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 36px rgba(255,111,181,0.7);
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3) translateY(-20px); opacity: 0; }
+      50% { transform: scale(1.08) translateY(0); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 28px rgba(255,111,181,0.5); }
+      50% { box-shadow: 0 8px 38px rgba(255,111,181,0.8), 0 0 20px rgba(255,111,181,0.4); }
+    }
+
+    /* Stats + cards */
     .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:18px; margin-bottom:24px; }
     .stat-card { padding:20px;border-radius:18px; background:rgba(255,255,255,0.08); text-align:center; border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); }
     .stat-number { font-size:1.8rem; font-weight:800; background:linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text;-webkit-text-fill-color:transparent; }
     .stat-label { color:#c7d2fe; margin-top:6px; }
 
-    /* GRID */
     .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:24px; margin-top:30px; }
     .card { padding:32px 26px;border-radius:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
     .card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 14px 32px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.25); }
@@ -60,45 +105,410 @@
     .card-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; }
     .card-description { font-size:0.9rem; color:#c7d2fe; }
 
-    /* MOBILE NAV */
-    .bottom-nav { display:none !important; position:fixed; bottom:0; left:0; width:100%; height:70px; background:rgba(20,20,40,0.75); border-top:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(12px); z-index:9999; padding:0 8px; }
-    @media (max-width:850px){ .bottom-nav{display:flex !important;} }
-    .nav-item { flex:1; text-align:center; color:#e0e7ff; font-size:0.78rem; cursor:pointer; padding-top:6px; }
+    /* Mobile bottom nav */
+    .bottom-nav { display: none !important; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(20,20,40,0.75); border-top: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); z-index: 9999; padding: 0 8px; }
+    @media (max-width: 850px) { .bottom-nav { display: flex !important; } }
+    .nav-item { flex: 1; text-align: center; color: #e0e7ff; font-size: 0.78rem; cursor: pointer; padding-top: 6px; }
     .nav-item span { display:block; font-size:1.5rem; margin-bottom:2px; }
 
-    /* 🌟 UPDATED BIRTHDAY BUTTON NOTIFICATION 🌟 */
-    #bdayNotification {
+    /* Birthday Screen - Enhanced Design */
+    .bday-bg {
       position: fixed;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.88);
-      padding: 10px 26px;
-      background: linear-gradient(135deg, #f472b6, #fb923c);
-      border-radius: 50px;
-      color: white;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(30,15,60,0.95), rgba(0,0,0,0.92));
+      backdrop-filter: blur(16px);
       display: none;
-      z-index: 999999;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      transition: opacity .3s ease, transform .25s ease;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 99999;
+      overflow: hidden;
+      animation: bfadeIn 0.6s ease forwards;
     }
-    #bdayNotification:hover {
-      transform: translateX(-50%) scale(1.05);
+    @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+    /* Animated gradient background */
+    .bday-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,111,181,0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(147,51,234,0.15), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(59,130,246,0.12), transparent 50%);
+      animation: bgPulse 8s ease-in-out infinite;
+    }
+    @keyframes bgPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.1); }
     }
 
-    /* 🎉 Birthday Screen (unchanged) */
-    /* ... (kept same – will send in PART 2) ... */
+    .bday-bg.fadeOut { animation: fadeOut 0.5s ease forwards; }
+    @keyframes fadeOut { to { opacity:0; } }
+
+    /* Close button */
+    #closeBday {
+      position:absolute; 
+      top:20px; 
+      right:24px; 
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size:22px; 
+      cursor:pointer; 
+      color:#fff; 
+      z-index:100000;
+      transition: all .3s ease;
+      backdrop-filter: blur(8px);
+    }
+    #closeBday:hover { 
+      transform:rotate(90deg) scale(1.15); 
+      background: rgba(255,255,255,0.2);
+      box-shadow: 0 4px 16px rgba(255,255,255,0.3);
+    }
+
+    /* Enhanced Balloons */
+    .balloons { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 99990; }
+    .balloon { 
+      position: absolute; 
+      bottom: -120px; 
+      width: 52px; 
+      height: 70px; 
+      border-radius: 50% 50% 45% 45%; 
+      opacity: 0.9; 
+      animation: floatUp linear infinite; 
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.4));
+    }
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    }
+    .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #ff6fb5 30%, #fb6d8a 100%); left:8%; animation-duration:10s; animation-delay:0.3s; }
+    .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:22%; animation-duration:11s; animation-delay:1.2s; width:58px;height:76px;}
+    .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fcd34d 30%, #f59e0b 100%); left:36%; animation-duration:12s; animation-delay:0.7s;}
+    .b4 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:50%; animation-duration:11.5s; animation-delay:0.9s; width:56px;height:74px;}
+    .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:64%; animation-duration:13s; animation-delay:0.5s;}
+    .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:78%; animation-duration:11.2s; animation-delay:0.4s;}
+    .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbbf24 30%, #f59e0b 100%); left:90%; animation-duration:10.5s; animation-delay:0.8s;}
+    @keyframes floatUp { 
+      0% { transform: translateY(0) rotate(-8deg) scale(0.9); opacity: 0; } 
+      5% { opacity: 1; } 
+      50% { transform: translateY(-60vh) rotate(6deg) scale(1); } 
+      100% { transform: translateY(-125vh) rotate(12deg) scale(1.1); opacity: 0; } 
+    }
+
+    /* Birthday Card - Premium Design */
+    .bday-card {
+      width: 95%;
+      max-width: 560px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
+      padding: 0;
+      text-align: center;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      z-index: 99995;
+      box-shadow: 0 24px 72px rgba(0,0,0,0.7), 0 0 60px rgba(255,111,181,0.2);
+      overflow: visible;
+      animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, cardGlow 3.5s infinite ease-in-out;
+      position: relative;
+    }
+    @keyframes cardEntrance {
+      0% { transform: translateY(-30px) scale(.92) rotateX(15deg); opacity: 0; }
+      60% { transform: translateY(8px) scale(1.03) rotateX(-3deg); opacity: 1; }
+      100% { transform: translateY(0) scale(1) rotateX(0); opacity: 1; }
+    }
+    @keyframes cardGlow {
+      0%, 100% { 
+        box-shadow: 0 24px 72px rgba(0,0,0,0.7), 0 0 40px rgba(255,111,181,0.2); 
+        border-color: rgba(255,255,255,0.18);
+      }
+      50% { 
+        box-shadow: 0 28px 84px rgba(0,0,0,0.8), 0 0 70px rgba(255,111,181,0.5), 0 0 30px rgba(147,51,234,0.4); 
+        border-color: rgba(255,255,255,0.3);
+      }
+    }
+
+    /* Shimmer overlay on card */
+    .bday-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: shimmerSweep 4s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .animated-card { position: relative; }
+    .card-face { 
+      padding: 36px 32px; 
+      backface-visibility: hidden; 
+      transition: transform 1s cubic-bezier(.18,.89,.32,1.28), opacity 0.7s ease; 
+      border-radius: 24px; 
+      position: relative; 
+      min-height: auto;
+      height: auto;
+    }
+    .card-front { 
+      transform: rotateY(0deg); 
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); 
+    }
+    .card-inside { 
+      transform: rotateY(180deg); 
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.08)); 
+      opacity: 0; 
+      position: absolute;
+      height: auto;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+    .animated-card.opened .card-front { transform: rotateY(-180deg); opacity: 0; }
+    .animated-card.opened .card-inside { transform: rotateY(0deg); opacity: 1; }
+
+    .bday-title { 
+      font-size: 1.6rem; 
+      font-weight: 800; 
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff, #fbbf24, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 12px rgba(255,255,255,0.2);
+    }
+    .bday-sub { 
+      color: #e0e7ff; 
+      margin-bottom: 16px; 
+      text-align:left; 
+      line-height:1.5;
+      font-size: 1rem;
+    }
+
+    /* Enhanced sparkles */
+    .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
+    .sparkle { 
+      position: absolute; 
+      width: 10px; 
+      height: 10px; 
+      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.95) 20%, rgba(251,191,36,0.9) 50%); 
+      border-radius: 50%; 
+      opacity: 0; 
+      animation: sparklePop 1.8s infinite; 
+      box-shadow: 0 0 8px rgba(255,255,255,0.6);
+    }
+    @keyframes sparklePop { 
+      0% { opacity: 0; transform: scale(0.2) translateY(8px); } 
+      15% { opacity: 1; transform: scale(1.3) translateY(0); } 
+      60% { opacity: 0.7; transform: scale(0.9) translateY(-8px); } 
+      100% { opacity: 0; transform: scale(0.3) translateY(-14px); } 
+    }
+
+    /* Enhanced hearts */
+    .heart { 
+      position: absolute; 
+      font-size: 24px; 
+      opacity: 0.95; 
+      animation: floatHeart 4.5s ease-in-out forwards; 
+      text-shadow: 0 6px 20px rgba(255,111,181,0.6);
+      filter: drop-shadow(0 4px 12px rgba(255,111,181,0.4));
+    }
+    @keyframes floatHeart { 
+      0% { transform: translateY(25px) scale(0.7) rotate(-10deg); opacity:0; } 
+      20% { opacity:1; } 
+      100% { transform: translateY(-160px) scale(1.4) rotate(10deg); opacity:0; } 
+    }
+
+    .bday-cta { 
+      margin-top: 16px; 
+      display: inline-flex; 
+      gap: 10px; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 12px 24px; 
+      border-radius: 14px; 
+      background: linear-gradient(135deg,#ff6fb5,#fb923c); 
+      color: white; 
+      font-weight: 800; 
+      cursor: pointer; 
+      border: none;
+      box-shadow: 0 8px 24px rgba(255,111,181,0.4);
+      transition: all .3s ease;
+    }
+    .bday-cta:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(255,111,181,0.6);
+    }
+
+    #loveFade {
+      background: linear-gradient(90deg,#ff9bd0,#ffd6ea,#fbbf24,#ffd6ea,#ff9bd0);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: opacity 2s;
+      filter: drop-shadow(0 4px 12px rgba(255,155,208,0.6));
+    }
+    @keyframes shimmer { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+
+    .muted { color: rgba(255,255,255,0.85); font-size: 0.98rem; }
+
+    @media (max-width:520px){ 
+      .bday-card{ max-width: 95%; } 
+      .bday-title{ font-size:1.3rem; }
+      #closeBday { top: 12px; right: 12px; width: 36px; height: 36px; }
+    }
+    .insideScroll {
+  padding: 24px 28px;
+  position: relative;
+  max-height: 70vh;          /* Keep card beautiful */
+  overflow-y: auto;          /* Enable scrolling */
+  scrollbar-width: thin;     /* Firefox */
+  scrollbar-color: #ff9bd0 transparent;
+  }
+
+  /* Chrome scrollbar style */
+  .insideScroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .insideScroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg,#ff9bd0,#fb923c);
+    border-radius: 8px;
+  }
+  .insideScroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   </style>
 </head>
 
 <body>
+
+  <!-- Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <div class="brand-icon">👗</div>
+        <h1>Dress Organizer</h1>
+      </div>
+
+      <div class="user-section">
+        <div class="avatar" id="avatar">U</div>
+
+        <div>
+          <div id="typingLine1" class="typing">Hello...</div>
+          <div id="typingLine2" style="color:#c7d2fe; margin-top:4px;">Loading...</div>
+        </div>
+
+        <button class="btn-ghost" onclick="go('profile.html')">Profile</button>
+        <button class="btn-ghost" onclick="go('favourites.html')">Favourites ⭐</button>
+        <button class="feedback-btn" onclick="openFeedbackModal()">Feedback</button>
+        <button class="btn-ghost" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- Birthday notification button (fixed position) -->
+    <button id="bdayNotification">
+      🎂 Birthday Surprise Ready — Click to view!
+    </button>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div id="dressCount" class="stat-number">0</div>
+        <div class="stat-label">Total Dresses</div>
+      </div>
+      <div class="stat-card">
+        <div id="sectionCount" class="stat-number">0</div>
+        <div class="stat-label">Sections</div>
+      </div>
+      <div class="stat-card">
+        <div id="recentUploads" class="stat-number">0</div>
+        <div class="stat-label">Recent Uploads</div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid">
+      <div class="card" onclick="go('upload.html')">
+        <div class="card-icon">📸</div>
+        <div class="card-title">Upload Dress</div>
+        <div class="card-description">Add new items to your wardrobe</div>
+      </div>
+
+      <div class="card" onclick="go('search.html')">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Search Dresses</div>
+        <div class="card-description">Find any dress easily</div>
+      </div>
+
+      <div class="card" onclick="go('manage.html')">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title">Manage Sections</div>
+        <div class="card-description">Organize categories</div>
+      </div>
+
+      <div class="card" onclick="go('profile.html')">
+        <div class="card-icon">👤</div>
+        <div class="card-title">Profile</div>
+        <div class="card-description">Update your preferences</div>
+      </div>
+
+      <div class="card" onclick="go('favourites.html')">
+        <div class="card-icon">⭐</div>
+        <div class="card-title">Favourites</div>
+        <div class="card-description">Your saved dresses</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav (mobile) -->
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="go('dashboard.html')"><span>🏠</span> Home</div>
+    <div class="nav-item" onclick="go('upload.html')"><span>📸</span> Upload</div>
+    <div class="nav-item" onclick="go('search.html')"><span>🔍</span> Search</div>
+    <div class="nav-item" onclick="go('favourites.html')"><span>⭐</span> Favs</div>
+    <div class="nav-item" onclick="go('profile.html')"><span>👤</span> You</div>
+  </div>
+
+  <!-- Feedback modal -->
+  <div id="feedbackModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999;">
+    <div style="width: 90%; max-width: 420px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 18px; backdrop-filter: blur(18px); padding: 24px; color: white;">
+      <h2 style="margin-bottom: 12px; font-size: 1.4rem;">Send Feedback</h2>
+      <textarea id="feedbackText" style="width: 100%; height: 120px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; resize: none; font-size: 1rem;" placeholder="Write your feedback here..."></textarea>
+      <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px;">
+        <button onclick="closeFeedbackModal()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; cursor: pointer;">Cancel</button>
+        <button onclick="submitFeedback()" style="padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg,#f472b6,#fb923c); border: none; color: white; font-weight: 700; cursor: pointer;">Submit</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Birthday Surprise -->
   <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
     <div id="closeBday" title="Close">✕</div>
 
+    <!-- Balloons -->
     <div class="balloons" aria-hidden="true">
       <div class="balloon b1"></div>
       <div class="balloon b2"></div>
@@ -109,43 +519,44 @@
       <div class="balloon b7"></div>
     </div>
 
-    <div id="heartsContainer" aria-hidden="true"
-         style="position:absolute; inset:0; pointer-events:none; z-index:99996;"></div>
+    <!-- Hearts container -->
+    <div id="heartsContainer" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:99996;"></div>
 
+    <!-- Background music -->
     <audio id="bdayMusic" loop preload="auto">
-      <source src="birthday-song.mp3" type="audio/mpeg" />
+      <source src="birthday-song.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0">
+    <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0" aria-pressed="false">
       <div class="card-face card-front">
-        <div style="padding: 8px 28px 28px;">
+        <div style="position:relative; padding: 12px 32px 32px;">
           <div class="bday-title" id="greetingLine">A Special Message for My Love</div>
           <div class="bday-sub" id="subGreeting">Tap to open, my heartbeat… ❤️🎁</div>
-          <div class="sparkles" id="sparklesContainer"></div>
+          <div class="sparkles" id="sparklesContainer" aria-hidden="true"></div>
         </div>
       </div>
 
       <div class="card-face card-inside">
-        <div style="padding: 18px 22px;">
+        <div class="insideScroll">
           <div class="bday-title" id="insideGreeting">🎉 Happy Birthday, My Love! 🎉</div>
 
-          <div id="personalMsg" class="bday-sub muted"
-               style="text-align:left; line-height:1.35;">
+          <div class="bday-sub muted" id="personalMsg" style="text-align:left; line-height:1.45;">
             My Love… on your special day, I want to remind you of something simple but true:
             <strong>You are the most beautiful chapter of my life.</strong>
-            Thank you for loving me every single day.
-            <strong>Happy Birthday ❤️🎉</strong>
+            <br><br>
+            Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete.
+            Thank you for loving me, supporting me, and choosing me every single day. I'm endlessly grateful for you.
+            <br><br>
+            <strong>Happy Birthday, My Love ❤️🎉</strong>
           </div>
 
-          <div id="secondMsg" class="muted"
-               style="opacity:1; margin-top:18px; font-size:1rem; text-align:left;"></div>
+          <div id="secondMsg" class="muted" style="opacity:1; margin-top:20px; font-size:1rem; transition:1.5s; text-align:left;"></div>
 
-          <div id="loveFade"
-               style="opacity:0; font-size:1.3rem; font-weight:700; margin-top:22px; text-align:center;">
+          <div id="loveFade" style="opacity:0; font-size:1.4rem; font-weight:700; margin-top:24px; color:#ffb3d9; transition:2s; text-align:center;">
             I Love You, My Love ❤️
           </div>
 
-          <div style="margin-top:14px; text-align:center;">
+          <div style="margin-top:18px; text-align:center;">
             <button class="bday-cta" id="continueBtn">Continue to Dashboard</button>
           </div>
         </div>
@@ -153,252 +564,268 @@
     </div>
   </div>
 
-  <!-- Confetti Lib -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-  <!-- MAIN SCRIPT -->
   <script>
-    function go(p){ window.location.href = p; }
+    function go(p){ window.location.href=p; }
 
-    async function logout(){
-      fetch("/logout",{ method:"POST", credentials:"include" })
-        .finally(()=>{ localStorage.removeItem("loggedInUser"); go("login.html"); });
+    function logout(){ 
+      fetch('/logout',{method:'POST',credentials:'include'})
+      .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
     }
 
     function typeText(el, text, delay=40){
       el.textContent = "";
       let i = 0;
       const timer = setInterval(() => {
-        if(i >= text.length){ clearInterval(timer); return; }
+        if (i >= text.length) { clearInterval(timer); return; }
         el.textContent += text[i++];
       }, delay);
     }
 
     function typeEffectPromise(el, text, speed=30){
-      return new Promise(resolve=>{
+      return new Promise((resolve)=>{
         el.textContent = "";
-        let i = 0;
-        const T = () => {
-          if(i < text.length){
-            el.textContent += text[i++];
-            setTimeout(T, speed);
-          } else resolve();
+        let i=0;
+        const t = () => {
+          if(i<text.length){ el.textContent += text[i++]; setTimeout(t, speed); }
+          else resolve();
         };
-        T();
+        t();
       });
     }
 
     async function loadUser(){
-      const r = await fetch("/api/me", { credentials:"include" });
-      if(!r.ok){ go("login.html"); return; }
-      const u = await r.json();
+      const r=await fetch('/api/me',{credentials:'include'}); 
+      if(!r.ok){go('login.html');return;}
+      const u=await r.json();
+      const name=u.name || u.email.split('@')[0];
+      
+      // Fix: Show first letter of name in avatar
+      const firstLetter = name.charAt(0).toUpperCase();
+      document.getElementById('avatar').textContent = firstLetter;
+
+      const now = new Date(); const hour = now.getHours();
+      let timeGreeting = "Hello";
+      if(hour < 12) timeGreeting = "Good morning";
+      else if(hour < 17) timeGreeting = "Good afternoon";
+      else timeGreeting = "Good evening";
+
+      typeText(document.getElementById('typingLine1'), `${timeGreeting}, ${name} 👋`);
+      typeText(document.getElementById('typingLine2'), `Here's your wardrobe overview…`);
+
       window.__CURRENT_USER = u;
-
-      const name = u.name || u.email.split("@")[0];
-
-      // DP FIX ✔ (shows uploaded profile picture)
-      const avatar = document.getElementById("avatar");
-      if(u.profilePic){
-        avatar.innerHTML = `<img src="${u.profilePic}" alt="DP">`;
-      } else {
-        avatar.textContent = name[0].toUpperCase();
-      }
-
-      const hour = new Date().getHours();
-      let greet = "Hello";
-      if(hour < 12) greet = "Good morning";
-      else if(hour < 17) greet = "Good afternoon";
-      else greet = "Good evening";
-
-      typeText(document.getElementById("typingLine1"), `${greet}, ${name} 👋`);
-      typeText(document.getElementById("typingLine2"), "Here’s your wardrobe overview…");
     }
 
     async function loadStats(){
-      const r = await fetch("/api/stats", { credentials:"include" });
+      const r=await fetch('/api/stats',{credentials:'include'});
       if(!r.ok) return;
-      const s = await r.json();
-      document.getElementById("dressCount").textContent = s.dresses;
-      document.getElementById("sectionCount").textContent = s.sections;
-      document.getElementById("recentUploads").textContent = (s.recent || []).length;
+      const s=await r.json();
+      document.getElementById('dressCount').textContent=s.dresses;
+      document.getElementById('sectionCount').textContent=s.sections;
+      document.getElementById('recentUploads').textContent=(s.recent || []).length;
     }
 
     loadUser();
     loadStats();
-    setInterval(loadStats, 60000);
 
-    /* 🎉 BIRTHDAY CHECK SYSTEM */
-    async function checkBirthday(){
-      try{
+    /* Birthday check - Email: sjs36931@gmail.com, Date: 16-11 */
+    async function checkBirthday() {
+      try {
         let user = window.__CURRENT_USER;
-
-        if(!user){
-          const r = await fetch("/api/me",{ credentials:"include" });
-          if(!r.ok) return;
-          user = await r.json();
+        if (!user) {
+          const res = await fetch('/api/me', { credentials: 'include' });
+          if (!res.ok) return;
+          user = await res.json();
         }
 
         const targetEmail = "sjs36931@gmail.com";
         const birthday = "16-11";
-
-        const d = new Date();
-        const dd = String(d.getDate()).padStart(2,"0");
-        const mm = String(d.getMonth()+1).padStart(2,"0");
-
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
         const todayStr = `${dd}-${mm}`;
 
-        if(user.email !== targetEmail || todayStr !== birthday) return;
+        if (user.email !== targetEmail || todayStr !== birthday) return;
 
         const shown = localStorage.getItem("bdayShown");
 
-        // First time today → show popup
-        if(shown !== new Date().toDateString()){
-          setTimeout(()=> showBirthdayScreen(user), 500);
-          return;
+        if (shown !== new Date().toDateString()) {
+          setTimeout(() => showBirthdayScreen(user), 500);
+        } else {
+          showBirthdayNotification();
         }
 
-        // Already shown → show BUTTON NOTIFICATION ✔
-        showBirthdayNotification();
-
-      }catch(e){ console.error(e); }
+      } catch (err) {
+        console.error("Birthday check error:", err);
+      }
     }
-
     setTimeout(checkBirthday, 800);
 
-    /* 🎉 Show Birthday Screen */
-    function showBirthdayScreen(user){
+    function showBirthdayScreen(user) {
       localStorage.setItem("bdayShown", new Date().toDateString());
-
       const screen = document.getElementById("birthdayScreen");
+      const balloons = document.querySelector(".balloons");
       const card = document.getElementById("animatedCard");
       const music = document.getElementById("bdayMusic");
+      const heartsContainer = document.getElementById("heartsContainer");
 
-      const name = user.name || user.email.split("@")[0];
+      const name = user.name || user.email.split('@')[0];
       document.getElementById("greetingLine").textContent = `A Special Message for ${name}`;
+      document.getElementById("subGreeting").textContent = `Tap to open, my heartbeat… ❤️🎁`;
       document.getElementById("insideGreeting").textContent = `🎉 Happy Birthday, ${name}! 🎉`;
+
+      const secondMsgEl = document.getElementById("secondMsg");
+      secondMsgEl.textContent = "";
+
+      const loveEl = document.getElementById("loveFade");
+      loveEl.style.opacity = 0;
 
       screen.style.display = "flex";
 
       populateSparkles();
       createHearts();
 
-      setTimeout(()=> confetti({ particleCount:110, spread:90, origin:{y:0.62} }),300);
+      setTimeout(()=> confetti({ particleCount: 110, spread: 90, origin: { y: 0.62 } }), 300);
+      setTimeout(()=> confetti({ particleCount: 180, spread: 120, origin: { y: 0.66 } }), 900);
 
-      // flip card
-      card.addEventListener("click", openCard);
-      card.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" ") openCard(); });
+      if (balloons) balloons.style.display = "block";
 
-      function openCard(){
-        if(card.classList.contains("opened")) return;
+      const closeBtn = document.getElementById("closeBday");
+      closeBtn.onclick = () => closeBirthday();
+
+      async function openCardInteraction() {
+        if (card.classList.contains("opened")) return;
         card.classList.add("opened");
+        card.setAttribute("aria-pressed","true");
 
-        // play music
-        try{
+        try {
           music.volume = 0;
-          music.play().catch(()=>{});
+          const playPromise = music.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(()=>{});
+          }
           let v = 0;
-          const fade = setInterval(()=>{
-            v += 0.04;
+          const target = 0.6;
+          const step = 0.04;
+          const fade = setInterval(()=> {
+            v = Math.min(v + step, target);
             music.volume = v;
-            if(v >= 0.6) clearInterval(fade);
-          },120);
-        }catch{}
+            if (v >= target) clearInterval(fade);
+          }, 120);
+        } catch(e){}
 
-        setTimeout(()=> confetti({ particleCount:260, spread:170, origin:{y:0.5} }), 600);
+        setTimeout(()=> confetti({ particleCount: 260, spread:170, origin:{ y:0.5 } }), 600);
 
-        const secondText =
-          "On this day… I just want you to feel loved, cherished, and held close. You deserve all the happiness in the world, My Love. 💗";
-
-        const secondMsg = document.getElementById("secondMsg");
-        const loveEl = document.getElementById("loveFade");
-
-        setTimeout(()=>{
-          typeEffectPromise(secondMsg, secondText, 28).then(()=>{
+        const secondText = "On this day… I just want one thing: For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗";
+        setTimeout(()=> {
+          typeEffectPromise(secondMsgEl, secondText, 28).then(()=>{
             setTimeout(()=>{
-              loveEl.style.opacity = "1";
+              loveEl.style.opacity = 1;
               loveEl.style.animation = "shimmer 2.6s linear infinite";
-            }, 400);
+            }, 450);
           });
-        }, 1500);
+        }, 1600);
       }
 
-      document.getElementById("continueBtn").onclick = closeBirthday;
-      document.getElementById("closeBday").onclick = closeBirthday;
+      card.addEventListener('click', openCardInteraction);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openCardInteraction(); });
+
+      document.getElementById('continueBtn').onclick = () => closeBirthday();
     }
 
-    /* 🎉 CLOSE Birthday Popup */
-    function closeBirthday(){
+    function closeBirthday() {
       const screen = document.getElementById("birthdayScreen");
       const music = document.getElementById("bdayMusic");
 
-      try{
+      try {
         let v = music.volume;
-        const fade = setInterval(()=>{
-          v -= 0.06;
+        const fadeOutInterval = setInterval(()=>{
+          v = Math.max(0, v - 0.06);
           music.volume = v;
-          if(v <= 0){ music.pause(); clearInterval(fade); }
-        },80);
-      }catch{}
+          if (v <= 0.02) { clearInterval(fadeOutInterval); try{ music.pause(); }catch(e){} }
+        }, 80);
+      } catch(e){}
 
       screen.classList.add("fadeOut");
       setTimeout(()=>{
         screen.style.display = "none";
         screen.classList.remove("fadeOut");
-      },500);
+      }, 520);
     }
 
-    /* ✨ Sparkles */
     function populateSparkles(){
-      const cont = document.getElementById("sparklesContainer");
-      cont.innerHTML = "";
-      for(let i=0;i<12;i++){
-        const s = document.createElement("div");
-        s.className = "sparkle";
-        s.style.left = (6 + Math.random()*86) + "%";
-        s.style.top = (12 + Math.random()*120) + "px";
-        s.style.animationDelay = (Math.random()*1.3)+"s";
-        const size = 6 + Math.random()*8;
-        s.style.width = size+"px";
-        s.style.height = size+"px";
-        cont.appendChild(s);
+      const container = document.getElementById('sparklesContainer');
+      container.innerHTML = '';
+      const count = 14;
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const left = Math.random()*86 + 6;
+        s.style.left = left + '%';
+        s.style.top = (Math.random()*160 + 12) + 'px';
+        s.style.animationDelay = (Math.random()*1.4) + 's';
+        const size = 7 + Math.random()*9;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        container.appendChild(s);
       }
     }
 
-    /* ❤️ Hearts */
     let heartsInterval = null;
     function createHearts(){
-      const cont = document.getElementById("heartsContainer");
-      if(heartsInterval) clearInterval(heartsInterval);
+      const container = document.getElementById("heartsContainer");
+      if(!container) return;
+
+      if(heartsInterval){ clearInterval(heartsInterval); heartsInterval = null; }
 
       const colors = ["#ff6fb5","#ff9bd0","#ffc0d9","#ff7fb0","#ffd6ea","#ffb3d9"];
-
-      heartsInterval = setInterval(()=>{
+      heartsInterval = setInterval(()=> {
         const h = document.createElement("div");
         h.className = "heart";
-        h.textContent = "❤️";
+        h.innerHTML = "❤️";
         h.style.left = (8 + Math.random()*84) + "%";
-        h.style.fontSize = (14 + Math.random()*26)+"px";
+        const size = (16 + Math.random()*32);
+        h.style.fontSize = size + "px";
+        h.style.opacity = (0.75 + Math.random()*0.25);
+        h.style.animationDuration = (3.5 + Math.random()*2) + "s";
+        h.style.zIndex = 99997;
         h.style.color = colors[Math.floor(Math.random()*colors.length)];
-        cont.appendChild(h);
-        setTimeout(()=>{ try{ cont.removeChild(h);}catch{} },4000);
-      },500);
+        container.appendChild(h);
+        setTimeout(()=> {
+          try { container.removeChild(h); } catch(e){}
+        }, 5000);
+      }, 450);
     }
 
-    /* ⭐ Birthday Notification Button */
-    function showBirthdayNotification(){
+    function openFeedbackModal(){ document.getElementById("feedbackModal").style.display = "flex"; }
+    function closeFeedbackModal(){ document.getElementById("feedbackModal").style.display = "none"; }
+    async function submitFeedback(){
+      const text = document.getElementById("feedbackText").value.trim();
+      if(!text) return alert("Please write some feedback!");
+      try{
+        const res = await fetch("/api/feedback", {
+          method:"POST", headers:{"Content-Type":"application/json"}, credentials:"include", body:JSON.stringify({message:text})
+        });
+        if(res.ok){ alert("Your feedback has been submitted!"); document.getElementById("feedbackText").value=""; closeFeedbackModal(); }
+        else alert("Error submitting feedback.");
+      }catch(e){ alert("Network error."); }
+    }
+
+    setInterval(loadStats, 60_000);
+
+    function showBirthdayNotification() {
       const box = document.getElementById("bdayNotification");
-      if(!box) return;
+      if (!box) return;
 
       box.style.display = "block";
       box.style.opacity = "0";
-      box.style.transform = "translateX(-50%) scale(0.88)";
 
-      setTimeout(()=>{
+      setTimeout(() => {
         box.style.opacity = "1";
-        box.style.transform = "translateX(-50%) scale(1)";
-      },20);
+      }, 20);
 
-      box.onclick = ()=>{
+      box.onclick = () => {
         box.style.display = "none";
         showBirthdayScreen(window.__CURRENT_USER);
       };
