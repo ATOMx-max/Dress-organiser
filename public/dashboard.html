@@ -204,6 +204,27 @@
         <button class="btn-ghost" onclick="logout()">Logout</button>
       </div>
     </div>
+    <!-- Birthday notification popup -->
+    <div id="bdayNotification"
+        style="
+          position: fixed;
+          top: 22px;
+          right: 22px;
+          padding: 12px 18px;
+          background: rgba(255,255,255,0.12);
+          border: 1px solid rgba(255,255,255,0.2);
+          border-radius: 14px;
+          backdrop-filter: blur(12px);
+          color: white;
+          font-weight: 600;
+          cursor: pointer;
+          display: none;
+          z-index: 999999;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+          transition: opacity .3s ease;
+        ">
+      🎂 Birthday Surprise Ready — Tap to view again!
+    </div>
 
     <!-- Stats -->
     <div class="stats">
@@ -422,27 +443,38 @@
         }
 
         const targetEmail = "sjs36931@gmail.com";
-        const birthday = "16-11"; // testing dd-mm
-
+        const birthday = "16-11"; // dd-mm
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const todayStr = `${dd}-${mm}`;
 
-        if (user.email === targetEmail && todayStr === birthday) {
-          setTimeout(() => showBirthdayScreen(user), 450);
+        if (user.email !== targetEmail || todayStr !== birthday) return;
+
+        const shown = localStorage.getItem("bdayShown");
+
+        // FIRST TIME TODAY → Show popup normally
+        if (shown !== new Date().toDateString()) {
+          setTimeout(() => showBirthdayScreen(user), 500);
+          return;
         }
+
+        // ALREADY SHOWN TODAY → Show notification instead
+        showBirthdayNotification();
+
       } catch (err) {
         console.error("Birthday check error:", err);
       }
     }
     setTimeout(checkBirthday, 800);
 
+
     /* ---------------- Birthday UI & Animations (IMPROVED) ---------------- */
     function showBirthdayScreen(user) {
       // only once per day (testing)
-      if (localStorage.getItem("bdayShown") === new Date().toDateString()) return;
-
+      //if (localStorage.getItem("bdayShown") === new Date().toDateString()) return;
+      // Mark popup as shown today
+      localStorage.setItem("bdayShown", new Date().toDateString());
       const screen = document.getElementById("birthdayScreen");
       const balloons = document.querySelector(".balloons");
       const card = document.getElementById("animatedCard");
@@ -621,6 +653,24 @@
 
     // refresh stats periodically
     setInterval(loadStats, 60_000);
+    /* Birthday notification system */
+    function showBirthdayNotification() {
+      const box = document.getElementById("bdayNotification");
+      if (!box) return;
+
+      box.style.display = "block";
+      box.style.opacity = "0";
+
+      setTimeout(() => {
+        box.style.opacity = "1";
+      }, 20);
+
+      box.onclick = () => {
+        box.style.display = "none";
+        showBirthdayScreen(window.__CURRENT_USER);
+      };
+    }
+
   </script>
 
 </body>
