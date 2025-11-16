@@ -1,4 +1,3 @@
-<!-- FULL FINAL DASHBOARD HTML — IMPROVED (testing date 16-11) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +33,22 @@
     .brand h1 { font-size:1.6rem; font-weight:700; background:linear-gradient(135deg,#fff,#e0e7ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
     .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; flex-wrap:wrap; }
-    .avatar { width:54px;height:54px;border-radius:50%; background:#2b1f5f; display:flex;align-items:center; justify-content:center; font-size:24px; color:white; border:3px solid rgba(255,255,255,0.12); overflow:hidden; transition:.3s; }
+    .avatar { 
+      width:54px;
+      height:54px;
+      border-radius:50%; 
+      background: linear-gradient(135deg, #818cf8, #c084fc);
+      display:flex;
+      align-items:center; 
+      justify-content:center; 
+      font-size:24px;
+      font-weight: 700;
+      color:white; 
+      border:3px solid rgba(255,255,255,0.12); 
+      overflow:hidden; 
+      transition:.3s;
+      text-transform: uppercase;
+    }
     .avatar:hover { transform:scale(1.06); }
 
     .btn-ghost { padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:white; font-weight:600; cursor:pointer; transition:.2s; }
@@ -44,7 +58,41 @@
     .typing::after { content:""; width:2px;height:1.2em;background:white;display:inline-block;margin-left:4px; animation: blink 1s infinite; }
     @keyframes blink { 50% { opacity:0; } }
 
-    /* Stats + cards (same as before) */
+    /* Birthday notification button (fixed) */
+    #bdayNotification {
+      position: fixed;
+      top: 80px;
+      right: 22px;
+      padding: 14px 22px;
+      background: linear-gradient(135deg, #ff6fb5, #ff9bd0);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: none;
+      z-index: 999999;
+      box-shadow: 0 8px 28px rgba(255,111,181,0.5);
+      transition: all .3s ease;
+      animation: bounceIn 0.6s ease, pulseGlow 2s infinite;
+    }
+    #bdayNotification:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 36px rgba(255,111,181,0.7);
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3) translateY(-20px); opacity: 0; }
+      50% { transform: scale(1.08) translateY(0); }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 8px 28px rgba(255,111,181,0.5); }
+      50% { box-shadow: 0 8px 38px rgba(255,111,181,0.8), 0 0 20px rgba(255,111,181,0.4); }
+    }
+
+    /* Stats + cards */
     .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:18px; margin-bottom:24px; }
     .stat-card { padding:20px;border-radius:18px; background:rgba(255,255,255,0.08); text-align:center; border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); }
     .stat-number { font-size:1.8rem; font-weight:800; background:linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text;-webkit-text-fill-color:transparent; }
@@ -63,115 +111,268 @@
     .nav-item { flex: 1; text-align: center; color: #e0e7ff; font-size: 0.78rem; cursor: pointer; padding-top: 6px; }
     .nav-item span { display:block; font-size:1.5rem; margin-bottom:2px; }
 
-    /* ---------------- Birthday Screen styles ---------------- */
+    /* Birthday Screen - Enhanced Design */
     .bday-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.82);
-      backdrop-filter: blur(12px);
+      background: radial-gradient(ellipse at center, rgba(30,15,60,0.95), rgba(0,0,0,0.92));
+      backdrop-filter: blur(16px);
       display: none;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 6vh;
+      align-items: center;
+      padding: 20px;
       z-index: 99999;
       overflow: hidden;
-      animation: bfadeIn 0.45s ease forwards, gradientMove 8s infinite alternate;
+      animation: bfadeIn 0.6s ease forwards;
     }
     @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
 
-    /* animated bg gradient subtle move */
-    @keyframes gradientMove {
-      0% { background: rgba(0,0,0,0.80); }
-      100% { background: rgba(18,2,30,0.88); }
+    /* Animated gradient background */
+    .bday-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,111,181,0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(147,51,234,0.15), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(59,130,246,0.12), transparent 50%);
+      animation: bgPulse 8s ease-in-out infinite;
+    }
+    @keyframes bgPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.1); }
     }
 
-    /* fadeOut (smooth close) */
     .bday-bg.fadeOut { animation: fadeOut 0.5s ease forwards; }
     @keyframes fadeOut { to { opacity:0; } }
 
-    /* Close button (minimal white cross) */
+    /* Close button */
     #closeBday {
-      position:absolute; top:14px; right:16px; font-size:28px; cursor:pointer; color:#fff; opacity:0.9; z-index:100000;
-      transition: transform .18s ease, opacity .18s ease;
-      user-select:none;
+      position:absolute; 
+      top:20px; 
+      right:24px; 
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size:22px; 
+      cursor:pointer; 
+      color:#fff; 
+      z-index:100000;
+      transition: all .3s ease;
+      backdrop-filter: blur(8px);
     }
-    #closeBday:hover { transform:scale(1.06); opacity:1; }
+    #closeBday:hover { 
+      transform:rotate(90deg) scale(1.15); 
+      background: rgba(255,255,255,0.2);
+      box-shadow: 0 4px 16px rgba(255,255,255,0.3);
+    }
 
-    /* Balloons */
+    /* Enhanced Balloons */
     .balloons { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 99990; }
-    .balloon { position: absolute; bottom: -120px; width: 48px; height: 64px; border-radius: 50% 50% 45% 45%; opacity: 0.95; transform-origin: center; animation: floatUp linear infinite; filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35)); }
-    .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #f472b6 30%, #fb6d8a 100%); left:6%; animation-duration:9s; animation-delay:0.2s; }
-    .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:20%; animation-duration:10s; animation-delay:1s; width:56px;height:72px;}
-    .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbe68a 30%, #f59e0b 100%); left:34%; animation-duration:11s; animation-delay:0.6s;}
-    .b4 { background: radial-gradient(circle at 30% 25%, #fff 8%, #f472b6 30%, #fb923c 100%); left:48%; animation-duration:10.5s; animation-delay:0.8s; width:56px;height:72px;}
-    .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:62%; animation-duration:12s; animation-delay:0.4s;}
-    .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:76%; animation-duration:10.7s; animation-delay:0.3s;}
-    .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:86%; animation-duration:9.8s; animation-delay:0.7s;}
-    @keyframes floatUp { 0% { transform: translateY(0) rotate(-6deg) scale(0.95); opacity: 0; } 5% { opacity: 1; } 50% { transform: translateY(-55vh) rotate(4deg) scale(1); } 100% { transform: translateY(-120vh) rotate(10deg) scale(1.05); opacity: 0; } }
+    .balloon { 
+      position: absolute; 
+      bottom: -120px; 
+      width: 52px; 
+      height: 70px; 
+      border-radius: 50% 50% 45% 45%; 
+      opacity: 0.9; 
+      animation: floatUp linear infinite; 
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.4));
+    }
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+    }
+    .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #ff6fb5 30%, #fb6d8a 100%); left:8%; animation-duration:10s; animation-delay:0.3s; }
+    .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:22%; animation-duration:11s; animation-delay:1.2s; width:58px;height:76px;}
+    .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fcd34d 30%, #f59e0b 100%); left:36%; animation-duration:12s; animation-delay:0.7s;}
+    .b4 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:50%; animation-duration:11.5s; animation-delay:0.9s; width:56px;height:74px;}
+    .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:64%; animation-duration:13s; animation-delay:0.5s;}
+    .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:78%; animation-duration:11.2s; animation-delay:0.4s;}
+    .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbbf24 30%, #f59e0b 100%); left:90%; animation-duration:10.5s; animation-delay:0.8s;}
+    @keyframes floatUp { 
+      0% { transform: translateY(0) rotate(-8deg) scale(0.9); opacity: 0; } 
+      5% { opacity: 1; } 
+      50% { transform: translateY(-60vh) rotate(6deg) scale(1); } 
+      100% { transform: translateY(-125vh) rotate(12deg) scale(1.1); opacity: 0; } 
+    }
 
-    /* Birthday card - glow pulse and drop */
+    /* Birthday Card - Premium Design */
     .bday-card {
-      width: 92%;
-      max-width: 520px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 20px;
+      width: 95%;
+      max-width: 560px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 2px solid rgba(255,255,255,0.18);
+      border-radius: 24px;
       padding: 0;
       text-align: center;
       perspective: 1200px;
       transform-style: preserve-3d;
       cursor: pointer;
       z-index: 99995;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-      overflow: visible;
-      animation: cardDrop 0.6s ease forwards, glowPulse 3.2s infinite ease-in-out;
+      box-shadow: 0 24px 72px rgba(0,0,0,0.7), 0 0 60px rgba(255,111,181,0.2);
+      overflow: hidden;
+      animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, cardGlow 3.5s infinite ease-in-out;
+      position: relative;
     }
-    @keyframes cardDrop {
-      0% { transform: translateY(-18px) scale(.98) rotate(1deg); opacity: 0; }
-      60% { transform: translateY(6px) scale(1.02); opacity: 1; }
-      100% { transform: translateY(0) scale(1); opacity: 1; }
+    @keyframes cardEntrance {
+      0% { transform: translateY(-30px) scale(.92) rotateX(15deg); opacity: 0; }
+      60% { transform: translateY(8px) scale(1.03) rotateX(-3deg); opacity: 1; }
+      100% { transform: translateY(0) scale(1) rotateX(0); opacity: 1; }
     }
-    @keyframes glowPulse {
-      0% { box-shadow:0 0 16px rgba(255,140,200,0.28); }
-      50% { box-shadow:0 0 34px rgba(255,160,220,0.6); }
-      100% { box-shadow:0 0 16px rgba(255,140,200,0.28); }
+    @keyframes cardGlow {
+      0%, 100% { 
+        box-shadow: 0 24px 72px rgba(0,0,0,0.7), 0 0 40px rgba(255,111,181,0.2); 
+        border-color: rgba(255,255,255,0.18);
+      }
+      50% { 
+        box-shadow: 0 28px 84px rgba(0,0,0,0.8), 0 0 70px rgba(255,111,181,0.5), 0 0 30px rgba(147,51,234,0.4); 
+        border-color: rgba(255,255,255,0.3);
+      }
+    }
+
+    /* Shimmer overlay on card */
+    .bday-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+      animation: shimmerSweep 4s infinite;
+      pointer-events: none;
+    }
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
     }
 
     .animated-card { position: relative; }
-    .card-face { padding: 28px; backface-visibility: hidden; transition: transform 0.9s cubic-bezier(.18,.89,.32,1.28), opacity 0.6s ease; border-radius: 20px; position: relative; min-height: 240px; }
-    .card-front { transform: rotateY(0deg); background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03)); }
-    .card-inside { transform: rotateY(180deg); background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); opacity: 0; }
+    .card-face { 
+      padding: 36px 32px; 
+      backface-visibility: hidden; 
+      transition: transform 1s cubic-bezier(.18,.89,.32,1.28), opacity 0.7s ease; 
+      border-radius: 24px; 
+      position: relative; 
+      min-height: 280px;
+    }
+    .card-front { 
+      transform: rotateY(0deg); 
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.06)); 
+    }
+    .card-inside { 
+      transform: rotateY(180deg); 
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.08)); 
+      opacity: 0; 
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
     .animated-card.opened .card-front { transform: rotateY(-180deg); opacity: 0; }
     .animated-card.opened .card-inside { transform: rotateY(0deg); opacity: 1; }
 
-    .bday-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
-    .bday-sub { color: #dbeafe; margin-bottom: 14px; text-align:left; line-height:1.4; }
+    .bday-title { 
+      font-size: 1.6rem; 
+      font-weight: 800; 
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff, #fbbf24, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 12px rgba(255,255,255,0.2);
+    }
+    .bday-sub { 
+      color: #e0e7ff; 
+      margin-bottom: 16px; 
+      text-align:left; 
+      line-height:1.5;
+      font-size: 1rem;
+    }
 
-    /* sparkles */
+    /* Enhanced sparkles */
     .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
-    .sparkle { position: absolute; width: 8px; height: 8px; background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.9) 20%, rgba(99,102,241,0.9) 50%); border-radius: 50%; opacity: 0; transform: scale(0.6); animation: sparklePop 1.6s infinite; will-change: transform, opacity; }
-    @keyframes sparklePop { 0% { opacity: 0; transform: scale(0.2) translateY(6px); } 10% { opacity: 1; transform: scale(1.1) translateY(0); } 60% { opacity: 0.6; transform: scale(0.8) translateY(-6px); } 100% { opacity: 0; transform: scale(0.4) translateY(-10px); } }
+    .sparkle { 
+      position: absolute; 
+      width: 10px; 
+      height: 10px; 
+      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,255,255,0.95) 20%, rgba(251,191,36,0.9) 50%); 
+      border-radius: 50%; 
+      opacity: 0; 
+      animation: sparklePop 1.8s infinite; 
+      box-shadow: 0 0 8px rgba(255,255,255,0.6);
+    }
+    @keyframes sparklePop { 
+      0% { opacity: 0; transform: scale(0.2) translateY(8px); } 
+      15% { opacity: 1; transform: scale(1.3) translateY(0); } 
+      60% { opacity: 0.7; transform: scale(0.9) translateY(-8px); } 
+      100% { opacity: 0; transform: scale(0.3) translateY(-14px); } 
+    }
 
-    /* hearts animation (multi-color) */
-    .heart { position: absolute; font-size: 20px; opacity: 0.9; animation: floatHeart 4s ease-in-out forwards; will-change: transform, opacity; text-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-    @keyframes floatHeart { 0% { transform: translateY(20px) scale(0.8); opacity:0; } 20% { opacity:1; } 100% { transform: translateY(-140px) scale(1.25); opacity:0; } }
+    /* Enhanced hearts */
+    .heart { 
+      position: absolute; 
+      font-size: 24px; 
+      opacity: 0.95; 
+      animation: floatHeart 4.5s ease-in-out forwards; 
+      text-shadow: 0 6px 20px rgba(255,111,181,0.6);
+      filter: drop-shadow(0 4px 12px rgba(255,111,181,0.4));
+    }
+    @keyframes floatHeart { 
+      0% { transform: translateY(25px) scale(0.7) rotate(-10deg); opacity:0; } 
+      20% { opacity:1; } 
+      100% { transform: translateY(-160px) scale(1.4) rotate(10deg); opacity:0; } 
+    }
 
-    /* bday CTA and misc */
-    .bday-cta { margin-top: 12px; display: inline-flex; gap: 10px; align-items: center; justify-content: center; padding: 10px 14px; border-radius: 12px; background: linear-gradient(135deg,#818cf8,#c084fc); color: white; font-weight: 800; cursor: pointer; border: none; }
+    .bday-cta { 
+      margin-top: 16px; 
+      display: inline-flex; 
+      gap: 10px; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 12px 24px; 
+      border-radius: 14px; 
+      background: linear-gradient(135deg,#ff6fb5,#fb923c); 
+      color: white; 
+      font-weight: 800; 
+      cursor: pointer; 
+      border: none;
+      box-shadow: 0 8px 24px rgba(255,111,181,0.4);
+      transition: all .3s ease;
+    }
+    .bday-cta:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 12px 32px rgba(255,111,181,0.6);
+    }
 
-    /* shimmer for love text */
     #loveFade {
-      background: linear-gradient(90deg,#ff9bd0,#ffd6ea,#ff9bd0);
+      background: linear-gradient(90deg,#ff9bd0,#ffd6ea,#fbbf24,#ffd6ea,#ff9bd0);
       background-size: 200% 100%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      transition: opacity 1.8s;
+      transition: opacity 2s;
+      filter: drop-shadow(0 4px 12px rgba(255,155,208,0.6));
     }
-    @keyframes shimmer { 0% { background-position: 0% 0%; } 100% { background-position: 100% 0%; } }
+    @keyframes shimmer { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
 
-    .muted { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+    .muted { color: rgba(255,255,255,0.85); font-size: 0.98rem; }
 
-    @media (max-width:520px){ .bday-card{ max-width: 92%; } .bday-title{ font-size:1.1rem; } }
+    @media (max-width:520px){ 
+      .bday-card{ max-width: 95%; } 
+      .bday-title{ font-size:1.3rem; }
+      #closeBday { top: 12px; right: 12px; width: 36px; height: 36px; }
+    }
 
   </style>
 </head>
@@ -191,7 +392,7 @@
       </div>
 
       <div class="user-section">
-        <div class="avatar" id="avatar"><span>👤</span></div>
+        <div class="avatar" id="avatar">U</div>
 
         <div>
           <div id="typingLine1" class="typing">Hello...</div>
@@ -204,27 +405,11 @@
         <button class="btn-ghost" onclick="logout()">Logout</button>
       </div>
     </div>
-    <!-- Birthday notification popup -->
-    <div id="bdayNotification"
-        style="
-          position: fixed;
-          top: 22px;
-          right: 22px;
-          padding: 12px 18px;
-          background: rgba(255,255,255,0.12);
-          border: 1px solid rgba(255,255,255,0.2);
-          border-radius: 14px;
-          backdrop-filter: blur(12px);
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          display: none;
-          z-index: 999999;
-          box-shadow: 0 6px 20px rgba(0,0,0,0.35);
-          transition: opacity .3s ease;
-        ">
-      🎂 Birthday Surprise Ready — Tap to view again!
-    </div>
+
+    <!-- Birthday notification button (fixed position) -->
+    <button id="bdayNotification">
+      🎂 Birthday Surprise Ready — Click to view!
+    </button>
 
     <!-- Stats -->
     <div class="stats">
@@ -299,7 +484,6 @@
 
   <!-- Birthday Surprise -->
   <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
-    <!-- close -->
     <div id="closeBday" title="Close">✕</div>
 
     <!-- Balloons -->
@@ -319,12 +503,11 @@
     <!-- Background music -->
     <audio id="bdayMusic" loop preload="auto">
       <source src="birthday-song.mp3" type="audio/mpeg">
-      <!-- replace src with your uploaded file if different -->
     </audio>
 
     <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0" aria-pressed="false">
       <div class="card-face card-front">
-        <div style="position:relative; padding: 8px 28px 28px;">
+        <div style="position:relative; padding: 12px 32px 32px;">
           <div class="bday-title" id="greetingLine">A Special Message for My Love</div>
           <div class="bday-sub" id="subGreeting">Tap to open, my heartbeat… ❤️🎁</div>
           <div class="sparkles" id="sparklesContainer" aria-hidden="true"></div>
@@ -332,31 +515,26 @@
       </div>
 
       <div class="card-face card-inside">
-        <div style="padding: 18px 22px; position:relative;">
+        <div style="padding: 24px 28px; position:relative;">
           <div class="bday-title" id="insideGreeting">🎉 Happy Birthday, My Love! 🎉</div>
 
-          <!-- Primary romantic message -->
-          <div class="bday-sub muted" id="personalMsg" style="text-align:left; line-height:1.35;">
+          <div class="bday-sub muted" id="personalMsg" style="text-align:left; line-height:1.45;">
             My Love… on your special day, I want to remind you of something simple but true:
             <strong>You are the most beautiful chapter of my life.</strong>
-
+            <br><br>
             Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete.
-            Thank you for loving me, supporting me, and choosing me every single day. I’m endlessly grateful for you.
-
+            Thank you for loving me, supporting me, and choosing me every single day. I'm endlessly grateful for you.
+            <br><br>
             <strong>Happy Birthday, My Love ❤️🎉</strong>
           </div>
 
-          <!-- second message (typed in) -->
-          <div id="secondMsg" class="muted" style="opacity:1; margin-top:18px; font-size:1rem; transition:1.5s; text-align:left;">
-            <!-- content will be typed by JS -->
-          </div>
+          <div id="secondMsg" class="muted" style="opacity:1; margin-top:20px; font-size:1rem; transition:1.5s; text-align:left;"></div>
 
-          <!-- I love you fade-in -->
-          <div id="loveFade" style="opacity:0; font-size:1.3rem; font-weight:700; margin-top:22px; color:#ffb3d9; transition:2s; text-align:center;">
+          <div id="loveFade" style="opacity:0; font-size:1.4rem; font-weight:700; margin-top:24px; color:#ffb3d9; transition:2s; text-align:center;">
             I Love You, My Love ❤️
           </div>
 
-          <div style="margin-top:14px; text-align:center;">
+          <div style="margin-top:18px; text-align:center;">
             <button class="bday-cta" id="continueBtn">Continue to Dashboard</button>
           </div>
         </div>
@@ -364,7 +542,6 @@
     </div>
   </div>
 
-  <!-- confetti lib -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
@@ -384,7 +561,6 @@
       }, delay);
     }
 
-    // optional typed effect with promise
     function typeEffectPromise(el, text, speed=30){
       return new Promise((resolve)=>{
         el.textContent = "";
@@ -402,7 +578,10 @@
       if(!r.ok){go('login.html');return;}
       const u=await r.json();
       const name=u.name || u.email.split('@')[0];
-      document.getElementById('avatar').textContent = (name[0] || '👤').toUpperCase();
+      
+      // Fix: Show first letter of name in avatar
+      const firstLetter = name.charAt(0).toUpperCase();
+      document.getElementById('avatar').textContent = firstLetter;
 
       const now = new Date(); const hour = now.getHours();
       let timeGreeting = "Hello";
@@ -411,7 +590,7 @@
       else timeGreeting = "Good evening";
 
       typeText(document.getElementById('typingLine1'), `${timeGreeting}, ${name} 👋`);
-      typeText(document.getElementById('typingLine2'), `Here’s your wardrobe overview…`);
+      typeText(document.getElementById('typingLine2'), `Here's your wardrobe overview…`);
 
       window.__CURRENT_USER = u;
     }
@@ -428,11 +607,7 @@
     loadUser();
     loadStats();
 
-    /* ----------------------------------------------------------
-       Birthday trigger currently:
-       Email: sjs36931@gmail.com
-       Date: 16-11 (dd-mm) - TEST MODE
-    ---------------------------------------------------------- */
+    /* Birthday check - Email: sjs36931@gmail.com, Date: 16-11 */
     async function checkBirthday() {
       try {
         let user = window.__CURRENT_USER;
@@ -443,7 +618,7 @@
         }
 
         const targetEmail = "sjs36931@gmail.com";
-        const birthday = "16-11"; // dd-mm
+        const birthday = "16-11";
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -453,14 +628,11 @@
 
         const shown = localStorage.getItem("bdayShown");
 
-        // FIRST TIME TODAY → Show popup normally
         if (shown !== new Date().toDateString()) {
           setTimeout(() => showBirthdayScreen(user), 500);
-          return;
+        } else {
+          showBirthdayNotification();
         }
-
-        // ALREADY SHOWN TODAY → Show notification instead
-        showBirthdayNotification();
 
       } catch (err) {
         console.error("Birthday check error:", err);
@@ -468,12 +640,7 @@
     }
     setTimeout(checkBirthday, 800);
 
-
-    /* ---------------- Birthday UI & Animations (IMPROVED) ---------------- */
     function showBirthdayScreen(user) {
-      // only once per day (testing)
-      //if (localStorage.getItem("bdayShown") === new Date().toDateString()) return;
-      // Mark popup as shown today
       localStorage.setItem("bdayShown", new Date().toDateString());
       const screen = document.getElementById("birthdayScreen");
       const balloons = document.querySelector(".balloons");
@@ -486,48 +653,36 @@
       document.getElementById("subGreeting").textContent = `Tap to open, my heartbeat… ❤️🎁`;
       document.getElementById("insideGreeting").textContent = `🎉 Happy Birthday, ${name}! 🎉`;
 
-      // Fill primary message (already in HTML; keep it)
-      // Clear second message (typed later)
       const secondMsgEl = document.getElementById("secondMsg");
       secondMsgEl.textContent = "";
 
-      // hide loveFade initially
       const loveEl = document.getElementById("loveFade");
       loveEl.style.opacity = 0;
 
-      // show screen
       screen.style.display = "flex";
 
-      // sparkles
       populateSparkles();
-
-      // hearts
       createHearts();
 
-      // small confetti pops for entrance
       setTimeout(()=> confetti({ particleCount: 110, spread: 90, origin: { y: 0.62 } }), 300);
       setTimeout(()=> confetti({ particleCount: 180, spread: 120, origin: { y: 0.66 } }), 900);
 
       if (balloons) balloons.style.display = "block";
 
-      // close button handler
       const closeBtn = document.getElementById("closeBday");
       closeBtn.onclick = () => closeBirthday();
 
-      // card interaction (flip & reveal)
       async function openCardInteraction() {
         if (card.classList.contains("opened")) return;
         card.classList.add("opened");
         card.setAttribute("aria-pressed","true");
 
-        // music fade-in
         try {
           music.volume = 0;
           const playPromise = music.play();
           if (playPromise !== undefined) {
-            playPromise.catch(()=>{}); // ignore autoplay rejection; will still try once user interacts
+            playPromise.catch(()=>{});
           }
-          // fade to volume 0.6
           let v = 0;
           const target = 0.6;
           const step = 0.04;
@@ -536,43 +691,31 @@
             music.volume = v;
             if (v >= target) clearInterval(fade);
           }, 120);
-        } catch(e){ /* ignore */ }
+        } catch(e){}
 
-        // confetti burst after flip
         setTimeout(()=> confetti({ particleCount: 260, spread:170, origin:{ y:0.5 } }), 600);
 
-        // type second message after 1.6s
         const secondText = "On this day… I just want one thing: For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗";
         setTimeout(()=> {
-          // typed effect
           typeEffectPromise(secondMsgEl, secondText, 28).then(()=>{
-            // after typing completes, reveal "I Love You"
             setTimeout(()=>{
               loveEl.style.opacity = 1;
-              // start shimmer animation
               loveEl.style.animation = "shimmer 2.6s linear infinite";
             }, 450);
           });
         }, 1600);
       }
 
-      // attach event listeners
       card.addEventListener('click', openCardInteraction);
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openCardInteraction(); });
 
-      // continue closes
       document.getElementById('continueBtn').onclick = () => closeBirthday();
-
-      // mark shown for today
-      localStorage.setItem("bdayShown", new Date().toDateString());
     }
 
-    // close (fade-out)
     function closeBirthday() {
       const screen = document.getElementById("birthdayScreen");
       const music = document.getElementById("bdayMusic");
 
-      // fade music out quickly
       try {
         let v = music.volume;
         const fadeOutInterval = setInterval(()=>{
@@ -582,7 +725,6 @@
         }, 80);
       } catch(e){}
 
-      // fade out screen
       screen.classList.add("fadeOut");
       setTimeout(()=>{
         screen.style.display = "none";
@@ -590,26 +732,24 @@
       }, 520);
     }
 
-    /* Sparkles */
     function populateSparkles(){
       const container = document.getElementById('sparklesContainer');
       container.innerHTML = '';
-      const count = 12;
+      const count = 14;
       for(let i=0;i<count;i++){
         const s = document.createElement('div');
         s.className = 'sparkle';
         const left = Math.random()*86 + 6;
         s.style.left = left + '%';
-        s.style.top = (Math.random()*140 + 12) + 'px';
-        s.style.animationDelay = (Math.random()*1.2) + 's';
-        const size = 6 + Math.random()*8;
+        s.style.top = (Math.random()*160 + 12) + 'px';
+        s.style.animationDelay = (Math.random()*1.4) + 's';
+        const size = 7 + Math.random()*9;
         s.style.width = size + 'px';
         s.style.height = size + 'px';
         container.appendChild(s);
       }
     }
 
-    /* Hearts generator (multicolor) */
     let heartsInterval = null;
     function createHearts(){
       const container = document.getElementById("heartsContainer");
@@ -623,20 +763,19 @@
         h.className = "heart";
         h.innerHTML = "❤️";
         h.style.left = (8 + Math.random()*84) + "%";
-        const size = (14 + Math.random()*28);
+        const size = (16 + Math.random()*32);
         h.style.fontSize = size + "px";
-        h.style.opacity = (0.7 + Math.random()*0.3);
-        h.style.animationDuration = (3 + Math.random()*2) + "s";
+        h.style.opacity = (0.75 + Math.random()*0.25);
+        h.style.animationDuration = (3.5 + Math.random()*2) + "s";
         h.style.zIndex = 99997;
         h.style.color = colors[Math.floor(Math.random()*colors.length)];
         container.appendChild(h);
         setTimeout(()=> {
           try { container.removeChild(h); } catch(e){}
-        }, 4200);
-      }, 500);
+        }, 5000);
+      }, 450);
     }
 
-    /* Feedback modal control */
     function openFeedbackModal(){ document.getElementById("feedbackModal").style.display = "flex"; }
     function closeFeedbackModal(){ document.getElementById("feedbackModal").style.display = "none"; }
     async function submitFeedback(){
@@ -651,9 +790,8 @@
       }catch(e){ alert("Network error."); }
     }
 
-    // refresh stats periodically
     setInterval(loadStats, 60_000);
-    /* Birthday notification system */
+
     function showBirthdayNotification() {
       const box = document.getElementById("bdayNotification");
       if (!box) return;
