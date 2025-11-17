@@ -7,6 +7,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
+    /* ---------------------------
+       Base / Dashboard (default)
+       --------------------------- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
@@ -15,6 +18,7 @@
       overflow-x: hidden;
       padding-bottom: 90px;
       color: white;
+      transition: background 0.9s ease, color 0.6s ease;
     }
 
     /* Orbs */
@@ -111,7 +115,7 @@
     .nav-item { flex: 1; text-align: center; color: #e0e7ff; font-size: 0.78rem; cursor: pointer; padding-top: 6px; }
     .nav-item span { display:block; font-size:1.5rem; margin-bottom:2px; }
 
-    /* Birthday Screen - Enhanced Design */
+    /* Birthday Screen (default purple vibe, replaced on birthday by rose-mode) */
     .bday-bg {
       position: fixed;
       inset: 0;
@@ -127,7 +131,7 @@
     }
     @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
 
-    /* Animated gradient background */
+    /* Upper-level default gradient animation */
     .bday-bg::before {
       content: '';
       position: absolute;
@@ -146,7 +150,7 @@
     .bday-bg.fadeOut { animation: fadeOut 0.5s ease forwards; }
     @keyframes fadeOut { to { opacity:0; } }
 
-    /* Close button */
+    /* Close button (kept) */
     #closeBday {
       position:absolute; 
       top:20px; 
@@ -172,43 +176,7 @@
       box-shadow: 0 4px 16px rgba(255,255,255,0.3);
     }
 
-    /* Enhanced Balloons */
-    .balloons { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 99990; }
-    .balloon { 
-      position: absolute; 
-      bottom: -120px; 
-      width: 52px; 
-      height: 70px; 
-      border-radius: 50% 50% 45% 45%; 
-      opacity: 0.9; 
-      animation: floatUp linear infinite; 
-      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.4));
-    }
-    .balloon::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 2px;
-      height: 40px;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
-    }
-    .b1 { background: radial-gradient(circle at 30% 25%, #fff 8%, #ff6fb5 30%, #fb6d8a 100%); left:8%; animation-duration:10s; animation-delay:0.3s; }
-    .b2 { background: radial-gradient(circle at 30% 25%, #fff 8%, #60a5fa 30%, #3b82f6 100%); left:22%; animation-duration:11s; animation-delay:1.2s; width:58px;height:76px;}
-    .b3 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fcd34d 30%, #f59e0b 100%); left:36%; animation-duration:12s; animation-delay:0.7s;}
-    .b4 { background: radial-gradient(circle at 30% 25%, #fff 8%, #a78bfa 30%, #7c3aed 100%); left:50%; animation-duration:11.5s; animation-delay:0.9s; width:56px;height:74px;}
-    .b5 { background: radial-gradient(circle at 30% 25%, #fff 8%, #34d399 30%, #10b981 100%); left:64%; animation-duration:13s; animation-delay:0.5s;}
-    .b6 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fb7185 30%, #ef4444 100%); left:78%; animation-duration:11.2s; animation-delay:0.4s;}
-    .b7 { background: radial-gradient(circle at 30% 25%, #fff 8%, #fbbf24 30%, #f59e0b 100%); left:90%; animation-duration:10.5s; animation-delay:0.8s;}
-    @keyframes floatUp { 
-      0% { transform: translateY(0) rotate(-8deg) scale(0.9); opacity: 0; } 
-      5% { opacity: 1; } 
-      50% { transform: translateY(-60vh) rotate(6deg) scale(1); } 
-      100% { transform: translateY(-125vh) rotate(12deg) scale(1.1); opacity: 0; } 
-    }
-
-    /* Birthday Card - Premium Design */
+    /* Card base (kept) */
     .bday-card {
       width: 95%;
       max-width: 560px;
@@ -242,7 +210,6 @@
       }
     }
 
-    /* Shimmer overlay on card */
     .bday-card::before {
       content: '';
       position: absolute;
@@ -303,7 +270,6 @@
       font-size: 1rem;
     }
 
-    /* Enhanced sparkles */
     .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
     .sparkle { 
       position: absolute; 
@@ -322,7 +288,6 @@
       100% { opacity: 0; transform: scale(0.3) translateY(-14px); } 
     }
 
-    /* Enhanced hearts */
     .heart { 
       position: absolute; 
       font-size: 24px; 
@@ -370,31 +335,99 @@
 
     .muted { color: rgba(255,255,255,0.85); font-size: 0.98rem; }
 
+    .insideScroll {
+      padding: 24px 28px;
+      position: relative;
+      max-height: 70vh;          /* Keep card beautiful */
+      overflow-y: auto;          /* Enable scrolling */
+      scrollbar-width: thin;     /* Firefox */
+      scrollbar-color: #ff9bd0 transparent;
+    }
+    .insideScroll::-webkit-scrollbar { width: 8px; }
+    .insideScroll::-webkit-scrollbar-thumb { background: linear-gradient(135deg,#ff9bd0,#fb923c); border-radius: 8px; }
+    .insideScroll::-webkit-scrollbar-track { background: transparent; }
+
     @media (max-width:520px){ 
       .bday-card{ max-width: 95%; } 
       .bday-title{ font-size:1.3rem; }
       #closeBday { top: 12px; right: 12px; width: 36px; height: 36px; }
     }
-    .insideScroll {
-  padding: 24px 28px;
-  position: relative;
-  max-height: 70vh;          /* Keep card beautiful */
-  overflow-y: auto;          /* Enable scrolling */
-  scrollbar-width: thin;     /* Firefox */
-  scrollbar-color: #ff9bd0 transparent;
-  }
 
-  /* Chrome scrollbar style */
-  .insideScroll::-webkit-scrollbar {
-    width: 8px;
-  }
-  .insideScroll::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg,#ff9bd0,#fb923c);
-    border-radius: 8px;
-  }
-  .insideScroll::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    /* -------------------------------------------------
+       ROSE-THEME OVERRIDES (applied only on birthday)
+       When body has .rose-mode the overrides activate
+       ------------------------------------------------- */
+    body.rose-mode {
+      background: linear-gradient(135deg, #fff0f4 0%, #ffe6f1 40%, #fff0f0 100%);
+      color: #3b1a2b;
+    }
+    body.rose-mode .orb-1 { display:none; } /* reduce clutter */
+    body.rose-mode .orb-2 { display:none; }
+    body.rose-mode .orb-3 { display:none; }
+
+    /* Header brand color shift */
+    body.rose-mode .brand-icon { background: linear-gradient(135deg,#ff9bd0,#ff7fb0); box-shadow:0 8px 34px rgba(255,140,180,0.2); }
+    body.rose-mode .brand h1 { background: linear-gradient(135deg,#37142a,#7b1e3b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+    /* Avatar & buttons */
+    body.rose-mode .avatar { background: linear-gradient(135deg,#ff9bd0,#ff7fb0); border:3px solid rgba(255,255,255,0.28); color: #fff; }
+    body.rose-mode .btn-ghost { border:1px solid rgba(123,10,45,0.06); background: rgba(255,255,255,0.06); color:#fff; }
+    body.rose-mode .feedback-btn { background: linear-gradient(135deg,#ff7fb0,#ff9bd0); box-shadow:0 8px 26px rgba(255,130,170,0.18); }
+
+    /* Stat cards */
+    body.rose-mode .stat-card { background: linear-gradient(135deg, rgba(255,235,245,0.9), rgba(255,245,250,0.85)); color:#5b2436; border:1px solid rgba(255,180,210,0.6); }
+    body.rose-mode .stat-number { background: linear-gradient(135deg,#ff7fb0,#ff9bd0); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    body.rose-mode .stat-label { color: rgba(91,36,54,0.85); }
+
+    /* Cards */
+    body.rose-mode .card { background: linear-gradient(135deg, rgba(255,245,250,0.9), rgba(255,235,245,0.95)); color:#4a2130; border:1px solid rgba(255,200,220,0.55); box-shadow:0 10px 30px rgba(255,150,180,0.06); }
+    body.rose-mode .card-title { color:#6b2540; }
+    body.rose-mode .card-description { color: rgba(75,24,42,0.75); }
+
+    /* Birthday screen - rose-mode enhancements */
+    body.rose-mode .bday-bg {
+      background: radial-gradient(circle at 50% 40%, rgba(255,200,220,0.22), rgba(30,0,40,0.92));
+      box-shadow: inset 0 0 140px rgba(255,150,190,0.28);
+    }
+    /* additional rose-mode card styling */
+    body.rose-mode .bday-card {
+      background: rgba(255,230,240,0.12);
+      border: 2px solid rgba(255,180,210,0.35);
+      box-shadow:
+        0 28px 84px rgba(0,0,0,0.55),
+        0 0 60px rgba(255,150,200,0.28);
+    }
+
+    /* Rose-mode text */
+    body.rose-mode .bday-title { 
+      background: linear-gradient(135deg,#ff9acb,#ff6fa9,#ffb3d9);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow: 0 6px 18px rgba(255,140,180,0.45);
+    }
+    body.rose-mode .bday-sub, body.rose-mode .muted { color: rgba(59,15,28,0.9); }
+
+    /* Petal container (z-index lower than card) */
+    #petalContainer { position:absolute; inset:0; pointer-events:none; z-index:99994; overflow:hidden; }
+
+    /* Petal style used when body.rose-mode is active */
+    .petal {
+      position:absolute;
+      width:28px;
+      height:28px;
+      background-size:cover;
+      opacity:0.95;
+      animation: fallPetal linear infinite;
+      will-change: transform, opacity;
+      pointer-events:none;
+      transform-origin:center;
+    }
+    @keyframes fallPetal {
+      0% { transform: translateY(-40px) rotate(0deg); opacity:0; }
+      7% { opacity:1; }
+      60% { opacity:1; }
+      100% { transform: translateY(120vh) rotate(260deg); opacity:0; }
+    }
 
   </style>
 </head>
@@ -506,6 +539,12 @@
 
   <!-- Birthday Surprise -->
   <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
+
+    <!-- Fog layers (texture image used; replace URL if needed) -->
+    <div class="fog fog1" style="display:none"></div>
+    <div class="fog fog2" style="display:none"></div>
+    <div class="fog fog3" style="display:none"></div>
+
     <div id="closeBday" title="Close">✕</div>
 
     <!-- Balloons -->
@@ -521,6 +560,9 @@
 
     <!-- Hearts container -->
     <div id="heartsContainer" aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:99996;"></div>
+
+    <!-- Petal container -->
+    <div id="petalContainer" aria-hidden="true"></div>
 
     <!-- Background music -->
     <audio id="bdayMusic" loop preload="auto">
@@ -567,6 +609,7 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
+    /* ====== Utility navigation ====== */
     function go(p){ window.location.href=p; }
 
     function logout(){ 
@@ -574,6 +617,7 @@
       .finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); 
     }
 
+    /* ====== Type effects ====== */
     function typeText(el, text, delay=40){
       el.textContent = "";
       let i = 0;
@@ -595,13 +639,13 @@
       });
     }
 
+    /* ====== Load user & stats ====== */
     async function loadUser(){
       const r=await fetch('/api/me',{credentials:'include'}); 
       if(!r.ok){go('login.html');return;}
       const u=await r.json();
       const name=u.name || u.email.split('@')[0];
       
-      // Fix: Show first letter of name in avatar
       const firstLetter = name.charAt(0).toUpperCase();
       document.getElementById('avatar').textContent = firstLetter;
 
@@ -629,7 +673,11 @@
     loadUser();
     loadStats();
 
-    /* Birthday check - Email: sjs36931@gmail.com, Date: 16-11 */
+    /* ====== Birthday configuration (target user & date) ====== */
+    const BDAY_TARGET_EMAIL = "sjs36931@gmail.com";
+    const BDAY_DAY_MONTH = "16-11"; // dd-mm
+
+    /* ====== Birthday check & theme activation ====== */
     async function checkBirthday() {
       try {
         let user = window.__CURRENT_USER;
@@ -639,38 +687,48 @@
           user = await res.json();
         }
 
-        const targetEmail = "sjs36931@gmail.com";
-        const birthday = "16-11";
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
         const mm = String(today.getMonth() + 1).padStart(2, '0');
         const todayStr = `${dd}-${mm}`;
 
-        if (user.email !== targetEmail || todayStr !== birthday) return;
+        // Only activate if it's the configured user & date
+        if (user.email !== BDAY_TARGET_EMAIL) return;
 
-        const shown = localStorage.getItem("bdayShown");
+        if (todayStr === BDAY_DAY_MONTH) {
+          // Apply rose theme for today only (UI change)
+          document.body.classList.add('rose-mode');
 
-        if (shown !== new Date().toDateString()) {
-          setTimeout(() => showBirthdayScreen(user), 500);
+          // Show birthday screen immediately OR notification depending on localStorage
+          const shown = localStorage.getItem("bdayShown");
+          if (shown !== new Date().toDateString()) {
+            // Show full interactive screen
+            setTimeout(()=> showBirthdayScreen(user), 500);
+          } else {
+            // Show notification to re-open
+            showBirthdayNotification();
+          }
         } else {
-          showBirthdayNotification();
+          // Ensure no rose-mode on non-birthday days
+          document.body.classList.remove('rose-mode');
         }
 
       } catch (err) {
         console.error("Birthday check error:", err);
       }
     }
+    // run shortly after load
     setTimeout(checkBirthday, 800);
 
+    /* ====== Show Birthday Screen (and start effects) ====== */
     function showBirthdayScreen(user) {
       localStorage.setItem("bdayShown", new Date().toDateString());
       const screen = document.getElementById("birthdayScreen");
       const balloons = document.querySelector(".balloons");
       const card = document.getElementById("animatedCard");
       const music = document.getElementById("bdayMusic");
-      const heartsContainer = document.getElementById("heartsContainer");
 
-      const name = user.name || user.email.split('@')[0];
+      const name = (user && (user.name || (user.email && user.email.split('@')[0]))) || "You";
       document.getElementById("greetingLine").textContent = `A Special Message for ${name}`;
       document.getElementById("subGreeting").textContent = `Tap to open, my heartbeat… ❤️🎁`;
       document.getElementById("insideGreeting").textContent = `🎉 Happy Birthday, ${name}! 🎉`;
@@ -681,16 +739,22 @@
       const loveEl = document.getElementById("loveFade");
       loveEl.style.opacity = 0;
 
+      // display screen & rose-mode fog/visual layers
       screen.style.display = "flex";
+      // show fog layers (if present)
+      document.querySelectorAll('.fog').forEach(el => el.style.display = 'block');
 
       populateSparkles();
       createHearts();
+      startRosePetals(); // start falling petals
 
+      // confetti timing
       setTimeout(()=> confetti({ particleCount: 110, spread: 90, origin: { y: 0.62 } }), 300);
       setTimeout(()=> confetti({ particleCount: 180, spread: 120, origin: { y: 0.66 } }), 900);
 
       if (balloons) balloons.style.display = "block";
 
+      // close button
       const closeBtn = document.getElementById("closeBday");
       closeBtn.onclick = () => closeBirthday();
 
@@ -705,6 +769,7 @@
           if (playPromise !== undefined) {
             playPromise.catch(()=>{});
           }
+          // fade-in music
           let v = 0;
           const target = 0.6;
           const step = 0.04;
@@ -728,12 +793,14 @@
         }, 1600);
       }
 
+      // keyboard + click handlers
       card.addEventListener('click', openCardInteraction);
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openCardInteraction(); });
 
       document.getElementById('continueBtn').onclick = () => closeBirthday();
     }
 
+    /* ====== Close Birthday and stop effects ====== */
     function closeBirthday() {
       const screen = document.getElementById("birthdayScreen");
       const music = document.getElementById("bdayMusic");
@@ -747,6 +814,12 @@
         }, 80);
       } catch(e){}
 
+      // hide fog layers
+      document.querySelectorAll('.fog').forEach(el => el.style.display = 'none');
+
+      // stop petals
+      stopRosePetals();
+
       screen.classList.add("fadeOut");
       setTimeout(()=>{
         screen.style.display = "none";
@@ -754,6 +827,7 @@
       }, 520);
     }
 
+    /* ====== Sparkles ====== */
     function populateSparkles(){
       const container = document.getElementById('sparklesContainer');
       container.innerHTML = '';
@@ -772,6 +846,7 @@
       }
     }
 
+    /* ====== Hearts ====== */
     let heartsInterval = null;
     function createHearts(){
       const container = document.getElementById("heartsContainer");
@@ -798,6 +873,7 @@
       }, 450);
     }
 
+    /* ====== Feedback modal ====== */
     function openFeedbackModal(){ document.getElementById("feedbackModal").style.display = "flex"; }
     function closeFeedbackModal(){ document.getElementById("feedbackModal").style.display = "none"; }
     async function submitFeedback(){
@@ -814,6 +890,7 @@
 
     setInterval(loadStats, 60_000);
 
+    /* ====== Birthday notification (small button) ====== */
     function showBirthdayNotification() {
       const box = document.getElementById("bdayNotification");
       if (!box) return;
@@ -831,6 +908,65 @@
       };
     }
 
+    /* ===============================
+         🌹 Falling Rose Petals
+       =============================== */
+    let petalInterval = null;
+    function startRosePetals() {
+      const container = document.getElementById("petalContainer");
+      if(!container) return;
+      container.innerHTML = "";
+
+      // small rose petal image (hosted). Replace URL if you have your own asset.
+      const petalImg = "https://i.ibb.co/QCTCs7Z/rosepetal.png";
+
+      // emit petals continuously
+      petalInterval = setInterval(() => {
+        const petal = document.createElement("div");
+        petal.className = "petal";
+        petal.style.left = Math.random() * 100 + "vw";
+        petal.style.top = "-6vh";
+        petal.style.width = (18 + Math.random() * 22) + "px";
+        petal.style.height = "auto";
+        petal.style.opacity = 0.7 + Math.random() * 0.35;
+        const dur = 6 + Math.random() * 7; // 6-13s
+        petal.style.animationDuration = dur + "s";
+        petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+        petal.style.backgroundImage = `url(${petalImg})`;
+        petal.style.backgroundSize = "contain";
+        petal.style.backgroundRepeat = "no-repeat";
+        petal.style.zIndex = 99994;
+        container.appendChild(petal);
+
+        // gentle horizontal drift using CSS transition (random)
+        const startX = parseFloat(petal.style.left);
+        const drift = (Math.random() * 18 - 9); // -9vw to +9vw
+        petal.animate([
+          { transform: `translateX(0) rotate(${Math.random()*360}deg)` },
+          { transform: `translateX(${drift}vw) rotate(${Math.random()*720}deg)` }
+        ], { duration: dur * 1000, easing: 'ease-in-out' });
+
+        // remove after animation
+        setTimeout(()=> {
+          try { container.removeChild(petal); } catch(e){}
+        }, (dur + 1) * 1000);
+      }, 320);
+    }
+
+    function stopRosePetals(){
+      if(petalInterval) { clearInterval(petalInterval); petalInterval = null; }
+      const container = document.getElementById("petalContainer");
+      if(container) container.innerHTML = "";
+    }
+
+    /* ====== Initial load: if it's birthday, ensure rose-mode applied (in case checkBirthday ran earlier) ====== */
+    // (checkBirthday already sets rose-mode, but keep safety)
+    (function enforceDailyRoseMode() {
+      // On load we already call checkBirthday; this guard ensures rose-mode is present if needed.
+      // No-op here.
+    })();
+
+    /* ====== End of scripts ====== */
   </script>
 
 </body>
