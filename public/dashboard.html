@@ -1,650 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard | Dress Organizer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Dress Organizer — Mobile Optimized Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ---------------------------
-       Base / Dashboard (default)
-       --------------------------- */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
-      font-family: "Inter", sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding-bottom: 90px;
-      color: white;
-      transition: background 0.9s ease, color 0.6s ease;
+    :root{
+      --bg-1: #071022;
+      --bg-2: #0b1530;
+      --accent1: #ff7ab6;
+      --accent2: #9b6bff;
+      --glass: rgba(255,255,255,0.04);
+      --muted: #9aa4b2;
+      --card-radius: 14px;
+      --safe-bottom: env(safe-area-inset-bottom, 12px);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg-1) 0%, #071327 60%);
+      color:#eaf0fb;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom: calc(84px + var(--safe-bottom));
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .orb { position: absolute; border-radius:50%; filter: blur(80px); opacity:0.15; z-index:0; animation: float 20s infinite ease-in-out; }
-    .orb-1{ background:linear-gradient(135deg,#818cf8,#c084fc); width:500px;height:500px; top:-200px; left:-150px;}
-    .orb-2{ background:linear-gradient(135deg,#f472b6,#fb923c); width:400px;height:400px; bottom:-150px; right:-100px; animation-delay:5s;}
-    .orb-3{ background:linear-gradient(135deg,#06b6d4,#3b82f6); width:350px;height:350px; top:40%; left:50%; animation-delay:10s;}
-    @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(50px,-50px) scale(1.1);} 66%{transform:translate(-30px,30px) scale(0.9);} }
+    /* Decorative orbs (kept but subtle) */
+    .orb { position: absolute; border-radius:50%; filter: blur(80px); opacity:0.12; z-index:0; animation: float 20s infinite ease-in-out; pointer-events:none; }
+    .orb-1{ background:linear-gradient(135deg,#818cf8,#c084fc); width:480px;height:480px; top:-180px; left:-90px;}
+    .orb-2{ background:linear-gradient(135deg,#f472b6,#fb923c); width:360px;height:360px; bottom:-120px; right:-60px; animation-delay:5s;}
+    .orb-3{ background:linear-gradient(135deg,#06b6d4,#3b82f6); width:320px;height:320px; top:38%; left:52%; animation-delay:10s;}
+    @keyframes float { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(40px,-40px) scale(1.06);} 66%{transform:translate(-28px,28px) scale(0.96);} }
 
-    .container { max-width:1400px; margin:0 auto; padding:30px 20px; position:relative; z-index:10; }
-
-    /* Header */
-    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:40px; gap:16px; flex-wrap:wrap; }
-    .brand { display:flex; align-items:center; gap:12px; }
-    .brand-icon { width:48px;height:48px;border-radius:12px; background:linear-gradient(135deg,#818cf8,#c084fc); display:flex;align-items:center;justify-content:center; font-size:24px;color:white; box-shadow:0 8px 24px rgba(129,140,248,0.3); }
-    .brand h1 { font-size:1.6rem; font-weight:700; background:linear-gradient(135deg,#fff,#e0e7ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-
-    .user-section { display:flex; align-items:center; gap:12px; flex:1; justify-content:flex-end; flex-wrap:wrap; }
-    .avatar { width:54px;height:54px;border-radius:50%; background: linear-gradient(135deg, #818cf8, #c084fc); display:flex;align-items:center; justify-content:center; font-size:24px;font-weight:700;color:white;border:3px solid rgba(255,255,255,0.12); overflow:hidden; transition:.3s; text-transform: uppercase; }
-    .avatar:hover { transform:scale(1.06); }
-
-    .btn-ghost { padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); color:white; font-weight:600; cursor:pointer; transition:.2s; }
-    .btn-ghost:hover { background:rgba(255,255,255,0.12); transform:translateY(-2px); }
-    .feedback-btn { padding:10px 14px;border-radius:12px; background: linear-gradient(135deg,#f472b6,#fb923c); border:none; color:white; font-weight:700; cursor:pointer; }
-
-    .typing::after { content:""; width:2px;height:1.2em;background:white;display:inline-block;margin-left:4px; animation: blink 1s infinite; }
-    @keyframes blink { 50% { opacity:0; } }
-
-    /* notification */
-    #bdayNotification { position: fixed; top: 80px; right: 22px; padding: 14px 22px; background: linear-gradient(135deg, #ff6fb5, #ff9bd0); border: 2px solid rgba(255,255,255,0.3); border-radius: 16px; backdrop-filter: blur(12px); color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: none; z-index: 999999; box-shadow: 0 8px 28px rgba(255,111,181,0.5); transition: all .3s ease; animation: bounceIn 0.6s ease, pulseGlow 2s infinite; }
-    #bdayNotification:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 36px rgba(255,111,181,0.7); }
-    @keyframes bounceIn { 0% { transform: scale(0.3) translateY(-20px); opacity: 0; } 50% { transform: scale(1.08) translateY(0); } 100% { transform: scale(1) translateY(0); opacity: 1; } }
-    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 8px 28px rgba(255,111,181,0.5); } 50% { box-shadow: 0 8px 38px rgba(255,111,181,0.8), 0 0 20px rgba(255,111,181,0.4); } }
-
-    /* Stats + cards */
-    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:18px; margin-bottom:24px; }
-    .stat-card { padding:20px;border-radius:18px; background:rgba(255,255,255,0.08); text-align:center; border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); }
-    .stat-number { font-size:1.8rem; font-weight:800; background:linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text;-webkit-text-fill-color:transparent; }
-    .stat-label { color:#c7d2fe; margin-top:6px; }
-
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:24px; margin-top:30px; }
-    .card { padding:32px 26px;border-radius:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(16px); cursor:pointer; transition:.3s; position:relative; overflow:hidden; }
-    .card:hover { transform:translateY(-8px) scale(1.03); box-shadow:0 14px 32px rgba(0,0,0,0.3); border-color:rgba(255,255,255,0.25); }
-    .card-icon { font-size:2rem; margin-bottom:10px; }
-    .card-title { font-size:1.2rem; font-weight:700; margin-bottom:6px; }
-    .card-description { font-size:0.9rem; color:#c7d2fe; }
-
-    .bottom-nav { display: none !important; position: fixed; bottom: 0; left: 0; width: 100%; height: 70px; background: rgba(20,20,40,0.75); border-top: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); z-index: 9999; padding: 0 8px; }
-    @media (max-width: 850px) { .bottom-nav { display: flex !important; } }
-    .nav-item { flex: 1; text-align: center; color: #e0e7ff; font-size: 0.78rem; cursor: pointer; padding-top: 6px; }
-    .nav-item span { display:block; font-size:1.5rem; margin-bottom:2px; }
-
-    /* -----------------------
-       BIRTHDAY SCREEN (DARK)
-       Soft edges fog, petals behind card,
-       sparkles around card, hearts above
-       ----------------------- */
-    .bday-bg {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(20,10,30,0.86) 0%, rgba(5,3,10,0.92) 70%);
-      backdrop-filter: blur(8px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 28px;
-      z-index: 99999;
-      overflow: hidden;
-      animation: bfadeIn 0.6s ease forwards;
-    }
-    @keyframes bfadeIn { from { opacity: 0 } to { opacity: 1 } }
-
-    /* SOFT EDGES FOG: subtle gradients & textures at edges only */
-    .fog {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 99985; /* below petals */
-      background-image:
-        radial-gradient(ellipse at 10% 20%, rgba(145,78,140,0.12), transparent 18%),
-        radial-gradient(ellipse at 90% 80%, rgba(120,40,80,0.12), transparent 20%),
-        radial-gradient(ellipse at 50% 95%, rgba(60,20,70,0.08), transparent 28%);
-      opacity: 1;
-      mix-blend-mode: screen;
-      filter: blur(16px);
-      transform: scale(1.02);
+    .app {
+      width:100%;
+      max-width:980px;
+      margin:0 auto;
+      padding:14px;
+      position:relative;
+      z-index:10;
     }
 
-    /* PETALS (behind the card) */
-    #petalContainer { position:absolute; inset:0; pointer-events:none; z-index:99986; overflow:hidden; }
-    .petal {
-      position:absolute;
-      width:26px;
-      height:26px;
-      background-size:contain;
-      background-repeat:no-repeat;
-      will-change: transform, opacity;
-      opacity:0.9;
-      transform-origin:center;
+    /* Top bar */
+    .topbar {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .brand { display:flex; gap:10px; align-items:center; }
+    .brand-mark {
+      width:44px;height:44px;border-radius:10px;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      display:grid;place-items:center;font-weight:800;color:#071022;font-size:18px;
+      box-shadow:0 8px 28px rgba(155,107,255,0.12);
+    }
+    .brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:0.1px}
+    .top-actions{display:flex;gap:8px;align-items:center}
+
+    .avatar {
+      width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),#6fb7ff);
+      display:grid;place-items:center;font-weight:700;color:#071022;font-size:15px;border:2px solid rgba(255,255,255,0.04);
     }
 
-    @keyframes petalFall {
-      0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
-      8% { opacity:1; }
-      70% { opacity:1; }
-      100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
+    .greeting { display:flex;flex-direction:column;font-size:12px;color:var(--muted);margin-left:6px; }
+    .greeting strong{color:#fff;font-weight:700;font-size:13px}
+
+    /* Search & chips */
+    .searchRow{display:flex;gap:8px;margin:12px 0;align-items:center}
+    .search {
+      flex:1;display:flex;gap:8px;align-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:8px 10px;border:1px solid rgba(255,255,255,0.03);
+    }
+    .search input{background:transparent;border:0;outline:none;color:inherit;font-size:13px;width:100%}
+    .chipScroll{display:flex;gap:8px;overflow:auto;padding-bottom:6px;margin-bottom:8px}
+    .chip{flex:0 0 auto;padding:8px 10px;border-radius:999px;background:transparent;border:1px solid rgba(255,255,255,0.03);font-size:13px;color:var(--muted)}
+    .chip.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#071022;font-weight:700;border:none}
+
+    /* Stats horizontal */
+    .statsWrap{display:flex;gap:12px;overflow:auto;padding:4px 2px 12px;margin-bottom:6px}
+    .stat {
+      min-width:140px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);
+      display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+    }
+    .stat .num{font-weight:800;font-size:18px;background:linear-gradient(90deg,var(--accent2),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .stat .label{font-size:12px;color:var(--muted)}
+
+    /* Grid cards */
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:6px;
+    }
+    @media(min-width:700px){
+      .grid{grid-template-columns:repeat(3,1fr);gap:14px}
+    }
+    @media(min-width:1000px){
+      .grid{grid-template-columns:repeat(4,1fr);gap:18px}
     }
 
-    /* SPARKLES (between fog and card) */
-    .sparkles-wrap { position:absolute; inset:0; pointer-events:none; z-index:99990; overflow:visible; }
-    .sparkle {
-      position:absolute;
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,240,245,0.95) 25%, rgba(255,200,220,0.85) 60%);
-      box-shadow:0 0 12px rgba(255,180,200,0.9);
-      opacity:0;
-      transform: translateY(0) scale(0.6);
-      animation: sparkleFloat 2.6s infinite ease-in-out;
+    .card {
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;min-height:120px;
+      transition:transform .18s ease, box-shadow .18s ease;
+      -webkit-tap-highlight-color:transparent;
     }
-    @keyframes sparkleFloat {
-      0% { opacity:0; transform: translateY(6px) scale(0.6); }
-      10% { opacity:1; transform: translateY(0) scale(1.0); }
-      60% { opacity:0.7; transform: translateY(-8px) scale(0.9); }
-      100% { opacity:0; transform: translateY(-18px) scale(0.6); }
+    .card:active{transform:translateY(-4px)}
+    .card .icon {font-size:20px}
+    .card .title{font-weight:700;font-size:13px}
+    .card .desc{font-size:12px;color:var(--muted)}
+
+    /* Floating upload FAB */
+    .fab {
+      position:fixed;right:16px;bottom:calc(92px + var(--safe-bottom));width:60px;height:60px;border-radius:16px;display:grid;place-items:center;font-size:28px;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#071022;border:none;z-index:60;box-shadow:0 12px 36px rgba(155,107,255,0.14);
+      touch-action:manipulation;
     }
 
-    /* HEARTS (above card) */
-    .hearts-wrap { position:absolute; inset:0; pointer-events:none; z-index:100002; overflow:visible; }
-    .heart { position:absolute; font-size:22px; text-shadow:0 6px 20px rgba(255,100,160,0.6); opacity:0; transform:translateY(10px) scale(0.85); animation: heartRise 4.6s linear infinite; }
+    /* Bottom nav */
+    .bottomNav {
+      position:fixed;left:8px;right:8px;bottom:8px;padding:8px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      display:flex;justify-content:space-between;gap:6px;align-items:center;z-index:70;border:1px solid rgba(255,255,255,0.03);
+      box-shadow:0 8px 26px rgba(0,0,0,0.5);
+      backdrop-filter: blur(6px);
+    }
+    .navItem{flex:1;text-align:center;font-size:12px;color:var(--muted);padding:8px;border-radius:10px}
+    .navItem.active{color:var(--accent1);font-weight:700}
+
+    /* Birthday overlay (mobile-optimized) */
+    .bdayOverlay {
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 20%, rgba(10,5,15,0.9), rgba(2,2,6,0.98));z-index:200;padding:20px;
+      -webkit-backdrop-filter: blur(6px);backdrop-filter: blur(6px);
+    }
+    .fog { position:absolute; inset:0; pointer-events:none; z-index:205; background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(145,78,140,0.12), transparent 18%),
+      radial-gradient(ellipse at 90% 80%, rgba(120,40,80,0.12), transparent 20%),
+      radial-gradient(ellipse at 50% 95%, rgba(60,20,70,0.08), transparent 28%);
+      opacity:1; mix-blend-mode: screen; filter: blur(14px); transform: scale(1.02);
+    }
+
+    #petalContainer { position:absolute; inset:0; pointer-events:none; z-index:206; overflow:hidden; }
+    .petal{ position:absolute; width:18px; height:18px; background-size:contain; background-repeat:no-repeat; will-change: transform, opacity; opacity:0.9; transform-origin:center; }
+
+    .sparkles-wrap { position:absolute; inset:0; pointer-events:none; z-index:208; overflow:visible; }
+    .sparkle { position:absolute; width:8px; height:8px; border-radius:50%; background: radial-gradient(circle at 30% 30%, #fff 0%, rgba(255,240,245,0.95) 25%, rgba(255,200,220,0.85) 60%); box-shadow:0 0 8px rgba(255,180,200,0.9); opacity:0; transform: translateY(0) scale(0.6); animation: sparkleFloat 2.6s infinite ease-in-out; }
+    @keyframes sparkleFloat { 0% { opacity:0; transform: translateY(6px) scale(0.6); } 10% { opacity:1; transform: translateY(0) scale(1.0); } 60% { opacity:0.7; transform: translateY(-8px) scale(0.9); } 100% { opacity:0; transform: translateY(-18px) scale(0.6); } }
+
+    .hearts-wrap { position:absolute; inset:0; pointer-events:none; z-index:210; overflow:visible; }
+    .heart { position:absolute; font-size:18px; text-shadow:0 6px 20px rgba(255,100,160,0.6); opacity:0; transform:translateY(10px) scale(0.85); animation: heartRise 4.6s linear infinite; }
     @keyframes heartRise {
       0% { opacity:0; transform: translateY(30px) scale(0.7) rotate(-8deg); }
       10% { opacity:1; }
       100% { opacity:0; transform: translateY(-160px) scale(1.3) rotate(12deg); }
     }
 
-    /* CARD (centered, crisp) */
     .bday-card {
-      width: 92%;
-      max-width: 640px;
+      width:100%; max-width:640px; border-radius:18px; overflow:visible;
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
       border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-      padding: 0;
-      text-align: left;
-      perspective: 1100px;
-      transform-style: preserve-3d;
-      cursor: pointer;
-      z-index:100000; /* above sparkles & petals */
       box-shadow: 0 20px 50px rgba(10,6,20,0.6), 0 8px 30px rgba(255,120,170,0.06);
-      overflow: visible;
+      z-index:209; transform-origin:center center;
     }
+    .card-inner{ padding:20px 18px 18px; }
+    .bday-title{ font-size:20px; font-weight:900; background: linear-gradient(135deg,#ffd9ef,#ff9acb,#ff7fb0); -webkit-background-clip:text;-webkit-text-fill-color:transparent; }
+    .bday-sub{ color: rgba(255,245,255,0.92); margin-top:6px; font-size:14px; }
 
-    .card-inner { padding: 28px 34px 36px; position:relative; }
-    .card-header {
-      display:flex; align-items:center; gap:18px; margin-bottom:6px;
-    }
-    .bday-title {
-      font-size:1.6rem; font-weight:900;
-      background: linear-gradient(135deg,#ffd9ef,#ff9acb,#ff7fb0);
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      text-shadow: 0 6px 16px rgba(255,120,170,0.12);
-    }
-    .bday-sub { color: rgba(255,245,255,0.92); margin-top:6px; font-size:1rem; line-height:1.45; }
+    .insideScroll{ padding:12px 14px 20px; max-height:56vh; overflow-y:auto; color: rgba(255,245,250,0.92); scrollbar-width: thin;}
+    .insideScroll::-webkit-scrollbar{ height:8px; width:8px }
+    .insideScroll::-webkit-scrollbar-thumb{ background: linear-gradient(135deg,#ff9bd0,#fb923c); border-radius:8px; }
 
-    .insideScroll {
-      padding: 20px 20px 28px;
-      max-height: 60vh;
-      overflow-y: auto;
-      color: rgba(255,245,250,0.92);
-      scrollbar-width: thin;
-    }
-    .insideScroll::-webkit-scrollbar { width: 8px; }
-    .insideScroll::-webkit-scrollbar-thumb { background: linear-gradient(135deg,#ff9bd0,#fb923c); border-radius:8px; }
-    .insideScroll p { margin-bottom: 14px; line-height:1.5; }
+    .bday-cta{ display:inline-flex; gap:10px; align-items:center; justify-content:center; padding:10px 18px; border-radius:12px; background: linear-gradient(135deg,#ff7fb0,#ff9bd0); border:none; color:white; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(255,120,170,0.18); }
 
-    .bday-cta { display:inline-flex; gap:10px; align-items:center; justify-content:center; padding:10px 18px; border-radius:12px; background: linear-gradient(135deg,#ff7fb0,#ff9bd0); border:none; color:white; font-weight:800; cursor:pointer; box-shadow:0 10px 30px rgba(255,120,170,0.18); }
+    #closeBday { position: absolute; top: 18px; right: 18px; width:40px; height:40px; border-radius:50%; display:flex;align-items:center;justify-content:center; background:rgba(255,255,255,0.06); color:#fff; cursor:pointer; z-index:212; }
 
     /* small responsive adjustments */
-    @media (max-width: 640px) {
-      .bday-card { border-radius:16px; max-width: 92%; }
-      .card-inner { padding: 20px; }
-      .bday-title { font-size:1.2rem; }
+    @media (max-width: 420px) {
+      .brand h1{font-size:15px}
+      .bday-title{font-size:18px}
+      .card-inner{padding:16px}
     }
-
   </style>
 </head>
 <body>
+  <!-- decorative orbs -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
 
-  <!-- Decorative orbs (dashboard background) -->
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-
-  <div class="container">
-    <div class="header">
+  <div class="app" id="app">
+    <div class="topbar">
       <div class="brand">
-        <div class="brand-icon">👗</div>
-        <h1>Dress Organizer</h1>
-      </div>
-
-      <div class="user-section">
-        <div class="avatar" id="avatar">U</div>
-
+        <div class="brand-mark">DO</div>
         <div>
-          <div id="typingLine1" class="typing">Hello...</div>
-          <div id="typingLine2" style="color:#c7d2fe; margin-top:4px;">Loading...</div>
+          <h1>Dress Organizer</h1>
+          <div class="greeting" aria-live="polite"><strong id="greetName">Hello</strong><span id="greetLine" style="color:var(--muted);font-size:12px">Your wardrobe overview</span></div>
         </div>
+      </div>
 
-        <button class="btn-ghost" onclick="go('profile.html')">Profile</button>
-        <button class="btn-ghost" onclick="go('favourites.html')">Favourites ⭐</button>
-        <button class="feedback-btn" onclick="openFeedbackModal()">Feedback</button>
-        <button class="btn-ghost" onclick="logout()">Logout</button>
+      <div class="top-actions">
+        <div class="avatar" id="avatar">U</div>
       </div>
     </div>
 
-    <button id="bdayNotification">🎂 Birthday Surprise Ready — Click to view!</button>
-
-    <div class="stats">
-      <div class="stat-card">
-        <div id="dressCount" class="stat-number">0</div>
-        <div class="stat-label">Total Dresses</div>
+    <div class="searchRow" role="search">
+      <div class="search" aria-label="Search outfits">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input id="searchInput" placeholder="Search by name, color, occasion..." />
       </div>
-      <div class="stat-card">
-        <div id="sectionCount" class="stat-number">0</div>
-        <div class="stat-label">Sections</div>
-      </div>
-      <div class="stat-card">
-        <div id="recentUploads" class="stat-number">0</div>
-        <div class="stat-label">Recent Uploads</div>
-      </div>
+      <button id="filterBtn" aria-label="filters" style="background:transparent;border:0;color:var(--muted);font-weight:700">☰</button>
     </div>
 
-    <div class="grid">
-      <div class="card" onclick="go('upload.html')"><div class="card-icon">📸</div><div class="card-title">Upload Dress</div><div class="card-description">Add new items to your wardrobe</div></div>
-      <div class="card" onclick="go('search.html')"><div class="card-icon">🔍</div><div class="card-title">Search Dresses</div><div class="card-description">Find any dress easily</div></div>
-      <div class="card" onclick="go('manage.html')"><div class="card-icon">⚙️</div><div class="card-title">Manage Sections</div><div class="card-description">Organize categories</div></div>
-      <div class="card" onclick="go('profile.html')"><div class="card-icon">👤</div><div class="card-title">Profile</div><div class="card-description">Update your preferences</div></div>
-      <div class="card" onclick="go('favourites.html')"><div class="card-icon">⭐</div><div class="card-title">Favourites</div><div class="card-description">Your saved dresses</div></div>
+    <div class="chipScroll" id="chipScroll" role="toolbar" aria-label="filters">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="casual">Casual</button>
+      <button class="chip" data-filter="party">Party</button>
+      <button class="chip" data-filter="formal">Formal</button>
+      <button class="chip" data-filter="wedding">Wedding</button>
+      <button class="chip" data-filter="summer">Summer</button>
+    </div>
+
+    <div class="statsWrap" id="statsWrap" aria-hidden="false">
+      <div class="stat"><div class="num" id="dressCount">0</div><div class="label">Total Dresses</div></div>
+      <div class="stat"><div class="num" id="sectionCount">0</div><div class="label">Sections</div></div>
+      <div class="stat"><div class="num" id="recentUploads">0</div><div class="label">Recent Uploads</div></div>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="card" onclick="openUpload()" role="button" tabindex="0">
+        <div class="icon">📸</div>
+        <div class="title">Upload Dress</div>
+        <div class="desc">Add new items to your wardrobe</div>
+      </div>
+      <div class="card" onclick="openSearch()" role="button" tabindex="0">
+        <div class="icon">🔍</div>
+        <div class="title">Search Dresses</div>
+        <div class="desc">Find any dress easily</div>
+      </div>
+      <div class="card" onclick="openManage()" role="button" tabindex="0">
+        <div class="icon">⚙️</div>
+        <div class="title">Manage Sections</div>
+        <div class="desc">Organize categories</div>
+      </div>
+      <div class="card" onclick="openProfile()" role="button" tabindex="0">
+        <div class="icon">👤</div>
+        <div class="title">Profile</div>
+        <div class="desc">Update preferences</div>
+      </div>
+      <div class="card" onclick="openFaves()" role="button" tabindex="0">
+        <div class="icon">⭐</div>
+        <div class="title">Favourites</div>
+        <div class="desc">Your saved dresses</div>
+      </div>
     </div>
   </div>
 
-  <div class="bottom-nav">
-    <div class="nav-item" onclick="go('dashboard.html')"><span>🏠</span> Home</div>
-    <div class="nav-item" onclick="go('upload.html')"><span>📸</span> Upload</div>
-    <div class="nav-item" onclick="go('search.html')"><span>🔍</span> Search</div>
-    <div class="nav-item" onclick="go('favourites.html')"><span>⭐</span> Favs</div>
-    <div class="nav-item" onclick="go('profile.html')"><span>👤</span> You</div>
+  <button class="fab" id="fab" aria-label="Upload">+</button>
+
+  <div class="bottomNav" role="navigation" aria-label="Primary navigation">
+    <div class="navItem active" data-tab="home" onclick="go('dashboard.html')">🏠<div style="font-size:11px;margin-top:6px">Home</div></div>
+    <div class="navItem" data-tab="upload" onclick="openUpload()">📸<div style="font-size:11px;margin-top:6px">Upload</div></div>
+    <div class="navItem" data-tab="search" onclick="openSearch()">🔍<div style="font-size:11px;margin-top:6px">Search</div></div>
+    <div class="navItem" data-tab="favs" onclick="openFaves()">⭐<div style="font-size:11px;margin-top:6px">Favs</div></div>
+    <div class="navItem" data-tab="you" onclick="openProfile()">👤<div style="font-size:11px;margin-top:6px">You</div></div>
   </div>
 
-  <!-- Feedback modal -->
-  <div id="feedbackModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999;">
-    <div style="width: 90%; max-width: 420px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 18px; backdrop-filter: blur(18px); padding: 24px; color: white;">
-      <h2 style="margin-bottom: 12px; font-size: 1.4rem;">Send Feedback</h2>
-      <textarea id="feedbackText" style="width: 100%; height: 120px; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; resize: none; font-size: 1rem;" placeholder="Write your feedback here..."></textarea>
-      <div style="margin-top: 16px; display: flex; justify-content: flex-end; gap: 12px;">
-        <button onclick="closeFeedbackModal()" style="padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white; cursor: pointer;">Cancel</button>
-        <button onclick="submitFeedback()" style="padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg,#f472b6,#fb923c); border: none; color: white; font-weight: 700; cursor: pointer;">Submit</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Birthday Surprise (dark romantic) -->
-  <div id="birthdayScreen" class="bday-bg" aria-hidden="true">
+  <!-- Birthday Overlay -->
+  <div id="birthdayOverlay" class="bdayOverlay" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="fog" aria-hidden="true"></div>
-
-    <!-- petal layer (behind card) -->
     <div id="petalContainer" aria-hidden="true"></div>
-
-    <!-- sparkles layer (between fog and card) -->
     <div class="sparkles-wrap" id="sparklesContainer" aria-hidden="true"></div>
+    <div class="hearts-wrap" id="heartsContainer" aria-hidden="true"></div>
 
-    <!-- card -->
-    <div class="bday-card animated-card" id="animatedCard" role="button" tabindex="0" aria-pressed="false">
+    <div class="bday-card" id="bdayCard" tabindex="0" role="button" aria-pressed="false" aria-label="Birthday card">
       <div class="card-inner">
-        <div class="card-header">
-          <div class="bday-title" id="greetingLine">🎉 Happy Birthday, MY LOVE! 🎉</div>
-        </div>
+        <div class="bday-title" id="greetingLine">🎉 Happy Birthday, MY LOVE! 🎉</div>
         <div class="bday-sub" id="subGreeting">Tap to open — my heartbeat… ❤️🎁</div>
       </div>
 
-      <div class="insideScroll" id="insideContent">
+      <div class="insideScroll" id="insideScroll">
         <p id="personalMsg"><strong>MY LOVE —</strong> on your special day, I want to remind you of something simple but true: <strong>You are the most beautiful chapter of my life.</strong></p>
-
         <p>Your smile heals me… your voice comforts me… and your presence makes my whole world feel complete. Thank you for loving me, supporting me, and choosing me every single day. I'm endlessly grateful for you.</p>
-
         <p id="secondMsg" style="margin-top:6px;"></p>
-
-        <div style="text-align:center; margin-top: 14px;">
+        <div style="text-align:center;margin-top:12px">
           <button class="bday-cta" id="continueBtn">Continue to Dashboard</button>
         </div>
       </div>
     </div>
 
-    <!-- hearts above card -->
-    <div class="hearts-wrap" id="heartsContainer" aria-hidden="true"></div>
+    <div id="closeBday" title="Close">✕</div>
 
-    <!-- close button -->
-    <div id="closeBday" title="Close" style="position:absolute; top:22px; right:28px; width:44px; height:44px; border-radius:50%; display:flex;align-items:center;justify-content:center; background:rgba(255,255,255,0.06); color:#fff; cursor:pointer; z-index:100005;">✕</div>
-
-    <!-- background music -->
+    <!-- background music (optional, provide file at same folder or change src) -->
     <audio id="bdayMusic" loop preload="auto">
       <source src="birthday-song.mp3" type="audio/mpeg">
+      <!-- fallback: no audio available -->
     </audio>
+  </div>
+
+  <!-- Small upload modal (simple prototype) -->
+  <div id="uploadModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;align-items:center;justify-content:center;padding:18px;">
+    <div style="width:100%;max-width:520px;background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.06);">
+      <h3 style="margin:0 0 8px">Upload</h3>
+      <p style="margin:0 0 12px;color:var(--muted)">This demo uses local preview only.</p>
+      <input id="fileInput" type="file" accept="image/*" multiple style="width:100%;padding:8px;border-radius:8px;background:transparent;color:inherit;border:1px solid rgba(255,255,255,0.04)"/>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+        <button onclick="closeUpload()" style="padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit">Cancel</button>
+        <button onclick="addDummyUploads()" style="padding:8px 12px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border:none;color:#071022;font-weight:700">Add</button>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    // ---------- Navigation & small utils ----------
-    function go(p){ window.location.href=p; }
-    function logout(){ fetch('/logout',{method:'POST',credentials:'include'}).finally(()=>{localStorage.removeItem('loggedInUser');go('login.html');}); }
+    // ---------- Simple navigation stubs ----------
+    function go(p){ location.href = p; }
+    function openUpload(){ document.getElementById('uploadModal').style.display = 'flex'; }
+    function closeUpload(){ document.getElementById('uploadModal').style.display = 'none'; }
+    function openSearch(){ alert('Open Search (stub)'); }
+    function openManage(){ alert('Open Manage (stub)'); }
+    function openProfile(){ alert('Open Profile (stub)'); }
+    function openFaves(){ alert('Open Favourites (stub)'); }
 
-    function typeText(el, text, delay=40){
-      if(!el) return;
-      el.textContent = "";
-      let i = 0;
-      const timer = setInterval(() => {
-        if (i >= text.length) { clearInterval(timer); return; }
-        el.textContent += text[i++];
-      }, delay);
-    }
-    function typeEffectPromise(el, text, speed=30){
-      return new Promise((resolve)=>{
-        if(!el){ resolve(); return; }
-        el.textContent = "";
-        let i=0;
-        const t = () => {
-          if(i<text.length){ el.textContent += text[i++]; setTimeout(t, speed); }
-          else resolve();
-        };
-        t();
+    // ---------- Populate demo stats & grid ----------
+    const outfitsDemo = [
+      { id:'o1', name:'Pink Lehenga', occasion:'wedding', src:'https://picsum.photos/420/560?random=31'},
+      { id:'o2', name:'Denim Jacket', occasion:'casual', src:'https://picsum.photos/420/560?random=12'},
+      { id:'o3', name:'Evening Gown', occasion:'party', src:'https://picsum.photos/420/560?random=7'},
+      { id:'o4', name:'Sleeveless Kurti', occasion:'summer', src:'https://picsum.photos/420/560?random=99'},
+      { id:'o5', name:'Floral Dress', occasion:'party', src:'https://picsum.photos/420/560?random=55'},
+      { id:'o6', name:'Cotton Kurta', occasion:'casual', src:'https://picsum.photos/420/560?random=6'}
+    ];
+
+    function renderGrid(){
+      const grid = document.getElementById('grid');
+      // keep first 5 cards already there, append image cards after them
+      // remove previously rendered dynamic cards by class
+      Array.from(grid.querySelectorAll('.dyn-card')).forEach(n=>n.remove());
+      outfitsDemo.forEach(o=>{
+        const el = document.createElement('div');
+        el.className = 'card dyn-card';
+        el.innerHTML = `<img src="${o.src}" alt="${o.name}" style="width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px"/><div class="title">${o.name}</div><div class="desc">${o.occasion}</div>`;
+        el.addEventListener('click', ()=> openPreview(o));
+        grid.appendChild(el);
       });
+      document.getElementById('dressCount').textContent = outfitsDemo.length;
+      document.getElementById('sectionCount').textContent = 5;
+      document.getElementById('recentUploads').textContent = 3;
     }
 
-    // ---------- Load user & stats (unchanged) ----------
-    async function loadUser(){
-      try{
-        const r=await fetch('/api/me',{credentials:'include'});
-        if(!r.ok){ go('login.html'); return; }
-        const u=await r.json();
-        const name = u.name || (u.email ? u.email.split('@')[0] : 'User');
-        document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
-        const hour = new Date().getHours();
-        const timeGreeting = hour < 12 ? "Good morning" : (hour < 17 ? "Good afternoon" : "Good evening");
-        typeText(document.getElementById('typingLine1'), `${timeGreeting}, ${name} 👋`);
-        typeText(document.getElementById('typingLine2'), `Here's your wardrobe overview…`);
-        window.__CURRENT_USER = u;
-      }catch(e){ console.error(e); }
+    function openPreview(item){
+      const w = window.open('', '_blank');
+      w.document.write(`<title>${item.name}</title><style>body{margin:0;background:#071022;display:flex;align-items:center;justify-content:center;height:100vh;color:#fff}img{max-width:100%;max-height:100%;object-fit:contain}</style><img src="${item.src}" alt="${item.name}">`);
     }
 
-    async function loadStats(){
-      try{
-        const r=await fetch('/api/stats',{credentials:'include'});
-        if(!r.ok) return;
-        const s=await r.json();
-        document.getElementById('dressCount').textContent = s.dresses ?? 0;
-        document.getElementById('sectionCount').textContent = s.sections ?? 0;
-        document.getElementById('recentUploads').textContent = (s.recent || []).length;
-      }catch(e){ console.error(e); }
+    renderGrid();
+
+    // ---------- Simple upload demo action ----------
+    function addDummyUploads(){
+      // add 1 dummy item then close
+      outfitsDemo.unshift({id:'o'+Math.random().toString(36).slice(2,6), name:'New Outfit', occasion:'casual', src:'https://picsum.photos/420/560?random=' + Math.floor(Math.random()*999)});
+      renderGrid();
+      closeUpload();
     }
 
-    loadUser();
-    loadStats();
-    setInterval(loadStats, 60_000);
+    // ---------- Greeting (simulate user fetch) ----------
+    function setGreeting(name){
+      document.getElementById('avatar').textContent = (name||'U').charAt(0).toUpperCase();
+      document.getElementById('greetName').textContent = `${name ? 'Good day, ' + name : 'Hello'}`;
+      document.getElementById('greetLine').textContent = "Here's your wardrobe overview";
+    }
+    // mock fetch user
+    setTimeout(()=> setGreeting('My Love'), 400);
 
-    // ---------- Birthday config ----------
+    // ---------- BIRTHDAY configuration ----------
     const BDAY_TARGET_EMAIL = "sjs36931@gmail.com";
-    const BDAY_DAY_MONTH = "17-11"; // dd-mm - keep this as the trigger day
+    const BDAY_DAY_MONTH = "17-11"; // dd-mm
 
-    // ---------- Birthday check & activation ----------
-    async function checkBirthday() {
+    // For demo: if today's date matches BDAY_DAY_MONTH and localStorage hasn't shown today, show overlay.
+    function checkBirthday() {
       try {
-        let user = window.__CURRENT_USER;
-        if (!user) {
-          const res = await fetch('/api/me', { credentials: 'include' });
-          if (!res.ok) return;
-          user = await res.json();
-          window.__CURRENT_USER = user;
-        }
-
         const now = new Date();
         const dd = String(now.getDate()).padStart(2,'0');
-        const mm = String(now.getMonth() + 1).padStart(2,'0');
+        const mm = String(now.getMonth()+1).padStart(2,'0');
         const today = `${dd}-${mm}`;
-
-        if (user && user.email === BDAY_TARGET_EMAIL && today === BDAY_DAY_MONTH) {
-          // show rose-themed birthday screen (dark style)
-          const shown = localStorage.getItem("bdayShown");
+        // For demo, also allow URL override ?showBday=1
+        const params = new URLSearchParams(location.search);
+        const override = params.get('showBday');
+        const userEmail = window.__CURRENT_USER_EMAIL || BDAY_TARGET_EMAIL; // demo, using target
+        if ((today === BDAY_DAY_MONTH || override === '1') && userEmail === BDAY_TARGET_EMAIL) {
+          const shown = localStorage.getItem('bdayShown');
           if (shown !== new Date().toDateString()) {
-            setTimeout(()=> showBirthdayScreen(user), 450);
+            setTimeout(()=> showBirthday(), 400);
           } else {
-            showBirthdayNotification();
+            // show small notification button if already shown today
+            showBdayNotification();
           }
         }
-      } catch (err) {
-        console.error("Birthday check error:", err);
-      }
+      } catch(e){ console.error(e); }
     }
-    setTimeout(checkBirthday, 800);
+    setTimeout(checkBirthday, 700);
 
-    // ---------- Show / Close birthday ----------
-    function showBirthdayScreen(user) {
-      localStorage.setItem("bdayShown", new Date().toDateString());
-      const screen = document.getElementById('birthdayScreen');
-      const music = document.getElementById('bdayMusic');
-      screen.style.display = 'flex';
+    // ---------- Show / Close Birthday ----------
+    const overlay = document.getElementById('birthdayOverlay');
+    const music = document.getElementById('bdayMusic');
+    let heartInterval = null;
+    let petalInterval = null;
 
-      // set name text (static "MY LOVE" per your request)
-      const displayName = "MY LOVE";
-      document.getElementById('greetingLine').textContent = `🎉 Happy Birthday, ${displayName}! 🎉`;
-      document.getElementById('subGreeting').textContent = 'Tap to open — my heartbeat… ❤️🎁';
-      document.getElementById('personalMsg').innerHTML = `<strong>${displayName} —</strong> on your special day, I want to remind you of something simple but true: <strong>You are the most beautiful chapter of my life.</strong>`;
-
-      // show visual layers
+    function showBirthday() {
+      try { localStorage.setItem('bdayShown', new Date().toDateString()); } catch(e){}
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden','false');
       populateSparkles();
-      createHearts();
-      startRosePetals();
+      startHearts();
+      startPetals();
+      // confetti bursts
+      setTimeout(()=> confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } }), 300);
+      setTimeout(()=> confetti({ particleCount: 140, spread: 110, origin: { y: 0.66 } }), 900);
 
-      // confetti entrance
-      setTimeout(()=> confetti({ particleCount: 110, spread: 90, origin: { y: 0.62 } }), 320);
-      setTimeout(()=> confetti({ particleCount: 180, spread: 120, origin: { y: 0.66 } }), 900);
-
-      // play music softly when opened (will fade in)
-      const card = document.getElementById('animatedCard');
-      let opened = false;
-      async function openInteraction() {
+      // open interaction: play music & reveal second paragraph on tap
+      const card = document.getElementById('bdayCard');
+      let opened=false;
+      const onOpen = () => {
         if (opened) return;
         opened = true;
-        try {
-          music.volume = 0;
-          const p = music.play();
-          if (p !== undefined) p.catch(()=>{});
-          let v = 0;
-          const target = 0.55;
-          const step = 0.035;
-          const iv = setInterval(()=> {
-            v = Math.min(v + step, target);
-            music.volume = v;
-            if (v >= target) clearInterval(iv);
-          }, 120);
-        } catch(e){}
-        // reveal long message
+        fadeInMusic();
         const secondEl = document.getElementById('secondMsg');
         const secondText = "On this day… I just want one thing: For you to feel loved, cherished, and held close. Because you deserve all the happiness in the world, My Love. 💗";
-        setTimeout(()=> {
-          typeEffectPromise(secondEl, secondText, 28).then(()=> {
-            // subtle highlight or shimmer could be added here
-          });
-        }, 900);
-      }
+        typeEffect(secondEl, secondText, 28);
+      };
+      card.addEventListener('click', onOpen, { once: true });
+      card.addEventListener('keydown', (e)=> { if(e.key === 'Enter' || e.key === ' ') onOpen(); });
 
-      card.addEventListener('click', openInteraction, { once: true });
-      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') openInteraction(); });
-
-      // continue button
       document.getElementById('continueBtn').onclick = closeBirthday;
-      // close button
       document.getElementById('closeBday').onclick = closeBirthday;
     }
 
-    function closeBirthday() {
-      const screen = document.getElementById('birthdayScreen');
-      const music = document.getElementById('bdayMusic');
-      try {
-        let v = music.volume || 0;
-        const fade = setInterval(()=> {
-          v = Math.max(0, v - 0.06);
-          music.volume = v;
-          if (v <= 0.02) { clearInterval(fade); try{ music.pause(); }catch(e){} }
-        }, 80);
-      } catch(e){}
-
-      stopRosePetals();
+    function closeBirthday(){
+      overlay.setAttribute('aria-hidden','true');
+      overlay.style.display = 'none';
+      stopPetals();
+      stopHearts();
       clearSparkles();
-      clearHearts();
-
-      screen.classList.add('fadeOut');
-      setTimeout(()=> {
-        screen.style.display = 'none';
-        screen.classList.remove('fadeOut');
-      }, 520);
+      fadeOutMusic();
     }
 
-    // notification small button
-    function showBirthdayNotification() {
-      const box = document.getElementById("bdayNotification");
-      if (!box) return;
-      box.style.display = "block";
-      box.style.opacity = "0";
-      setTimeout(()=> box.style.opacity = "1", 20);
-      box.onclick = () => { box.style.display = "none"; showBirthdayScreen(window.__CURRENT_USER); };
+    function showBdayNotification(){
+      // create a small floating button in corner
+      if (document.getElementById('bdayNotifBtn')) return;
+      const btn = document.createElement('button');
+      btn.id = 'bdayNotifBtn';
+      btn.textContent = '🎂 Birthday Surprise Ready — Tap!';
+      Object.assign(btn.style, {
+        position:'fixed', right:'14px', top:'80px', padding:'10px 14px', borderRadius:'12px',
+        background:'linear-gradient(135deg,#ff6fb5,#ff9bd0)', color:'#071022', border:'none', zIndex:9999, boxShadow:'0 10px 30px rgba(255,111,181,0.4)'
+      });
+      btn.onclick = ()=> { btn.remove(); showBirthday(); };
+      document.body.appendChild(btn);
     }
 
-    // ---------- Sparkles (between fog & card) ----------
-    const sparkleEls = [];
-    function populateSparkles() {
+    // ---------- Sparkles ----------
+    let sparkleEls = [];
+    function populateSparkles(){
       const wrap = document.getElementById('sparklesContainer');
       if(!wrap) return;
       wrap.innerHTML = '';
-      const count = 12;
-      for (let i=0; i<count; i++){
+      sparkleEls = [];
+      const count = 10;
+      for(let i=0;i<count;i++){
         const s = document.createElement('div');
         s.className = 'sparkle';
-        const left = 8 + Math.random() * 84;
+        const left = 6 + Math.random() * 88;
         const top = 6 + Math.random() * 72;
         s.style.left = left + '%';
         s.style.top = top + '%';
-        const scale = 0.6 + Math.random() * 1.0;
-        s.style.width = (8 + Math.random()*10) + 'px';
+        s.style.width = (6 + Math.random()*8) + 'px';
         s.style.height = s.style.width;
         s.style.animationDelay = (Math.random() * 2) + 's';
-        s.style.opacity = 0;
         wrap.appendChild(s);
         sparkleEls.push(s);
       }
     }
-    function clearSparkles() {
+    function clearSparkles(){
       const wrap = document.getElementById('sparklesContainer');
       if(wrap) wrap.innerHTML = '';
-      sparkleEls.length = 0;
+      sparkleEls = [];
     }
 
     // ---------- Hearts ----------
-    let heartsInterval = null;
-    function createHearts(){
+    function startHearts(){
       const container = document.getElementById('heartsContainer');
       if(!container) return;
-      container.innerHTML = '';
-      const colors = ["#ff6fb5","#ff9bd0","#ffc0d9","#ff7fb0"];
-      heartsInterval = setInterval(()=> {
+      heartsClear();
+      heartInterval = setInterval(()=> {
         const h = document.createElement('div');
         h.className = 'heart';
         h.innerHTML = '❤️';
         const left = 8 + Math.random() * 84;
-        const size = 18 + Math.random()*28;
+        const size = 14 + Math.random()*22;
         h.style.left = left + '%';
-        h.style.top = (60 + Math.random()*28) + '%';
+        h.style.top = (62 + Math.random()*28) + '%';
         h.style.fontSize = size + 'px';
+        const colors = ["#ff6fb5","#ff9bd0","#ffc0d9","#ff7fb0"];
         h.style.color = colors[Math.floor(Math.random()*colors.length)];
-        const dur = 3500 + Math.random()*2000;
+        const dur = 3000 + Math.random()*2000;
         h.style.animationDuration = (dur/1000) + 's';
         container.appendChild(h);
-        // remove after animation
-        setTimeout(()=> {
-          try{ container.removeChild(h); } catch(e){}
-        }, dur + 200);
+        setTimeout(()=> { try{ container.removeChild(h); }catch(e){} }, dur + 300);
       }, 520);
     }
-    function clearHearts(){
-      if(heartsInterval){ clearInterval(heartsInterval); heartsInterval = null; }
+    function heartsClear(){
       const cont = document.getElementById('heartsContainer');
       if(cont) cont.innerHTML = '';
     }
+    function stopHearts(){ if(heartInterval) clearInterval(heartInterval); heartsClear(); heartInterval = null; }
 
-    // ---------- Falling Rose Petals (behind card) ----------
-    let petalInterval = null;
-    function startRosePetals(){
+    // ---------- Petals ----------
+    let petalTimer = null;
+    function startPetals(){
       const container = document.getElementById('petalContainer');
       if(!container) return;
       container.innerHTML = '';
-      // replace this image with your own if you want better quality
-      const petalImg = "https://i.ibb.co/QCTCs7Z/rosepetal.png";
-
-      petalInterval = setInterval(()=> {
+      petalTimer = setInterval(()=> {
         const petal = document.createElement('div');
         petal.className = 'petal';
-        // random start position
-        const left = Math.random() * 110 - 5; // allow slight off-screen spawn
+        const left = Math.random()*110 - 5;
         petal.style.left = left + 'vw';
-        petal.style.top = (-8 - Math.random()*6) + 'vh'; // start above viewport
-        // size
-        const size = 16 + Math.random()*26;
+        petal.style.top = (-10 - Math.random()*6) + 'vh';
+        const size = 12 + Math.random()*20;
         petal.style.width = size + 'px';
         petal.style.height = 'auto';
-        petal.style.backgroundImage = `url(${petalImg})`;
-        petal.style.opacity = (0.6 + Math.random()*0.35);
-        const dur = 6 + Math.random()*7;
+        petal.style.backgroundImage = 'url(https://i.ibb.co/QCTCs7Z/rosepetal.png)';
+        petal.style.opacity = (0.55 + Math.random()*0.45);
+        const dur = 4 + Math.random()*6;
         petal.style.animationDuration = dur + 's';
-        // apply animation
         petal.style.animationName = 'petalFall';
         petal.style.animationTimingFunction = 'linear';
         petal.style.animationFillMode = 'forwards';
-        // horizontal drifting via Web Animations
-        const drift = (Math.random()*18 - 9); // vw drift
         container.appendChild(petal);
-        // animate translateX and rotation
         petal.animate([
           { transform: `translateX(0) rotate(${Math.random()*90 - 45}deg)` },
-          { transform: `translateX(${drift}vw) rotate(${Math.random()*720 - 360}deg)` }
-        ], { duration: dur * 1000, easing: 'ease-in-out' });
-
-        // remove later
-        setTimeout(()=> {
-          try{ container.removeChild(petal); } catch(e){}
-        }, (dur + 1) * 1000);
+          { transform: `translateX(${(Math.random()*18 - 9)}vw) rotate(${Math.random()*720 - 360}deg)` }
+        ], { duration: dur * 1000, easing: 'linear' });
+        setTimeout(()=> { try{ container.removeChild(petal); }catch(e){} }, (dur+0.6)*1000);
       }, 260);
     }
+    function stopPetals(){ if(petalTimer) clearInterval(petalTimer); const c = document.getElementById('petalContainer'); if(c) c.innerHTML = ''; petalTimer = null; }
 
-    function stopRosePetals(){
-      if(petalInterval){ clearInterval(petalInterval); petalInterval = null; }
-      const container = document.getElementById('petalContainer');
-      if(container) container.innerHTML = '';
+    // keyframes for petals (inserted programmatically fallback)
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `
+      @keyframes petalFall {
+        0% { transform: translateY(-8vh) rotate(0deg); opacity:0; }
+        8% { opacity:1; }
+        70% { opacity:1; }
+        100% { transform: translateY(120vh) rotate(360deg); opacity:0; }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // ---------- Music controls ----------
+    function fadeInMusic(){
+      try {
+        if(!music) return;
+      } catch(e){}
+      try {
+        music.volume = 0;
+        const p = music.play();
+        if(p && p.catch) p.catch(()=>{});
+        let v = 0;
+        const target = 0.55;
+        const step = 0.03;
+        const iv = setInterval(()=> {
+          v = Math.min(v + step, target);
+          music.volume = v;
+          if (v >= target) clearInterval(iv);
+        }, 120);
+      } catch(e){}
+    }
+    function fadeOutMusic(){
+      try {
+        if(!music) return;
+      } catch(e){}
+      try {
+        let v = music.volume || 0;
+        const iv = setInterval(()=> {
+          v = Math.max(0, v - 0.06);
+          music.volume = v;
+          if (v <= 0.02) { clearInterval(iv); try{ music.pause(); }catch(e){} }
+        }, 80);
+      } catch(e){}
     }
 
-    // ---------- Feedback modal ----------
-    function openFeedbackModal(){ document.getElementById("feedbackModal").style.display = "flex"; }
-    function closeFeedbackModal(){ document.getElementById("feedbackModal").style.display = "none"; }
-    async function submitFeedback(){
-      const text = document.getElementById("feedbackText").value.trim();
-      if(!text) return alert("Please write some feedback!");
-      try{
-        const res = await fetch("/api/feedback", {
-          method:"POST", headers:{"Content-Type":"application/json"}, credentials:"include", body:JSON.stringify({message:text})
-        });
-        if(res.ok){ alert("Your feedback has been submitted!"); document.getElementById("feedbackText").value=""; closeFeedbackModal(); }
-        else alert("Error submitting feedback.");
-      }catch(e){ alert("Network error."); }
+    // ---------- Tiny typing effect ----------
+    function typeEffect(el, text, speed=30){
+      if(!el) return;
+      el.textContent = '';
+      let i=0;
+      const t = () => {
+        if(i < text.length){ el.textContent += text[i++]; setTimeout(t, speed); }
+      };
+      t();
     }
 
-    // ---------- Safe cleanups on unload ----------
+    // ---------- Safe cleanup ----------
     window.addEventListener('beforeunload', ()=> {
-      stopRosePetals();
+      stopPetals();
+      stopHearts();
       clearSparkles();
-      clearHearts();
     });
 
-    // end script
+    // Expose showBirthday for quick manual testing
+    window.showBirthday = showBirthday;
+    window.closeBirthday = closeBirthday;
+
+    // For easier testing during development, allow ?showBday=1 to force it
+    (function devShortcut(){
+      const p = new URLSearchParams(location.search);
+      if(p.get('showBday') === '1') setTimeout(()=> showBirthday(), 400);
+    })();
+
+    // Accessibility: allow ESC to close overlay
+    window.addEventListener('keydown', (e)=> {
+      if(e.key === 'Escape') {
+        if(document.getElementById('birthdayOverlay').style.display === 'flex') closeBirthday();
+        if(document.getElementById('uploadModal').style.display === 'flex') closeUpload();
+      }
+    });
   </script>
 </body>
 </html>
