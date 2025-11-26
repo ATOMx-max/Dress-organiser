@@ -1,0 +1,458 @@
+/* Extracted styles for feedback.html */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding: 20px;
+    }
+
+    /* Enhanced floating blobs */
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.3;
+      animation: float 12s ease-in-out infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      width: 400px;
+      height: 400px;
+      background: #fbbf24;
+      top: -100px;
+      left: -100px;
+    }
+
+    body::after {
+      width: 450px;
+      height: 450px;
+      background: #ec4899;
+      bottom: -150px;
+      right: -150px;
+      animation-delay: 6s;
+    }
+
+    /* Additional floating elements */
+    .floating-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.2;
+      animation: float 15s ease-in-out infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 300px;
+      height: 300px;
+      background: #06b6d4;
+      top: 50%;
+      right: -100px;
+      animation-delay: 2s;
+    }
+
+    .orb-2 {
+      width: 250px;
+      height: 250px;
+      background: #8b5cf6;
+      bottom: 30%;
+      left: -80px;
+      animation-delay: 8s;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1) rotate(0deg); }
+      33% { transform: translate(30px,-30px) scale(1.1) rotate(120deg); }
+      66% { transform: translate(-30px,30px) scale(0.95) rotate(240deg); }
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 45px 40px;
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25),
+                  inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      z-index: 10;
+      animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Shimmer effect on card */
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+      );
+      transform: rotate(45deg);
+      animation: shimmer 6s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(40px) scale(0.95);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Icon animation */
+    .icon-wrapper {
+      display: inline-block;
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+      animation: bounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(251, 191, 36, 0.4));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: 2rem;
+      background: linear-gradient(135deg, #fbbf24 0%, #ec4899 50%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 3s ease infinite;
+      background-size: 200% 200%;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    p {
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .textarea-wrapper {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 160px;
+      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 18px;
+      font-size: 1rem;
+      resize: none;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      outline: none;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    textarea:focus {
+      border-color: rgba(251, 191, 36, 0.6);
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2),
+                  0 8px 25px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.95);
+    }
+
+    textarea::placeholder {
+      color: rgba(51, 51, 51, 0.5);
+    }
+
+    /* Character counter */
+    .char-counter {
+      position: absolute;
+      bottom: -25px;
+      right: 5px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      z-index: 1;
+    }
+
+    button {
+      margin-top: 35px;
+      padding: 14px 35px;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      font-weight: 600;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.5);
+    }
+
+    button:active {
+      transform: translateY(-1px) scale(1);
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .msg {
+      margin-top: 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      min-height: 28px;
+      animation: fadeIn 0.5s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loader {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top: 3px solid #fbbf24;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .actions button {
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 0;
+      transition: all 0.3s ease;
+    }
+
+    .green-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .green-btn:hover {
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .red-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .red-btn:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Success animation */
+    @keyframes successPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .success-animation {
+      animation: successPulse 0.6s ease;
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .glass-card {
+        padding: 35px 25px;
+        border-radius: 25px;
+        max-width: 100%;
+      }
+
+      .icon-wrapper {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 1.7rem;
+        margin-bottom: 10px;
+      }
+
+      p {
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+      }
+
+      textarea {
+        height: 140px;
+        padding: 15px;
+        font-size: 0.95rem;
+        border-radius: 18px;
+      }
+
+      button {
+        padding: 13px 28px;
+        font-size: 1rem;
+        margin-top: 30px;
+        width: 100%;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 25px;
+      }
+
+      .actions button {
+        width: 100%;
+        padding: 13px 24px;
+      }
+
+      .char-counter {
+        font-size: 0.8rem;
+        bottom: -22px;
+      }
+
+      body::before {
+        width: 300px;
+        height: 300px;
+      }
+
+      body::after {
+        width: 350px;
+        height: 350px;
+      }
+
+      .orb-1, .orb-2 {
+        width: 200px;
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .glass-card {
+        padding: 30px 20px;
+      }
+
+      .icon-wrapper {
+        font-size: 2.5rem;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      textarea {
+        height: 130px;
+        padding: 14px;
+      }
+
+      button {
+        padding: 12px 24px;
+      }
+    }
+
+    /* Touch feedback for mobile */
+    @media (hover: none) {
+      button:active {
+        transform: scale(0.97);
+      }
+
+      textarea:active {
+        transform: translateY(-1px);
+      }
+    }

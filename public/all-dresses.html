@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Dresses | Dress Organizer</title>
+
+  
+
+  <link rel="stylesheet" href="css/all-dresses.css" />
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <button class="btn back" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+    <h1>All Dresses</h1>
+    <button class="btn logout" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Dresses Grid -->
+  <div id="grid" class="grid"></div>
+
+  <p id="emptyMsg" class="empty" style="display:none;">
+    No dresses uploaded yet 👗<br>
+    Upload one from Dashboard → Upload Dress
+  </p>
+
+  <script src="js/all-dresses.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback | Dress Organizer</title>
+
+  
+
+  <link rel="stylesheet" href="css/feedback.css" />
+</head>
+
+<body>
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
+
+  <div class="glass-card">
+    <div class="icon-wrapper">💬</div>
+    <h2>Share Your Feedback</h2>
+    <p>Your thoughts help us improve Dress Organizer!</p>
+
+    <div class="textarea-wrapper">
+      <textarea id="feedbackText" placeholder="Write your feedback here..." maxlength="500"></textarea>
+      <div class="char-counter"><span id="charCount">0</span>/500</div>
+    </div>
+
+    <button id="submitFeedback">
+      <span>✨</span>
+      <span>Submit Feedback</span>
+    </button>
+
+    <p id="msg" class="msg"></p>
+
+    <div class="actions">
+      <button class="green-btn" onclick="window.location.href='dashboard.html'">
+        <span>←</span>
+        <span>Dashboard</span>
+      </button>
+      <button class="red-btn" onclick="logout()">
+        <span>🚪</span>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <script src="js/feedback.js"></script>
+
+</body>
+</html>
