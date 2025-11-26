@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reset Password | Dress Organizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  
+
+  <link rel="stylesheet" href="css/reset.css" /></head>
+<body>
+  <div class="reset-container">
+    <h2>Reset Your Password</h2>
+
+    <form id="resetForm" style="display:none;">
+      <input type="password" id="password" placeholder="New Password" required minlength="6" />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6" />
+      <button type="submit">Update Password</button>
+    </form>
+
+    <p id="msg" class="message info">Checking reset link...</p>
+    <a href="login.html">Back to Login</a>
+  </div>
+
+  
+
+  <script src="js/reset.js"></script></body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manage Sections & Categories | Dress Organizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  
+
+  <link rel="stylesheet" href="css/manage.css" /></head>
+<body>
+
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <header>
+    <h1>⚙️ Manage Sections & Categories</h1>
+    <div class="controls">
+      <div class="small" id="userEmail" style="opacity:0.9"></div>
+      <button class="btn logout" id="logoutBtn" title="Logout">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+      <input id="searchInput" type="text" placeholder="Search sections or categories..." style="flex:1;min-width:200px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.08);color:#fff" />
+      <button class="btn" id="importBtn" title="Import JSON">Import JSON</button>
+      <button class="btn" id="exportBtn" title="Export JSON">Export JSON</button>
+    </div>
+
+    <div class="flex-row">
+      <section class="panel" id="sectionsPanel">
+        <h2>🧩 Sections</h2>
+        <div class="input-row">
+          <input id="sectionInput" type="text" placeholder="Enter new section" />
+          <button class="btn" id="addSectionBtn">Add Section</button>
+        </div>
+        <div id="sectionsTags" class="tag-container" aria-live="polite"></div>
+        <div id="sectionsEmpty" class="empty" style="display:none">No sections yet. Add your first section above ✨</div>
+      </section>
+
+      <section class="panel" id="categoriesPanel">
+        <h2>📂 Categories</h2>
+        <div class="input-row">
+          <select id="sectionSelect"><option value="">Select Section</option></select>
+          <input id="categoryInput" type="text" placeholder="Enter new category" />
+          <button class="btn" id="addCategoryBtn">Add Category</button>
+        </div>
+        <div id="categoriesTags" class="tag-container"></div>
+        <div id="categoriesEmpty" class="empty" style="display:none">Select a section to view categories.</div>
+      </section>
+    </div>
+
+    <div style="display:flex;justify-content:center;margin-top:18px;gap:12px;flex-wrap:wrap">
+      <button class="btn" id="resetBtn">♻ Reset to Default</button>
+      <button class="btn" onclick="window.location.href='dashboard.html'">← Dashboard</button>
+    </div>
+  </main>
+
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 id="modalTitle">Confirm</h3>
+      <p id="modalMessage">Are you sure?</p>
+      <div class="row" style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+        <button class="btn" id="modalCancel">Cancel</button>
+        <button class="btn" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <script src="js/manage.js"></script></body>
+</html>

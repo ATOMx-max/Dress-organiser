@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Dress Organizer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  
+
+  <link rel="stylesheet" href="css/login.css" /></head>
+
+<body>
+
+  <!-- Particles -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <!-- Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- LOGIN CARD -->
+  <div class="login-card">
+    <div class="logo">👗</div>
+
+    <div class="title">Welcome Back</div>
+    <div class="subtitle">Login to organize your wardrobe</div>
+
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <span class="input-icon">📧</span>
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Password" required>
+        <span class="input-icon">🔒</span>
+      </div>
+
+      <button class="btn-primary" id="loginBtn">Login</button>
+    </form>
+
+    <div id="msg" class="message"></div>
+
+    <div class="links">
+      <a href="register.html">Don't have an account? Register</a>
+      <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+    </div>
+  </div>
+
+  <!-- SUCCESS OVERLAY -->
+  <div class="overlay" id="successOverlay">
+    <div class="overlay-box">
+      <div class="check-circle">✓</div>
+      <h2>Login Successful!</h2>
+      <p>Redirecting to Dashboard...</p>
+    </div>
+  </div>
+
+  
+
+
+  <script src="js/login.js"></script></body>
+</html>
