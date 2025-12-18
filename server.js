@@ -703,6 +703,35 @@ app.post("/forgot-password", async (req, res) => {
     res.status(500).json({ message: "Error processing password reset request." });
   }
 });
+// ✅ VALIDATE RESET TOKEN (required by reset.js)
+app.get("/validate-reset", async (req, res) => {
+  try {
+    const { id, token } = req.query;
+
+    if (!id || !token) {
+      return res.json({ valid: false });
+    }
+
+    const tokenDoc = await Token.findOne({
+      userId: id,
+      purpose: "reset",
+    });
+
+    if (!tokenDoc) {
+      return res.json({ valid: false });
+    }
+
+    const isValid = await bcrypt.compare(token, tokenDoc.token);
+    if (!isValid) {
+      return res.json({ valid: false });
+    }
+
+    return res.json({ valid: true });
+  } catch (err) {
+    console.error("❌ Validate reset error:", err);
+    return res.status(500).json({ valid: false });
+  }
+});
 
 // 2) reset-password: compare raw token to hashed stored token and update password
 app.post("/reset-password", async (req, res) => {
