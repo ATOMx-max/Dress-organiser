@@ -135,12 +135,15 @@ const streamUpload = (buffer, folder) => {
   });
 };
 function getCloudinaryPublicId(url) {
-  return url
-    .split("/")
-    .slice(-2)
-    .join("/")
-    .split(".")[0];
+  try {
+    const parts = url.split("/upload/")[1]; // everything after /upload/
+    const withoutVersion = parts.replace(/^v\d+\//, "");
+    return withoutVersion.split(".")[0];
+  } catch (e) {
+    return null;
+  }
 }
+
 // multer setup (memory storage for mobile safety)
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -598,9 +601,11 @@ app.delete("/api/delete-account", async (req, res) => {
     // Delete dresses + cloudinary images
     const dresses = await Dress.find({ userEmail: user.email });
     for (const d of dresses) {
-      try {
-        await cloudinary.uploader.destroy(getCloudinaryPublicId(d.imageUrl)).catch(() => {});
-      } catch (e) {}
+      const publicId = getCloudinaryPublicId(d.imageUrl);
+      if (publicId) {
+        const result = await cloudinary.uploader.destroy(publicId);
+        console.log("🗑️ Cloudinary delete (section):", result);
+      }
     }
     await Dress.deleteMany({ userEmail: user.email });
 
@@ -838,12 +843,13 @@ app.delete("/api/sections/:name", async (req, res) => {
   if (!section) return res.status(403).json({ message: "Cannot delete default/shared sections." });
 
   const dresses = await Dress.find({ section: name, userEmail: user.email });
-  for (const d of dresses) {
-    try {
-      await cloudinary.uploader.destroy(getCloudinaryPublicId(d.imageUrl)).catch(() => {});
-    } catch (e) {}
+for (const d of dresses) {
+  const publicId = getCloudinaryPublicId(d.imageUrl);
+  if (publicId) {
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log("🗑️ Cloudinary delete (section):", result);
   }
-
+}
   await Dress.deleteMany({ section: name, userEmail: user.email });
   await Section.deleteOne({ name, userEmail: user.email });
 
@@ -1020,7 +1026,11 @@ app.delete("/api/dresses/:id", async (req, res) => {
     const dress = await Dress.findById(req.params.id);
     if (!dress) return res.status(404).json({ message: "Dress not found." });
     if (dress.userEmail !== user.email) return res.status(403).json({ message: "Forbidden." });
-    await cloudinary.uploader.destroy(getCloudinaryPublicId(dress.imageUrl)).catch(() => {});
+    const publicId = getCloudinaryPublicId(dress.imageUrl);
+    if (publicId) {
+      const result = await cloudinary.uploader.destroy(publicId);
+      console.log("🗑️ Cloudinary delete (single dress):", result);
+    }
     await Dress.findByIdAndDelete(req.params.id);
     res.json({ message: "🗑️ Dress deleted from database & Cloudinary." });
   } catch (err) {
