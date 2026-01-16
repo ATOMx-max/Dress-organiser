@@ -15,7 +15,6 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const multer = require("multer");
-const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 const crypto = require("crypto");
 const app = express();
@@ -65,10 +64,12 @@ app.use(
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "25mb" }));
 app.use(express.urlencoded({ extended: true }));
-
-
+app.use((req, res, next) => {
+  res.setTimeout(120000); // 2 minutes (mobile networks)
+  next();
+});
 // Create a session store instance and keep a reference so we can manipulate session documents
 const sessionStore = MongoStore.create({
   mongoUrl: process.env.MONGO_URI,
@@ -115,19 +116,35 @@ try {
   console.error("❌ Cloudinary configuration error:", err.message || err);
   process.exit(1);
 }
-
-// ensure uploads folder
-if (!fs.existsSync("uploads")) fs.mkdirSync("uploads");
-
-// multer setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-
+// Cloudinary stream upload helper (mobile safe)
+const streamUpload = (buffer, folder) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder,
+        format: "jpg",
+        quality: "auto",
+        fetch_format: "auto",
+        flags: "strip_profile",
+      },
+      (err, result) => {
+        if (result) resolve(result);
+        else reject(err);
+      }
+    );
+    stream.end(buffer);
+  });
+};
+function getCloudinaryPublicId(url) {
+  return url
+    .split("/")
+    .slice(-2)
+    .join("/")
+    .split(".")[0];
+}
+// multer setup (memory storage for mobile safety)
 const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
   fileFilter: (req, file, cb) => {
     if (!file.mimetype.startsWith("image/")) {
       return cb(new Error("❌ Only image files are allowed!"));
@@ -135,6 +152,7 @@ const upload = multer({
     cb(null, true);
   },
 });
+
 
 // --- Schemas ---
 const userSchema = new mongoose.Schema({
@@ -528,6 +546,7 @@ app.post("/api/restore", async (req, res) => {
 });
 
 // Upload profile pic
+// Upload profile pic (FIXED)
 app.post(
   "/api/upload-profile-pic",
   (req, res, next) => {
@@ -538,20 +557,27 @@ app.post(
   },
   async (req, res) => {
     try {
-      if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
-      if (!req.file) return res.status(400).json({ message: "No image uploaded" });
+      if (!req.session?.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      if (!req.file) {
+        return res.status(400).json({ message: "No image uploaded" });
+      }
 
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "dress_organizer/profile",
-        format: "jpg",
+      // ✅ Stream upload
+      const userId = req.session.user._id;
+      const result = await streamUpload(req.file.buffer,`dress_organizer/users/${userId}/profile`);
+      await User.findByIdAndUpdate(req.session.user._id, {
+        profilePic: result.secure_url,
       });
 
-      await User.findByIdAndUpdate(req.session.user._id, { profilePic: result.secure_url });
       req.session.user.profilePic = result.secure_url;
 
-      fs.unlinkSync(req.file.path);
-
-      res.json({ success: true, message: "Profile picture updated", url: result.secure_url });
+      res.json({
+        success: true,
+        message: "Profile picture updated",
+        url: result.secure_url,
+      });
     } catch (error) {
       console.error("❌ Profile Pic Upload Error:", error);
       res.status(500).json({ message: "Server error uploading profile photo" });
@@ -559,32 +585,6 @@ app.post(
   }
 );
 
-// Resend verification (user must be logged in)
-app.post("/api/resend-verification", async (req, res) => {
-  try {
-    if (!req.session?.user) return res.status(401).json({ message: "Unauthorized" });
-
-    const user = await User.findById(req.session.user._id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    if (user.verified) return res.status(400).json({ message: "Already verified" });
-
-    // remove any previous verify tokens
-    await Token.deleteMany({ userId: user._id, purpose: "verify" });
-
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = await bcrypt.hash(rawToken, 10);
-    await Token.create({ userId: user._id, token: hashedToken, purpose: "verify" });
-
-    const verifyLink = `${process.env.CLIENT_URL.replace(/\/+$/, "")}/verify?token=${rawToken}&id=${user._id}`;
-
-    await sendEmail({ to: user.email, subject: "🌟 Verify Your Email", html: `Click the link to verify: <a href="${verifyLink}">Verify</a>` });
-
-    res.json({ success: true, message: "Verification email sent" });
-  } catch (err) {
-    console.error("❌ Verification resend error:", err);
-    res.status(500).json({ message: "Server error sending verification" });
-  }
-});
 
 // Delete account
 app.delete("/api/delete-account", async (req, res) => {
@@ -599,9 +599,7 @@ app.delete("/api/delete-account", async (req, res) => {
     const dresses = await Dress.find({ userEmail: user.email });
     for (const d of dresses) {
       try {
-        const file = d.imageUrl.split("/").pop().split(".")[0];
-        const publicId = "dress_organizer/" + file;
-        await cloudinary.uploader.destroy(publicId).catch(() => {});
+        await cloudinary.uploader.destroy(getCloudinaryPublicId(d.imageUrl)).catch(() => {});
       } catch (e) {}
     }
     await Dress.deleteMany({ userEmail: user.email });
@@ -842,10 +840,7 @@ app.delete("/api/sections/:name", async (req, res) => {
   const dresses = await Dress.find({ section: name, userEmail: user.email });
   for (const d of dresses) {
     try {
-      const urlParts = d.imageUrl.split("/");
-      const fileWithExt = urlParts[urlParts.length - 1];
-      const publicId = "dress_organizer/" + fileWithExt.split(".")[0];
-      await cloudinary.uploader.destroy(publicId).catch(() => {});
+      await cloudinary.uploader.destroy(getCloudinaryPublicId(d.imageUrl)).catch(() => {});
     } catch (e) {}
   }
 
@@ -914,24 +909,34 @@ app.post(
     try {
       const { name, section, category } = req.body;
       const user = req.session.user;
+
       if (!user) return res.status(401).json({ message: "Unauthorized" });
       if (!req.file) return res.status(400).json({ message: "⚠️ No image uploaded." });
-
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "dress_organizer",
-        format: "jpg",
+      if (!name || !section || !category) {
+        return res.status(400).json({ message: "All fields are required." });
+      }
+      const userId = req.session.user._id;
+      const result = await streamUpload(req.file.buffer,`dress_organizer/users/${userId}/dresses`);
+      const dress = await Dress.create({
+        name,
+        section,
+        category,
+        imageUrl: result.secure_url,
+        userEmail: user.email,
       });
 
-      const dress = await Dress.create({ name, section, category, imageUrl: result.secure_url, userEmail: user.email });
-
-      fs.unlinkSync(req.file.path);
-      res.json({ message: "✅ Dress uploaded successfully!", dress });
+      res.json({
+        success: true,
+        message: "✅ Dress uploaded successfully!",
+        dress,
+      });
     } catch (error) {
       console.error("❌ Upload Error:", error);
       res.status(500).json({ message: "Server error during upload." });
     }
   }
 );
+
 
 app.get("/api/dresses", async (req, res) => {
   try {
@@ -1015,12 +1020,7 @@ app.delete("/api/dresses/:id", async (req, res) => {
     const dress = await Dress.findById(req.params.id);
     if (!dress) return res.status(404).json({ message: "Dress not found." });
     if (dress.userEmail !== user.email) return res.status(403).json({ message: "Forbidden." });
-
-    const urlParts = dress.imageUrl.split("/");
-    const fileWithExt = urlParts[urlParts.length - 1];
-    const publicId = "dress_organizer/" + fileWithExt.split(".")[0];
-    await cloudinary.uploader.destroy(publicId).catch(() => {});
-
+    await cloudinary.uploader.destroy(getCloudinaryPublicId(dress.imageUrl)).catch(() => {});
     await Dress.findByIdAndDelete(req.params.id);
     res.json({ message: "🗑️ Dress deleted from database & Cloudinary." });
   } catch (err) {
